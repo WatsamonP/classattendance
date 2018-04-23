@@ -5,7 +5,6 @@ import { AngularFireDatabase, AngularFireObject } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import {  HttpClient } from '@angular/common/http';
-import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +15,6 @@ export class AuthService {
   constructor(private afAuth: AngularFireAuth,
     private db: AngularFireDatabase,
     private router: Router,
-    public jwtHelperService: JwtHelperService,
     private http: HttpClient) {
       this.afAuth.authState.subscribe((auth) => {
         this.authState = auth
