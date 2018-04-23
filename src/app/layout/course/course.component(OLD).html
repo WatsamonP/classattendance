@@ -1,0 +1,95 @@
+<div [@routerTransition]>
+  <!--app-page-header [heading]='courseId' [icon]="'fa-bar-chart-o'"></app-page-header-->
+  <div *ngFor="let item of courseList ; let i = index" >
+    <div *ngIf="(item.id == courseId)">
+      <!-- HEADER -->
+        <div class="row">
+          <div class="col-xl-12">
+            <h2 class="page-header">
+                รายวิชา {{item.id}} : {{item.name}}
+            </h2>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+              <div class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto">
+                  <button type="button" class="btn btn-success" (click)="onSwitch() ">
+                    <i class="fa fa-user-plus"></i> 
+                    เพิ่มรายชื่อนักศึกษา
+                  </button>
+                    &nbsp;&nbsp;
+                  <button type="button" class="btn btn-warning text-white">
+                    <i class="fa fa-plus"></i> 
+                    อัพโหลดรายชื่อ (.csv)
+                  </button>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                  <button type="button" class="btn btn-info" (click)="onEdit(item)">
+                    <i class="fa fa-pencil-square-o"></i> 
+                    แก้ไขรายวิชา
+                  </button>
+                    &nbsp;&nbsp;
+                  <button type="button" class="btn btn-danger" (click)="onDelete(item.key)">
+                    <i class="fa fa-trash-o"></i>
+                    ลบรายวิชา
+                  </button>
+                </form>
+              </div>
+            </nav>
+          </div>
+        </div>
+      <br />
+      <!-- Content -->
+
+      
+      <!-- Student Form -->
+      <div class="alert alert-success mb-0" [hidden]="IsHidden">
+      <form [formGroup]="studentForm" (ngSubmit)="createStudent(item.id)">
+        <div class="row">
+          <div class="col-md-5">
+            <input type="text" formControlName="id" class="form-control" placeholder="รหัสประจำตัว"
+              [(ngModel)]="studentService.selectedStudent.id">
+          </div>
+
+          <div class="col-md-5">      
+            <input type="text" formControlName="name" class="form-control" placeholder="ชื่อ-นามสกุล"
+              [(ngModel)]="studentService.selectedStudent.name">
+          </div>
+
+          <div class="col-md-2 text-right">  
+            <button type="submit" class="btn btn-success">
+              <i class="fa fa-save" aria-hidden="true"></i>
+                บันทึก
+            </button>
+          </div>
+        </div>
+      </form>
+      </div> 
+
+      <!--TABLE-->
+      <div class="card">
+        <div class="card-header">
+            <button type="button" class="btn btn-sm btn-info">Info</button>
+        </div>
+        <div class="card-body table-responsive">
+          <table class="table table-hover table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ID</th>
+                <th>ชื่อ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of studentList ; let j = index;">
+                <th scope="row">{{j+1}}</th>
+                <td>{{student.id}}</td>
+                <td>{{student.name}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!---->
+
+    </div>
+  </div>  
+</div>
