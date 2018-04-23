@@ -23,7 +23,6 @@ import { UserService } from "./shared/services/user/user.service";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './shared';
-import { JwtModule } from '@auth0/angular-jwt';
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -50,15 +49,7 @@ export function createTranslateLoader(http: HttpClient) {
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
-    FormsModule,ReactiveFormsModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: () => {
-          return localStorage.getItem('access_token');
-        },
-        whitelistedDomains: ['http://localhost:4200/']
-      }
-    })
+    FormsModule,ReactiveFormsModule
   ],
   declarations: [AppComponent],
   providers: [AuthService, AuthGuard, AngularFireDatabase, UserService ],
