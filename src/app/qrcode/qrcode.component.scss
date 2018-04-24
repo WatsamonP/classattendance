@@ -1,0 +1,18 @@
+$topnav-background-color: #222;
+:host {
+    display: block;
+}
+.login-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    background: $topnav-background-color;
+    color: #fff;
+    padding: 3em;
+}
+.text-white {
+    text-decoration-color: #fff;
+}

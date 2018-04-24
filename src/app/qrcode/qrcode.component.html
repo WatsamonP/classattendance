@@ -1,0 +1,22 @@
+<div class="login-page" [@routerTransition]>
+<div class="row justify-content-md-center">
+  <div>
+    <img src="{{qrcode}}"
+         class="qr-code img-thumbnail img-responsive">
+  </div>
+  <br>
+  <form [formGroup]="uForm" (ngSubmit)="gen()">
+  <div class="form-horizontal">
+    <br>
+      <label class="control-label col-sm-2" for="content">StudentID :</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" formControlName="content" placeholder="ex.B1234567">
+      </div>
+      <br>
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-lg btn-success btn-block">Generate</button>
+    </div>
+  </div>
+  </form>
+</div>
+<div>
