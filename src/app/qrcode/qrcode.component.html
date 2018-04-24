@@ -5,18 +5,19 @@
          class="qr-code img-thumbnail img-responsive">
   </div>
   <br>
-  <form [formGroup]="uForm" (ngSubmit)="gen()">
+  <form [formGroup]="uForm" (ngSubmit)="onDownload()">
   <div class="form-horizontal">
     <br>
-      <label class="control-label col-sm-2" for="content">StudentID :</label>
-      <div class="col-sm-10">
+      <label class="control-label col-sm-2" for="content">StudentID:</label>
+      <div class="col-sm-12">
         <input type="text" class="form-control" formControlName="content" placeholder="ex.B1234567">
       </div>
       <br>
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-lg btn-success btn-block">Generate</button>
-    </div>
+      <div class="col-sm-offset-2 col-sm-12">
+        <button type="submit" class="btn btn-lg btn-success btn-block">Generate & Download</button>
+      </div>
   </div>
   </form>
+
 </div>
 <div>
