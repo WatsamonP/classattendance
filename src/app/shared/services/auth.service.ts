@@ -5,6 +5,8 @@ import { AngularFireDatabase, AngularFireObject } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import {  HttpClient } from '@angular/common/http';
+import { ReactiveFormsModule, FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +17,8 @@ export class AuthService {
   constructor(private afAuth: AngularFireAuth,
     private db: AngularFireDatabase,
     private router: Router,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private toastr: ToastrService) {
       this.afAuth.authState.subscribe((auth) => {
         this.authState = auth
       });
@@ -89,7 +92,10 @@ export class AuthService {
         //this.updateUserData();
         this.router.navigate(['/'])
       })
-      .catch(error => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        this.toastr.warning(error);
+      });
   }
   emailLogin(email: string, password: string) {
     return this.afAuth.auth.signInWithEmailAndPassword(email, password)
@@ -120,7 +126,7 @@ export class AuthService {
   
   
   private updateUserData(): void {
-    const path = `testUser/${this.currentUserId}/profile`; // Endpoint on firebase
+    const path = `users/${this.currentUserId}/profile`; // Endpoint on firebase
     const userRef: AngularFireObject<any> = this.db.object(path);
     const data = {
       email: this.authState.email

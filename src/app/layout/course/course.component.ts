@@ -55,7 +55,7 @@ export class CourseComponent implements OnInit {
       this.courseId = id;
 
       //Query Course
-      this.db.list(`testUser/${this.auth.currentUserId}/course/`).snapshotChanges().map(actions => {
+      this.db.list(`users/${this.auth.currentUserId}/course/`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.courseList = items;
@@ -63,7 +63,7 @@ export class CourseComponent implements OnInit {
         });
 
       //Query Student
-      this.db.list(`testUser/${this.auth.currentUserId}/course/${this.courseId}/students`).snapshotChanges().map(actions => {
+      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/students`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.studentList = items;
@@ -71,21 +71,21 @@ export class CourseComponent implements OnInit {
         });
 
       //Query Quiz Score
-      this.db.list(`testUser/${this.auth.currentUserId}/course/${this.courseId}/score/quiz`).snapshotChanges().map(actions => {
+      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/score/quiz`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scoreQuiz = items;
             return items.map(item => item.key);
         });
       //Query Attendances Score
-      this.db.list(`testUser/${this.auth.currentUserId}/course/${this.courseId}/score/attendance`).snapshotChanges().map(actions => {
+      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/score/attendance`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scoreAttendance = items;
             return items.map(item => item.key);
         });
       //Query Hw Score
-      this.db.list(`testUser/${this.auth.currentUserId}/course/${this.courseId}/score/homework`).snapshotChanges().map(actions => {
+      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/score/homework`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scoreHw = items;

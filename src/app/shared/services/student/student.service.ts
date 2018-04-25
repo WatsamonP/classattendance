@@ -24,7 +24,7 @@ export class StudentService {
 
   // Null Variable ////////////////////////////////////////////////////////////////////////
   getStudentList(){
-    this.courseList = this.db.object(`testUser/${this.auth.currentUserId}
+    this.courseList = this.db.object(`users/${this.auth.currentUserId}
                       /course/${this.getCourseId()}/students/${this.getStudentId()}`)
     return this.courseList;
   }
@@ -45,7 +45,7 @@ export class StudentService {
   
   // Work ////////////////////////////////////////////////////////////////////////////////
   insertStudentCid(student : Student, cid : number){
-    this.db.object(`testUser/${this.auth.currentUserId}/course/${cid}/students/${student.id}`)
+    this.db.object(`users/${this.auth.currentUserId}/course/${cid}/students/${student.id}`)
       .set({
         id: student.id,
         name : student.name,
@@ -60,7 +60,7 @@ export class StudentService {
   }
 
   deleteStudent(cid : number, id : string){
-    this.db.object(`testUser/${this.auth.currentUserId}/course/${cid}/students/${id}`).remove();
+    this.db.object(`users/${this.auth.currentUserId}/course/${cid}/students/${id}`).remove();
   }
 
 }

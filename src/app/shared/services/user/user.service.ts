@@ -22,7 +22,7 @@ export class UserService {
   
 
   getUserList(){
-    this.userList = this.db.object(`testUser/${this.currentUserId}/profile`);
+    this.userList = this.db.object(`users/${this.currentUserId}/profile`);
     return this.userList;
   }
 

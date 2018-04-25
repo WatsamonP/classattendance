@@ -43,7 +43,7 @@ export class SidebarComponent {
       this.translate.use(browserLang.match(/en|fr|ur|es|it|fa|de/) ? browserLang : 'en');
 
       // set course List ดึงข้อมูลจาก DB
-      this.db.list(`testUser/${this.auth.currentUserId}/course/`).snapshotChanges().map(actions => {
+      this.db.list(`users/${this.auth.currentUserId}/course/`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
       }).subscribe(items => {
         this.courseList = items;

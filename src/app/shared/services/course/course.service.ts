@@ -24,13 +24,13 @@ export class CourseService {
 
   // GET-SET Data
   getCourseObject(){
-    //this.courseList = this.db.list(`testUser/${this.auth.currentUserId}/course/`);
-    this.courseObject = this.db.object(`testUser/${this.auth.currentUserId}/course/`);
+    //this.courseList = this.db.list(`users/${this.auth.currentUserId}/course/`);
+    this.courseObject = this.db.object(`users/${this.auth.currentUserId}/course/`);
     return this.courseObject;
   }
   getCourseList(){
-    this.courseList = this.db.list(`testUser/${this.auth.currentUserId}/course/`);
-    //this.courseList = this.db.object(`testUser/${this.auth.currentUserId}/course/`);
+    this.courseList = this.db.list(`users/${this.auth.currentUserId}/course/`);
+    //this.courseList = this.db.object(`users/${this.auth.currentUserId}/course/`);
     return this.courseList;
   }
   setCourseId(id : number){
@@ -49,22 +49,12 @@ export class CourseService {
 
   // INSERT UPDATE DELETE
   insertCourse(course : Course){
-    this.db.object(`testUser/${this.auth.currentUserId}/course/${course.id}`).set({
+    this.db.object(`users/${this.auth.currentUserId}/course/${course.id}`).set({
       id: course.id,
       name : course.name,
       year : course.year,
       trimester : course.trimester
     });
-  /*
-    const path = `testUser/${this.auth.currentUserId}/course/${course.id}`; // Endpoint on firebase
-    const userRef: AngularFireObject<any> = this.db.object(path);
-    const data = {
-      Hello: '423434',
-    }
-    userRef.set(data)
-      .catch(error => console.log(error));
-    }
-    */
   }
 
   updateCourse(course : Course){
@@ -79,7 +69,7 @@ export class CourseService {
   }
 
   deleteCourse(key : string){
-    this.db.object(`testUser/${this.auth.currentUserId}/course/${key}`).remove();
+    this.db.object(`users/${this.auth.currentUserId}/course/${key}`).remove();
   }
 
 }

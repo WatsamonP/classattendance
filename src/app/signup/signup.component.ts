@@ -3,6 +3,9 @@ import { routerTransition } from '../router.animations';
 import { AuthService } from "../shared/services/auth.service";
 import { UserService } from "../shared/services/user/user.service";
 import { ReactiveFormsModule, FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 @Component({
   selector: 'app-signup',
@@ -19,11 +22,15 @@ export class SignupComponent implements OnInit {
   firstName? : string;
   lastName? : string;
   tel? : number;
+  authState: any = null;
 
   constructor(
+    private afAuth: AngularFireAuth,
     private fb: FormBuilder, 
     private auth: AuthService,
-    private userService: UserService) { }
+    private userService: UserService,
+    private toastr: ToastrService,
+    private router: Router) { }
 
   ngOnInit() {
     this.buildForm();
@@ -49,9 +56,14 @@ export class SignupComponent implements OnInit {
 
   signup() {
     this.auth.emailSignUp(this.userForm.value.email, this.userForm.value.password)
-    .then((auth) => {
-      this.userService.setCurrentUserId(this.auth.currentUserId)})
-      .then(() => {
-        this.userService.insertUser(this.userForm.value)})
+      .then((auth) => {
+        if(this.auth.currentUserId == null || this.auth.currentUserId == "" || this.auth.currentUserId == undefined){
+          
+        }else{
+          this.userService.setCurrentUserId(this.auth.currentUserId);
+          this.userService.insertUser(this.userForm.value);
+          this.toastr.success("สมัครสมาชิกสำเร็จ");
+        }
+    })
   }
 }
