@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Inject } from '@angular/core';
 import { routerTransition } from '../../router.animations';
 import { ReactiveFormsModule, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AngularFireDatabase, AngularFireObject, AngularFireList } from 'angularfire2/database';
@@ -9,10 +9,13 @@ import { CourseService } from "../../shared/services/course/course.service";
 import { StudentService } from "../../shared/services/student/student.service";
 import { Course } from '../../shared/services/course/course.model';
 import { Student } from '../../shared/services/student/student.model';
+import { Attendance } from '../../shared/services/student/attendance.model';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Router } from '@angular/router';
 import { slideInDownAnimation } from '../animations';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-course',
@@ -31,12 +34,16 @@ export class CourseComponent implements OnInit {
   studentList: Student[];
   IsHidden= true;
   //
-  scoreQuiz: any;
-  scoreAttendance: any;
-  scoreHw: any;
+  //defaultTime = {hour: 23, minute: 0};
+  count : 0;
+  count_attendance : 0;
+  count_quiz : 0;
+  count_hw : 0;
+  editCourseForm : FormGroup;
   //
   attendanceForm: FormGroup;
-
+  closeResult: string;
+  scheduleAttendanceList : any;
   constructor(
     private auth: AuthService, 
     private courseService: CourseService, 
@@ -44,7 +51,8 @@ export class CourseComponent implements OnInit {
     private db: AngularFireDatabase,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router) {
+    private router: Router,
+    private modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -66,34 +74,34 @@ export class CourseComponent implements OnInit {
       this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/students`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
+          if(items[0].attendance == undefined ){
+            this.count_attendance = 0;
+          }else{
+            this.count_attendance = items[0].attendance.length;
+          }
+          if(items[0].quiz == undefined ){
+            this.count_quiz = 0;
+          }else{
+            this.count_quiz = items[0].quiz.length;
+          }
+          if(items[0].hw == undefined ){
+            this.count_hw = 0;
+          }else{
+            this.count_hw = items[0].hw.length;
+          }
+
           this.studentList = items;
             return items.map(item => item.key);
         });
 
-      //Query Quiz Score
-      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/score/quiz`).snapshotChanges().map(actions => {
-        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-        }).subscribe(items => {
-          this.scoreQuiz = items;
-            return items.map(item => item.key);
-        });
-      //Query Attendances Score
-      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/score/attendance`).snapshotChanges().map(actions => {
-        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-        }).subscribe(items => {
-          this.scoreAttendance = items;
-            return items.map(item => item.key);
-        });
-      //Query Hw Score
-      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/score/homework`).snapshotChanges().map(actions => {
-        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-        }).subscribe(items => {
-          this.scoreHw = items;
-            return items.map(item => item.key);
-        });
-
-
-
+      //Query Course
+      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/attendance`).snapshotChanges().map(actions => {
+      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+      }).subscribe(items => {
+        console.log(items);
+        this.scheduleAttendanceList = items;
+          return items.map(item => item.key);
+      });
     });
 
     // buildForm for Student /////////////////////////////////////////////////////////////
@@ -102,15 +110,16 @@ export class CourseComponent implements OnInit {
   }
 
   // Button
-  onEdit(course: Course) {
-    console.log(course.id);
-    //this.courseService.selectedCourse = Object.assign({}, course);
+  onEditCourse(course: Course) {
+    this.courseService.updateCourse(this.editCourseForm.value,this.courseId);
+    this.toastr.success("แก้ไข"+this.courseId
+      +" : "+ this.editCourseForm.value.name+" สำเร็จ");
   }
 
   onDelete(id: string) {
     if (confirm('Are you sure to delete this record ?') == true) {
       this.courseService.deleteCourse(id);
-      this.toastr.success("Deleted Successfully", "Employee register");
+      this.toastr.success("Deleted Successfully");
     }
   }
 
@@ -120,11 +129,18 @@ export class CourseComponent implements OnInit {
       id: new FormControl('', []),
       name: new FormControl('', []),
     });
-
+    //
     this.attendanceForm = new FormGroup({
-      date: new FormControl('', []),
-      status: new FormControl('', []),
+      student_id: new FormControl('', []),
+      type: new FormControl('', []),
+      score: new FormControl(0, []),
     });
+    this.editCourseForm = new FormGroup({
+      name: new FormControl('', []),
+      year: new FormControl('', []),
+      trimester: new FormControl('', []),
+      frequency: new FormControl(0, []),
+    }); 
   }
 
   createStudent(cid : number){
@@ -134,7 +150,7 @@ export class CourseComponent implements OnInit {
   onDeleteStudent(id: string) {
     if (confirm('Are you sure to delete this record ?') == true) {
       this.studentService.deleteStudent(this.courseId,id);
-      this.toastr.success("Deleted Successfully", "Employee register");
+      this.toastr.success("Deleted Successfully");
     }
   }
 
@@ -142,20 +158,26 @@ export class CourseComponent implements OnInit {
   onSwitch(){
     this.IsHidden= !this.IsHidden;
   }
-  //////////////////////////////////////////////////
-  switchAttendance(){
-    console.log("เช็คชื่อ");
+  ///////////////////////////////////////////////////////////
+  openOnEdit(content) {
+    this.modalService.open(content).result.then((result) => {
+        this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
   }
 
-  switchHw(){
-    console.log("HW");
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+        return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+        return 'by clicking on a backdrop';
+    } else {
+        return  `with: ${reason}`;
+    }
   }
+  ///////////////////////////////////////////////////////////////
 
-  switchQuiz(){
-    console.log("Quiz");
-  }
 
-    isVisible = function(name){
-    return true;// return false to hide this artist's albums
-  }
 }
+

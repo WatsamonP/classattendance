@@ -6,6 +6,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 
 import { Student } from './student.model';
+import { Attendance } from './attendance.model';
 import { StringifyOptions } from 'querystring';
 import { AuthService } from "../../../shared/services/auth.service";
 
@@ -13,14 +14,20 @@ import { AuthService } from "../../../shared/services/auth.service";
 export class StudentService {
 
   selectedStudent: Student = new Student();
+  selectedAttendance: Attendance = new Attendance();
   courseList: AngularFireObject<any>;
   selectedCourseId : number;
   selectedCourseKey : string;
   studentId: string;
+  studentList: Student[];
 
   constructor(
     private db: AngularFireDatabase,
     private auth: AuthService) { }
+
+  ngOnInit() {
+
+  }
 
   // Null Variable ////////////////////////////////////////////////////////////////////////
   getStudentList(){
@@ -50,7 +57,7 @@ export class StudentService {
         id: student.id,
         name : student.name,
       });
-    }
+  }
   // Null Variable
   insertStudent(student : Student){
     this.getStudentList().set({
@@ -61,6 +68,16 @@ export class StudentService {
 
   deleteStudent(cid : number, id : string){
     this.db.object(`users/${this.auth.currentUserId}/course/${cid}/students/${id}`).remove();
+  }
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  insertAttendance(attendanceForm : Attendance, cid : number, count : number){
+    var today = new Date();
+    this.db.object(`users/${this.auth.currentUserId}/course/${cid}/students/${attendanceForm.student_id}/${attendanceForm.type}/${count}`)
+      .set({
+        score : attendanceForm.score,
+        date : today
+      });
   }
 
 }

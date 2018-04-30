@@ -104,7 +104,10 @@ export class AuthService {
         //this.updateUserData()
         this.router.navigate(['/dashboard'])
       })
-      .catch(error => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        this.toastr.warning(error);
+      });
   }
   resetPassword(email: string) {
     const fbAuth = firebase.auth();

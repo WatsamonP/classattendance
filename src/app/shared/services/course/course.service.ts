@@ -57,15 +57,14 @@ export class CourseService {
     });
   }
 
-  updateCourse(course : Course){
-    /*
-    this.getCourseList().update(course.id,{
-      id: course.id,
+  updateCourse(course : Course, courseID : number){
+    this.db.object(`users/${this.auth.currentUserId}/course/${courseID}`).update({
+      id: courseID,
       name : course.name,
       year : course.year,
-      trimester : course.trimester
+      trimester : course.trimester,
+      frequency : course.frequency
     });
-    */
   }
 
   deleteCourse(key : string){

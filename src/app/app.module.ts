@@ -49,7 +49,7 @@ export function createTranslateLoader(http: HttpClient) {
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
-    FormsModule,ReactiveFormsModule
+    FormsModule,ReactiveFormsModule,
   ],
   declarations: [AppComponent],
   providers: [AuthService, AuthGuard, AngularFireDatabase, UserService ],

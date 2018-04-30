@@ -6,11 +6,13 @@ import { CourseComponent } from './course.component';
 import { PageHeaderModule } from './../../shared';
 //
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   imports: [
     CommonModule, CourseRoutingModule, PageHeaderModule,
-    FormsModule, ReactiveFormsModule 
+    FormsModule, ReactiveFormsModule,
+    NgbModule.forRoot()
   ],
   declarations: [CourseComponent]
 })

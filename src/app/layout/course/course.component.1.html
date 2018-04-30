@@ -1,0 +1,223 @@
+<div [@routerTransition]>
+    <!--app-page-header [heading]='courseId' [icon]="'fa-bar-chart-o'"></app-page-header-->
+    <div *ngFor="let item of courseList ; let i = index" >
+      <div *ngIf="(item.id == courseId)">
+        <!-- HEADER -->
+          <div class="row">
+            <div class="col-xl-12">
+              <h2 class="page-header">
+                  รายวิชา {{item.id}} : {{item.name}}
+              </h2>
+              <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <!--div class="collapse navbar-collapse"-->
+                  <ul class="navbar-nav mr-auto">
+                    <button type="button" class="btn btn-success" (click)="onSwitch() ">
+                      <i class="fa fa-user-plus"></i> 
+                      เพิ่มรายชื่อนักศึกษา
+                    </button>
+                      &nbsp;&nbsp;
+                    <button type="button" class="btn btn-warning text-white">
+                      <i class="fa fa-plus"></i> 
+                      อัพโหลดรายชื่อ (.csv)
+                    </button>
+                  </ul>
+                  <form class="form-inline my-2 my-lg-0">
+                    <button class="btn btn-primary" (click)="openCreateNewAttendance(content)">Large modal</button>
+                      &nbsp;&nbsp;
+                    <button type="button" class="btn btn-info" (click)="openOnEdit(editCourse)">
+                      <i class="fa fa-pencil-square-o"></i> 
+                      แก้ไขรายวิชา
+                    </button>
+                      &nbsp;&nbsp;
+                    <button type="button" class="btn btn-danger" (click)="onDelete(item.key)">
+                      <i class="fa fa-trash-o"></i>
+                      ลบรายวิชา
+                    </button>
+                    
+                  </form>
+                <!--/div-->
+              </nav>
+            </div>
+          </div>
+        <br />
+        <!-- Content -->
+
+        <!-- Student Form -->
+        <div class="alert alert-success mb-0" [hidden]="IsHidden">
+        <form [formGroup]="studentForm" (ngSubmit)="createStudent(item.id)">
+          <div class="row">
+            <div class="col-md-5">
+              <input type="text" formControlName="id" class="form-control" placeholder="รหัสประจำตัว"
+                [(ngModel)]="studentService.selectedStudent.id">
+            </div>
+  
+            <div class="col-md-5">      
+              <input type="text" formControlName="name" class="form-control" placeholder="ชื่อ-นามสกุล"
+                [(ngModel)]="studentService.selectedStudent.name">
+            </div>
+  
+            <div class="col-md-2 text-right">  
+              <button type="submit" class="btn btn-success">
+                <i class="fa fa-save" aria-hidden="true"></i>
+                  บันทึก
+              </button>
+            </div>
+          </div>
+        </form>
+        </div> 
+
+        <!-- Score -->
+        <div class="alert alert-success mb-0" [hidden]="IsHidden">
+          <form [formGroup]="attendanceForm" (ngSubmit)="insertAttendance(item.id)">
+            <div class="row">
+              <div class="col">
+                <input type="text" formControlName="student_id" class="form-control" placeholder="รหัสประจำตัว"
+                  [(ngModel)]="studentService.selectedAttendance.student_id">
+              </div>
+    
+              <div class="col">      
+                <input type="text" formControlName="type" class="form-control" placeholder="atten/quiz/hw"
+                  [(ngModel)]="studentService.selectedAttendance.type">
+              </div>
+
+              <div class="col">      
+                <input type="text" formControlName="score" class="form-control" placeholder="คะแนน"
+                  [(ngModel)]="studentService.selectedAttendance.score">
+              </div>
+    
+              <div class="col-md-2 text-right">  
+                <button type="submit" class="btn btn-success">
+                  <i class="fa fa-save" aria-hidden="true"></i>
+                    บันทึก
+                </button>
+              </div>
+            </div>
+          </form>
+          </div> 
+  
+        <!--TABLE-->
+        <div class="card">
+          <div class="card-header">
+              <button type="button" class="btn btn-sm btn-info" (click)="switchAttendance()">
+                เช็คชื่อ</button>
+              <button type="button" class="btn btn-sm btn-info" (click)="switchHw()">
+                HW</button>
+              <button type="button" class="btn btn-sm btn-info" (click)="switchQuiz()">
+                QUIZ</button>
+          </div>
+          <div class="card-body table-responsive">
+              
+            <table class="table table-hover table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>ID</th>
+                  <th>ชื่อ</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let student of studentList ; let j = index;">
+                  <th scope="row">{{j+1}} &nbsp;
+                    <i class="fa fa-trash-o" (click)="onDeleteStudent(student.key)" ></i>
+                  </th>
+                  <td>{{student.id}}</td>
+                  <td>{{student.name}}</td>
+                  <td *ngFor="let quiz of student.quiz ; let k = index;">{{quiz.score}}</td>
+                </tr>
+              </tbody>
+            </table>
+            
+          </div>
+          
+        </div>
+
+        <!-- ///////////////////////////////////////////template/////////////////////////////////-->
+        <!-- ///////////////////////////////////////////template/////////////////////////////////-->
+        <ng-template #editCourse let-c="close" let-d="dismiss">
+            <div class="modal-header">
+              <h4 class="modal-title">Modal title</h4>
+              <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>One fine body&hellip;</p>
+              {{defaultTime | json}}
+                  <div class="card">
+                      <div class="card-header">Timepicker (<b>Default</b>)</div>
+                      <div class="card-body">
+                          <ngb-timepicker [(ngModel)]="defaultTime"></ngb-timepicker>
+                          <div class="alert alert-info">
+                              <b>Selected time: </b>{{defaultTime | json}}
+                          </div>
+                      </div>
+                  </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="c('Close click')">Close</button>
+            </div>
+          </ng-template>
+          <!-- ///////////////////////////////////////////template/////////////////////////////////-->
+          <ng-template #content let-c="close" let-d="dismiss">
+              <div class="modal-header">
+                <h4 class="modal-title">Modal title</h4>
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>One fine body&hellip;</p>
+                <form [formGroup]="attendanceForm" (ngSubmit)="createNewAttendance(courseId)">
+    
+                        <input type="text" formControlName="type" class="form-control" placeholder="atten/quiz/hw"
+                          [(ngModel)]="studentService.selectedAttendance.type">
+    
+                        <button type="submit" class="btn btn-success">
+                          <i class="fa fa-save" aria-hidden="true"></i>
+                            บันทึก
+                        </button>
+                   
+                  </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="c('Close click')">Close</button>
+              </div>
+            </ng-template>
+
+            <ngb-tabset>
+                <ngb-tab title="Simple">
+                    <ng-template ngbTabContent>
+                        <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth
+                        master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh
+                        dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum
+                        iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab>
+                    <ng-template ngbTabTitle><b>Fancy</b> title</ng-template>
+                    <ng-template ngbTabContent>
+                        <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table
+                        craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
+                        cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia
+                        yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean
+                        shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero
+                        sint qui sapiente accusamus tattooed echo park.</p>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab title="Disabled" [disabled]="true">
+                    <ng-template ngbTabContent>
+                        <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth
+                        master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh
+                        dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum
+                        iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+                    </ng-template>
+                </ngb-tab>
+            </ngb-tabset>
+
+
+  
+      </div>
+    </div>  
+  </div>

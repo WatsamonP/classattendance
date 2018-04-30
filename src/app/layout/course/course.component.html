@@ -9,7 +9,7 @@
                   รายวิชา {{item.id}} : {{item.name}}
               </h2>
               <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="collapse navbar-collapse">
+                <!--div class="collapse navbar-collapse"-->
                   <ul class="navbar-nav mr-auto">
                     <button type="button" class="btn btn-success" (click)="onSwitch() ">
                       <i class="fa fa-user-plus"></i> 
@@ -22,7 +22,7 @@
                     </button>
                   </ul>
                   <form class="form-inline my-2 my-lg-0">
-                    <button type="button" class="btn btn-info" (click)="onEdit(item)">
+                    <button type="button" class="btn btn-info" (click)="openOnEdit(editCourse)">
                       <i class="fa fa-pencil-square-o"></i> 
                       แก้ไขรายวิชา
                     </button>
@@ -31,14 +31,15 @@
                       <i class="fa fa-trash-o"></i>
                       ลบรายวิชา
                     </button>
+                    
                   </form>
-                </div>
+                <!--/div-->
               </nav>
             </div>
           </div>
         <br />
         <!-- Content -->
-  
+
         <!-- Student Form -->
         <div class="alert alert-success mb-0" [hidden]="IsHidden">
         <form [formGroup]="studentForm" (ngSubmit)="createStudent(item.id)">
@@ -65,43 +66,130 @@
   
         <!--TABLE-->
         <div class="card">
-          <div class="card-header">
-              <button type="button" class="btn btn-sm btn-info" (click)="switchAttendance()">
-                เช็คชื่อ</button>
-              <button type="button" class="btn btn-sm btn-info" (click)="switchHw()">
-                HW</button>
-              <button type="button" class="btn btn-sm btn-info" (click)="switchQuiz()">
-                QUIZ</button>
-          </div>
           <div class="card-body table-responsive">
-              
-            <table class="table table-hover table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>ID</th>
-                  <th>ชื่อ</th>
-                  <th>All</th>
-                  <th *ngFor="let no of scoreQuiz ; let k = index;">Quiz {{k+1}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let student of studentList ; let j = index;">
-                  <th scope="row">{{j+1}} &nbsp;
-                    <i class="fa fa-trash-o" (click)="onDeleteStudent(student.key)" ></i>
-                  </th>
-                  <td>{{student.id}}</td>
-                  <td>{{student.name}}</td>
-                  <td>{{student.quiz}}</td>
-                  <td *ngFor="let quiz of student.quiz ; let k = index;">{{quiz}}</td>
-                </tr>
-              </tbody>
-            </table>
-            
+            <ngb-tabset>
+              <ngb-tab title="เข้าเรียน">
+                <ng-template ngbTabContent>
+                  <div class="card-body table-responsive">
+                    <table class="table table-hover table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:60px; text-align: center">#</th>
+                          <th style="width:100px; text-align: center">ID</th>
+                          <th style="text-align: center">ชื่อ-นามสกุล</th>
+                          
+                          <th *ngFor="let schedule of scheduleAttendanceList ; let k = index" style="width:50px ;text-align: center">
+                            <button type="button" class="btn btn-light" placement="top"
+                              ngbPopover="{{schedule.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                              {{k+1}}</button></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let student of studentList ; let j = index;">
+                          <th scope="row" style="width:60px ;text-align: center">
+                            <i class="fa fa-trash-o" (click)="onDeleteStudent(student.key)" ></i>
+                            &nbsp; {{j+1}} 
+                            </th>
+                          <td>{{student.id}}</td>
+                          <td>{{student.name}}</td>
+                          <td *ngFor="let atten of student.attendance ; let k = index" style="text-align: center">
+                            <a placement="top" ngbPopover="{{atten.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                            {{atten.score}}</a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </ng-template>
+              </ngb-tab>
+              <!--///////////////////////////////////////-->
+              <ngb-tab title="Quiz">
+                <ng-template ngbTabContent>
+  
+                </ng-template>
+              </ngb-tab>
+              <!--///////////////////////////////////////-->
+              <ngb-tab title="Homework" [disabled]="true">
+                <ng-template ngbTabContent>
+
+                </ng-template>
+              </ngb-tab>
+            </ngb-tabset>
           </div>
-          
         </div>
-        <!---->
+
+        <!-- ///////////////////////////////////////////template/////////////////////////////////-->
+        <!-- ///////////////////////////////////////////template/////////////////////////////////-->
+        <ng-template #editCourse let-c="close" let-d="dismiss">
+          <div class="modal-header">
+            <h4 class="modal-title">แก้ไขรายวิชา</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!--////////////////////////////////////////////////////////////////////-->
+            <form [formGroup]="editCourseForm" (ngSubmit)="onEditCourse()"> 
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">ชื่อวิชา</label>
+                <div class="col-sm-9">
+                  <input type="text" formControlName="name" class="form-control"
+                    [(ngModel)]="item.name">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">ปีการศึกษา</label>
+                <div class="col-sm-9">
+                  <input type="number" formControlName="year" class="form-control"
+                    [(ngModel)]="item.year">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">เทอม</label>
+                <div class="col-sm-9">
+                  <input type="number" formControlName="trimester" class="form-control"
+                    [(ngModel)]="item.trimester">
+                </div>
+              </div>
+              <!--div class="form-group row">
+                <label class="col-sm-3 col-form-label">จำนวนครั้งที่เรียน/สัปดาห์</label>
+                <div class="col-sm-9">
+                  <input type="number" formControlName="frequency" class="form-control">
+                </div>
+              </div-->
+              <div class="row">
+                <div class="col-6 text-left">
+                </div>
+                <div class="col-6 text-right">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fa fa-save" aria-hidden="true"></i>
+                    บันทึก
+                  </button>
+                </div>
+              </div>
+            </form>
+            <!--////////////////////////////////////////////////////////////////////-->
+            <!--div *ngIf="item.frequency">
+            <div class="card">
+              <div class="card-header">Timepicker (<b>Default</b>)</div>
+                <div class="card-body">
+                  <ngb-timepicker [(ngModel)]="defaultTime"></ngb-timepicker>
+                    <div class="alert alert-info">
+                      
+                    </div>
+                </div>
+            </div>
+            </div-->
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="c('Close click')">Close</button>
+          </div>
+        </ng-template>
+
+
+            
+
+
   
       </div>
     </div>  
