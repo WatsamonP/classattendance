@@ -1,3 +1,3 @@
 # classattendance
-$ npm install
+$ npm install <br />
 $ npm i pdfmake
