@@ -93,7 +93,9 @@
                           <td>{{student.id}}</td>
                           <td>{{student.name}}</td>
                           <td *ngFor="let atten of student.attendance ; let k = index" style="text-align: center">
-                            <a placement="top" ngbPopover="{{atten.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                            <a placement="top" 
+                              ngbPopover="{{atten.date | date:'medium'}} : {{atten.status}}"
+                              popoverTitle="รายละเอียด">
                             {{atten.score}}</a></td>
                         </tr>
                       </tbody>
