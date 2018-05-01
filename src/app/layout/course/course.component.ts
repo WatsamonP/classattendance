@@ -203,7 +203,7 @@ export class CourseComponent implements OnInit {
       this.studentForm.value.id = csvArray2d[i][1];
       this.studentForm.value.name = csvArray2d[i][2];
       this.studentService.insertStudentCid(this.studentForm.value,cid);
-      if(i = csvArray.length-1)
+      if(i == csvArray.length-1)
         this.toastr.success("Upload Successfully");
     }
   }
