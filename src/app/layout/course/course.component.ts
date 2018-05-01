@@ -25,14 +25,15 @@ import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 })
 export class CourseComponent implements OnInit {
 
-  //Course 
+  //Course
   courseList: Course[];
   courseId;
-  private selectedId: number; 
+  private selectedId: number;
   //Student
   studentForm: FormGroup;
   studentList: Student[];
   IsHidden= true;
+  csvhidden= true;
   //
   //defaultTime = {hour: 23, minute: 0};
   count : 0;
@@ -44,10 +45,11 @@ export class CourseComponent implements OnInit {
   attendanceForm: FormGroup;
   closeResult: string;
   scheduleAttendanceList : any;
+  csv: string;
   constructor(
-    private auth: AuthService, 
-    private courseService: CourseService, 
-    private studentService: StudentService, 
+    private auth: AuthService,
+    private courseService: CourseService,
+    private studentService: StudentService,
     private db: AngularFireDatabase,
     private toastr: ToastrService,
     private route: ActivatedRoute,
@@ -140,11 +142,12 @@ export class CourseComponent implements OnInit {
       year: new FormControl('', []),
       trimester: new FormControl('', []),
       frequency: new FormControl(0, []),
-    }); 
+    });
   }
 
   createStudent(cid : number){
-    this.studentService.insertStudentCid(this.studentForm.value,cid); 
+    this.studentService.insertStudentCid(this.studentForm.value,cid);
+    this.toastr.success("Add Successfully");
   }
 
   onDeleteStudent(id: string) {
@@ -157,6 +160,9 @@ export class CourseComponent implements OnInit {
   ///////////////////////////////////////////////////
   onSwitch(){
     this.IsHidden= !this.IsHidden;
+  }
+  onSwitchcsv(){
+    this.csvhidden= !this.csvhidden;
   }
   ///////////////////////////////////////////////////////////
   openOnEdit(content) {
@@ -177,7 +183,29 @@ export class CourseComponent implements OnInit {
     }
   }
   ///////////////////////////////////////////////////////////////
-
+  onFileSelect(files: FileList){
+  console.log(files);
+  if(files && files.length > 0) {
+     let file : File = files.item(0);
+       let reader: FileReader = new FileReader();
+       reader.readAsText(file);
+       reader.onload = (e) => {
+          this.csv = reader.result;
+          console.log(this.csv);
+       }
+    }
+  }
+  onUploadcsv(cid : number){
+    var csvArray = this.csv.split(/\r?\n/);
+    var csvArray2d = new Array();
+    for (var i = 1; i < csvArray.length; i++){
+      csvArray2d[i] = csvArray[i].split(",");
+      this.studentForm.value.id = csvArray2d[i][1];
+      this.studentForm.value.name = csvArray2d[i][2];
+      this.studentService.insertStudentCid(this.studentForm.value,cid);
+      if(i = csvArray.length-1)
+        this.toastr.success("Upload Successfully");
+    }
+  }
 
 }
-
