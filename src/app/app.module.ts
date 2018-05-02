@@ -19,7 +19,7 @@ import { ToastrModule } from 'ngx-toastr';
 // Service
 import { AuthService } from './shared/services/auth.service';
 import { UserService } from "./shared/services/user/user.service";
-
+import { ExcelService } from "./shared/services/excel/excel.service";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './shared';
@@ -52,7 +52,7 @@ export function createTranslateLoader(http: HttpClient) {
     FormsModule,ReactiveFormsModule,
   ],
   declarations: [AppComponent],
-  providers: [AuthService, AuthGuard, AngularFireDatabase, UserService ],
+  providers: [AuthService, AuthGuard, AngularFireDatabase, UserService, ExcelService ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -20,6 +20,11 @@
                       <i class="fa fa-plus"></i>
                       อัพโหลดรายชื่อ (.csv)
                     </button>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-primary" (click)="exportToExcel()">
+                      <i class="fa fa-file-excel-o"></i>
+                      นำออกข้อมูล
+                    </button>
                   </ul>
                   <form class="form-inline my-2 my-lg-0">
                     <button type="button" class="btn btn-info" (click)="openOnEdit(editCourse)">
@@ -84,7 +89,7 @@
                     <table class="table table-hover table-striped table-bordered">
                       <thead>
                         <tr>
-                          <th style="width:60px; text-align: center">#</th>
+                          <th style="width:70px; text-align: center">#</th>
                           <th style="width:100px; text-align: center">ID</th>
                           <th style="text-align: center">ชื่อ-นามสกุล</th>
 

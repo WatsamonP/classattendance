@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { AuthService } from "../../shared/services/auth.service";
 import { CourseService } from "../../shared/services/course/course.service";
 import { StudentService } from "../../shared/services/student/student.service";
+import { ExcelService } from "../../shared/services/excel/excel.service";
 import { Course } from '../../shared/services/course/course.model';
 import { Student } from '../../shared/services/student/student.model';
 import { Attendance } from '../../shared/services/student/attendance.model';
@@ -54,7 +55,8 @@ export class CourseComponent implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: NgbModal) {
+    private modalService: NgbModal,
+    private excelService: ExcelService) {
   }
 
   ngOnInit() {
@@ -207,5 +209,9 @@ export class CourseComponent implements OnInit {
         this.toastr.success("Upload Successfully");
     }
   }
-
+  // to excel
+  exportToExcel(event) {
+    console.log(this.studentList);
+    this.excelService.exportAsExcelFile( this.studentList , 'studentlist');
+  }
 }
