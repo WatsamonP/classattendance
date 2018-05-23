@@ -148,8 +148,13 @@ export class CourseComponent implements OnInit {
   }
 
   createStudent(cid : number){
-    this.studentService.insertStudentCid(this.studentForm.value,cid);
-    this.toastr.success("Add Successfully");
+    var regex = new RegExp("^[B]\\d{7}$");
+    if(regex.test(this.studentForm.value.id)){
+      this.studentService.insertStudentCid(this.studentForm.value,cid);
+      this.toastr.success("Add Successfully");
+    }else{
+      this.toastr.warning("รูปแบบรหัสนักศึกษาไม่ถูกต้อง");
+    }
   }
 
   onDeleteStudent(id: string) {
@@ -200,13 +205,22 @@ export class CourseComponent implements OnInit {
   onUploadcsv(cid : number){
     var csvArray = this.csv.split(/\r?\n/);
     var csvArray2d = new Array();
-    for (var i = 1; i < csvArray.length; i++){
+    var regex = new RegExp("^[ก-๙]+\\s[ก-๙]+$");
+    for (var i = 1; i < csvArray.length-1; i++){
       csvArray2d[i] = csvArray[i].split(",");
-      this.studentForm.value.id = csvArray2d[i][1];
-      this.studentForm.value.name = csvArray2d[i][2];
-      this.studentService.insertStudentCid(this.studentForm.value,cid);
-      if(i == csvArray.length-1)
-        this.toastr.success("Upload Successfully");
+      //console.log(csvArray2d[i][2]);
+      //console.log(regex.test(csvArray2d[i][2]));
+      if(regex.test(csvArray2d[i][2])){
+        this.studentForm.value.id = csvArray2d[i][1];
+        this.studentForm.value.name = csvArray2d[i][2];
+        this.studentService.insertStudentCid(this.studentForm.value,cid);
+        if(i == csvArray.length-2)
+          this.toastr.success("Upload Successfully");
+      }else{
+        this.toastr.error("Upload Failed : Please upload UTF-8 Format");
+        break;
+      }
+
     }
   }
   // to excel
