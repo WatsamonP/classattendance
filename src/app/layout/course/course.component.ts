@@ -25,7 +25,7 @@ import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
     animations: [routerTransition(), slideInDownAnimation],
 })
 export class CourseComponent implements OnInit {
-
+  isSubmit = null;
   //Course
   courseList: Course[];
   courseId;
@@ -126,12 +126,20 @@ export class CourseComponent implements OnInit {
       this.toastr.success("Deleted Successfully");
     }
   }
-
+  //Validators
+  get id() {
+     return this.studentForm.get('id');
+  }
   // buildForm for Student /////////////////////////////////////////////////////////////
   buildForm(): void {
     this.studentForm = new FormGroup({
-      id: new FormControl('', []),
-      name: new FormControl('', []),
+      id: new FormControl('', [
+        Validators.required,
+        Validators.pattern("^[B]\\d{7}$")
+      ]),
+      name: new FormControl('', [
+        //Validators.required
+      ]),
     });
     //
     this.attendanceForm = new FormGroup({
@@ -148,13 +156,12 @@ export class CourseComponent implements OnInit {
   }
 
   createStudent(cid : number){
-    var regex = new RegExp("^[B]\\d{7}$");
-    if(regex.test(this.studentForm.value.id)){
+    this.isSubmit = true;
+    if (this.studentForm.invalid) {
+        return;
+    }
       this.studentService.insertStudentCid(this.studentForm.value,cid);
       this.toastr.success("Add Successfully");
-    }else{
-      this.toastr.warning("รูปแบบรหัสนักศึกษาไม่ถูกต้อง");
-    }
   }
 
   onDeleteStudent(id: string) {

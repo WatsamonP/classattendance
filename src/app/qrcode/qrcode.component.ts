@@ -15,8 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 export class QrcodeComponent implements OnInit {
   qrcode = "https://chart.googleapis.com/chart?cht=qr&chl=Hello+World&chs=220x220&chld=L|0";
   uForm: FormGroup;
-  content: string;
-
+  isSubmit = null;
   docDefinition = {
     content: [],
     defaultStyle: { alignment: 'justify' },
@@ -29,30 +28,28 @@ export class QrcodeComponent implements OnInit {
   ngOnInit() {
     this.uForm = new FormGroup({
       content: new FormControl('', [
-        //Validators.pattern("^[B]\d{7}$")
-        //Validators.maxLength(25)
+        Validators.required,
+        Validators.pattern("^[B]\\d{7}$")
       ])
     });
   }
+  get content() {
+     return this.uForm.get('content');
+  }
   onGen(){
-    var regex = new RegExp("^[B]\\d{7}$");
-    if(this.uForm.value.content  == null || this.uForm.value.content  == ""){
-      this.toastr.warning("กรุณาป้อนรหัสนักศึกษา");
-    }else{
-      if(regex.test(this.uForm.value.content)){
-        this.qrcode = "https://chart.googleapis.com/chart?cht=qr&chl=" + this.uForm.value.content + "&chs=220x220&chld=L|0";
-        console.log(this.qrcode);
-      }else{
-        this.toastr.warning("รูปแบบรหัสนักศึกษาไม่ถูกต้อง");
-      }
+    this.isSubmit = true;
+    if (this.uForm.invalid) {
+        return;
     }
+    this.qrcode = "https://chart.googleapis.com/chart?cht=qr&chl=" + this.uForm.value.content + "&chs=220x220&chld=L|0";
+    console.log(this.qrcode);
+
   }
   onDownload(){
-    var regex = new RegExp("^[B]\\d{7}$");
-    if(this.uForm.value.content  == null || this.uForm.value.content  == ""){
-      this.toastr.warning("กรุณาป้อนรหัสนักศึกษา");
-    }else{
-      if(regex.test(this.uForm.value.content)){
+    this.isSubmit = true;
+    if (this.uForm.invalid) {
+        return;
+    }
         this.qrcode = "https://chart.googleapis.com/chart?cht=qr&chl=" + this.uForm.value.content + "&chs=220x220&chld=L|0";
         console.log(this.qrcode);
         this.docDefinition.content = [
@@ -82,9 +79,5 @@ export class QrcodeComponent implements OnInit {
         pdfMake.createPdf(this.docDefinition).download('QR_'+this.uForm.value.content+'.pdf');
         //pdfMake.createPdf(this.docDefinition).download();
         this.toastr.success("ดาวน์โหลด "+'QR_'+this.uForm.value.content+'.pdf');
-      }else{
-        this.toastr.warning("รูปแบบรหัสนักศึกษาไม่ถูกต้อง");
-      }
-    }
   }
 }

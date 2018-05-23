@@ -6,8 +6,16 @@
       <div class="form-group row">
         <label class="col-sm-3 col-form-label">รหัสวิชา</label>
         <div class="col-sm-9">
-          <input type="number" formControlName="id" class="form-control"
+          <input type="text" formControlName="id" class="form-control"
             [(ngModel)]="courseService.selectedCourse.id">
+            <div *ngIf="id.errors && isSubmit != null" [ngClass] = "'error'">
+                 <div *ngIf="id.errors.required">
+                      <font size="2" color="red">กรุณาป้อนรหัสวิชา</font>
+                 </div>
+                 <div *ngIf="id.errors.pattern">
+                      <font size="2" color="red">รหัสวิชาไม่ถูกต้อง</font>
+                 </div>
+            </div>
         </div>
       </div>
 
@@ -16,14 +24,27 @@
         <div class="col-sm-9">
           <input type="text" formControlName="name" class="form-control"
             [(ngModel)]="courseService.selectedCourse.name">
+            <div *ngIf="name.errors && isSubmit != null" [ngClass] = "'error'">
+                 <div *ngIf="name.errors.required">
+                      <font size="2" color="red">กรุณาป้อนชื่อวิชา</font>
+                 </div>
+    		    </div>
         </div>
       </div>
 
       <div class="form-group row">
         <label class="col-sm-3 col-form-label">ปีการศึกษา</label>
         <div class="col-sm-9">
-          <input type="number" formControlName="year" class="form-control"
+          <input type="text" formControlName="year" class="form-control"
             [(ngModel)]="courseService.selectedCourse.year">
+            <div *ngIf="year.errors && isSubmit != null" [ngClass] = "'error'">
+                 <div *ngIf="year.errors.required">
+                      <font size="2" color="red">กรุณาป้อนปีการศึกษา</font>
+                 </div>
+    			       <div *ngIf="year.errors.pattern">
+    				          <font size="2" color="red">รูปแบบไม่ถูกต้อง</font>
+    			       </div>
+    		    </div>
         </div>
       </div>
 
@@ -32,6 +53,14 @@
         <div class="col-sm-9">
           <input type="number" formControlName="trimester" class="form-control"
             [(ngModel)]="courseService.selectedCourse.trimester">
+            <div *ngIf="trimester.errors && isSubmit != null" [ngClass] = "'error'">
+                 <div *ngIf="trimester.errors.required">
+                      <font size="2" color="red">กรุณาป้อนเทอม</font>
+                 </div>
+    			       <div *ngIf="trimester.errors.pattern">
+    				          <font size="2" color="red">เทอมไม่ถูกต้อง</font>
+    			       </div>
+    		    </div>
         </div>
       </div>
 

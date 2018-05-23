@@ -106,7 +106,7 @@ export class AuthService {
       })
       .catch((error) => {
         console.log(error);
-        this.toastr.warning(error);
+        this.toastr.warning("email/password ไม่ถูกต้อง");
       });
   }
   resetPassword(email: string) {
@@ -126,8 +126,8 @@ export class AuthService {
     this.afAuth.auth.signOut();
     this.router.navigate(['/login']);
   }
-  
-  
+
+
   private updateUserData(): void {
     const path = `users/${this.currentUserId}/profile`; // Endpoint on firebase
     const userRef: AngularFireObject<any> = this.db.object(path);
@@ -137,5 +137,5 @@ export class AuthService {
     userRef.update(data)
       .catch(error => console.log(error));
   }
-  
+
 }

@@ -52,6 +52,11 @@
             <div class="col-md-5">
               <input type="text" formControlName="id" class="form-control" placeholder="รหัสประจำตัว"
                 [(ngModel)]="studentService.selectedStudent.id">
+                <div *ngIf="id.errors && isSubmit != null" [ngClass] = "'error'">
+        			       <div *ngIf="id.errors.pattern">
+        				             <font size="2" color="red">รหัสนักศึกษาไม่ถูกต้อง</font>
+        			       </div>
+        		    </div>
             </div>
 
             <div class="col-md-5">

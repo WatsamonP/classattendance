@@ -10,7 +10,15 @@
     <br>
       <label class="control-label col-sm-2" for="content">StudentID:</label>
       <div class="col-sm-12">
-        <input type="text" formControlName="content" placeholder="ex.B1234567" pattern="[B]\d{7}">
+        <input type="text" formControlName="content" placeholder="ex.B1234567">
+        <div *ngIf="content.errors && isSubmit != null" [ngClass] = "'error'">
+             <div *ngIf="content.errors.required">
+                  <font size="2" color="red">กรุณาป้อนรหัสนักศึกษา</font>
+             </div>
+			       <div *ngIf="content.errors.pattern">
+				          <font size="2" color="red">รหัสนักศึกษาไม่ถูกต้อง</font>
+			       </div>
+		    </div>
       </div>
       <br>
       <div class="col-sm-offset-2 col-sm-12">
