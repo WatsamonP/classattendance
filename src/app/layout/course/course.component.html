@@ -107,18 +107,24 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let student of studentList ; let j = index;">
+                        <tr *ngFor="let student of studentListArr ; let j = index;">
                           <th scope="row" style="width:60px ;text-align: center">
                             <i class="fa fa-trash-o" (click)="onDeleteStudent(student.key)" ></i>
                             &nbsp; {{j+1}}
                             </th>
-                          <td>{{student.id}}</td>
+
+                          <td>{{student.key}}</td>
                           <td>{{student.name}}</td>
-                          <td *ngFor="let atten of student.attendance ; let k = index" style="text-align: center">
-                            <a placement="top"
-                              ngbPopover="{{atten.date | date:'medium'}} : {{atten.status}}"
-                              popoverTitle="รายละเอียด">
-                            {{atten.score}}</a></td>
+                          <!--td>{{student.attendance['22-05-2018-21-59-12'].date}}</td-->
+                          <td *ngFor="let schedule of scheduleAttendanceList ; let k = index" style="text-align: center">
+                            <div *ngIf="student.attendance != undefined ">
+                            <div *ngIf="student.attendance[schedule.id] != undefined ">
+                              <a placement="top"
+                                ngbPopover="{{student.attendance[schedule.id].date | date:'medium'}} : {{student.attendance[schedule.id].status}}"
+                                popoverTitle="รายละเอียด">
+                                {{student.attendance[schedule.id].score}}</a>
+                            </div></div>
+                          </td>
                         </tr>
                       </tbody>
                     </table>

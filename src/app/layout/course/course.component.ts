@@ -17,12 +17,27 @@ import { Router } from '@angular/router';
 import { slideInDownAnimation } from '../animations';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
+import { toArray } from 'rxjs/operator/toArray';
+import { DYNAMIC_TYPE } from '@angular/compiler/src/output/output_ast';
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({name: 'keyValues'})
+export class KeysPipe implements PipeTransform {
+  transform(value, args:string[]) : any {
+    let keys = [];
+    for (let key in value) {
+      keys.push({key: key, value: value[key]});
+    }
+    return keys;
+  }
+}
 
 @Component({
     selector: 'app-course',
     templateUrl: './course.component.html',
     styleUrls: ['./course.component.scss'],
     animations: [routerTransition(), slideInDownAnimation],
+    
 })
 export class CourseComponent implements OnInit {
   isSubmit = null;
@@ -33,6 +48,7 @@ export class CourseComponent implements OnInit {
   //Student
   studentForm: FormGroup;
   studentList: Student[];
+  studentListArr : any;
   IsHidden= true;
   csvhidden= true;
   //
@@ -47,6 +63,8 @@ export class CourseComponent implements OnInit {
   closeResult: string;
   scheduleAttendanceList : any;
   csv: string;
+  x : any;
+  y : any;
   constructor(
     private auth: AuthService,
     private courseService: CourseService,
@@ -93,8 +111,8 @@ export class CourseComponent implements OnInit {
           }else{
             this.count_hw = items[0].hw.length;
           }
-
           this.studentList = items;
+          this.studentListArr = Object.keys(items).map(key => Object.assign({ key }, items[key]));
             return items.map(item => item.key);
         });
 
@@ -102,7 +120,6 @@ export class CourseComponent implements OnInit {
       this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/attendance`).snapshotChanges().map(actions => {
       return actions.map(action => ({ key: action.key, ...action.payload.val() }));
       }).subscribe(items => {
-        console.log(items);
         this.scheduleAttendanceList = items;
           return items.map(item => item.key);
       });
