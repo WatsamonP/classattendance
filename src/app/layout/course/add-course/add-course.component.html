@@ -35,15 +35,14 @@
       <div class="form-group row">
         <label class="col-sm-3 col-form-label">ปีการศึกษา</label>
         <div class="col-sm-9">
-          <input type="text" formControlName="year" class="form-control"
-            [(ngModel)]="courseService.selectedCourse.year">
+          <select formControlName="year" class="form-control" [ngModel]="courseService.selectedCourse.year">
+              <option>เลือกปีการศึกษา</option>
+              <option *ngFor="let years of yearsList">{{years}}</option>
+          </select>
             <div *ngIf="year.errors && isSubmit != null" [ngClass] = "'error'">
                  <div *ngIf="year.errors.required">
-                      <font size="2" color="red">กรุณาป้อนปีการศึกษา</font>
+                      <font size="2" color="red">กรุณาเลือกปีการศึกษา</font>
                  </div>
-    			       <div *ngIf="year.errors.pattern">
-    				          <font size="2" color="red">รูปแบบไม่ถูกต้อง</font>
-    			       </div>
     		    </div>
         </div>
       </div>
@@ -51,15 +50,14 @@
       <div class="form-group row">
         <label class="col-sm-3 col-form-label">เทอม</label>
         <div class="col-sm-9">
-          <input type="number" formControlName="trimester" class="form-control"
-            [(ngModel)]="courseService.selectedCourse.trimester">
+          <select formControlName="trimester" class="form-control"  [ngModel]="courseService.selectedCourse.trimester" >
+              <option>เลือกเทอม</option>
+              <option *ngFor="let term of terms">{{term}}</option>
+          </select>
             <div *ngIf="trimester.errors && isSubmit != null" [ngClass] = "'error'">
                  <div *ngIf="trimester.errors.required">
-                      <font size="2" color="red">กรุณาป้อนเทอม</font>
+                      <font size="2" color="red">กรุณาเลือกเทอม</font>
                  </div>
-    			       <div *ngIf="trimester.errors.pattern">
-    				          <font size="2" color="red">เทอมไม่ถูกต้อง</font>
-    			       </div>
     		    </div>
         </div>
       </div>

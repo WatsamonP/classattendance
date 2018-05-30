@@ -37,7 +37,7 @@ export class KeysPipe implements PipeTransform {
     templateUrl: './course.component.html',
     styleUrls: ['./course.component.scss'],
     animations: [routerTransition(), slideInDownAnimation],
-    
+
 })
 export class CourseComponent implements OnInit {
   isSubmit = null;
@@ -48,7 +48,7 @@ export class CourseComponent implements OnInit {
   //Student
   studentForm: FormGroup;
   studentList: Student[];
-  studentListArr : any;
+  studentListArr: any;
   IsHidden= true;
   csvhidden= true;
   //
@@ -62,6 +62,8 @@ export class CourseComponent implements OnInit {
   attendanceForm: FormGroup;
   closeResult: string;
   scheduleAttendanceList : any;
+  scheduleQuizList : any;
+  scheduleHomeworkList : any;
   csv: string;
   x : any;
   y : any;
@@ -121,6 +123,22 @@ export class CourseComponent implements OnInit {
       return actions.map(action => ({ key: action.key, ...action.payload.val() }));
       }).subscribe(items => {
         this.scheduleAttendanceList = items;
+          return items.map(item => item.key);
+      });
+
+      //Query Quiz
+      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/quiz`).snapshotChanges().map(actions => {
+      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+      }).subscribe(items => {
+        this.scheduleQuizList = items;
+          return items.map(item => item.key);
+      });
+
+      //Query Homework
+      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/hw`).snapshotChanges().map(actions => {
+      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+      }).subscribe(items => {
+        this.scheduleHomeworkList = items;
           return items.map(item => item.key);
       });
     });
@@ -250,6 +268,7 @@ export class CourseComponent implements OnInit {
   // to excel
   exportToExcel(event) {
     console.log(this.studentList);
+    console.log(this.studentListArr);
     this.excelService.exportAsExcelFile( this.studentList , 'studentlist');
   }
 }

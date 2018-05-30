@@ -98,17 +98,18 @@
                         <tr>
                           <th style="width:70px; text-align: center">#</th>
                           <th style="width:100px; text-align: center">ID</th>
-                          <th style="text-align: center">ชื่อ-นามสกุล</th>
+                          <th style="width:250px; text-align: center">ชื่อ-นามสกุล</th>
 
                           <th *ngFor="let schedule of scheduleAttendanceList ; let k = index" style="width:50px ;text-align: center">
                             <button type="button" class="btn btn-light" placement="top"
                               ngbPopover="{{schedule.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
                               {{k+1}}</button></th>
+                          <th></th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr *ngFor="let student of studentListArr ; let j = index;">
-                          <th scope="row" style="width:60px ;text-align: center">
+                          <th scope="row" style="width:50px ;text-align: center">
                             <i class="fa fa-trash-o" (click)="onDeleteStudent(student.key)" ></i>
                             &nbsp; {{j+1}}
                             </th>
@@ -134,13 +135,81 @@
               <!--///////////////////////////////////////-->
               <ngb-tab title="Quiz">
                 <ng-template ngbTabContent>
+                  <div class="card-body table-responsive">
+                    <table class="table table-hover table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:70px; text-align: center">#</th>
+                          <th style="width:100px; text-align: center">ID</th>
+                          <th style="width:250px; text-align: center">ชื่อ-นามสกุล</th>
 
+                          <th *ngFor="let schedule of scheduleQuizList ; let k = index" style="width:50px ;text-align: center">
+                            <button type="button" class="btn btn-light" placement="top"
+                              ngbPopover="{{schedule.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                              {{k+1}}</button></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let student of studentListArr ; let j = index;">
+                          <th scope="row" style="width:50px ;text-align: center">
+                            <i class="fa fa-trash-o" (click)="onDeleteStudent(student.key)" ></i>
+                            &nbsp; {{j+1}}
+                            </th>
+
+                          <td>{{student.key}}</td>
+                          <td>{{student.name}}</td>
+                          <!--td>{{student.attendance['22-05-2018-21-59-12'].date}}</td-->
+                          <td *ngFor="let schedule of scheduleQuizList ; let k = index" style="text-align: center">
+                            <div *ngIf="student.quiz != undefined ">
+                            <div *ngIf="student.quiz[schedule.id] != undefined ">
+                                {{student.quiz[schedule.id].score}}
+                            </div></div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </ng-template>
               </ngb-tab>
               <!--///////////////////////////////////////-->
-              <ngb-tab title="Homework" [disabled]="true">
+              <ngb-tab title="Homework">
                 <ng-template ngbTabContent>
+                  <div class="card-body table-responsive">
+                    <table class="table table-hover table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width:70px; text-align: center">#</th>
+                          <th style="width:100px; text-align: center">ID</th>
+                          <th style="width:250px; text-align: center">ชื่อ-นามสกุล</th>
 
+                          <th *ngFor="let schedule of scheduleHomeworkList ; let k = index" style="width:50px ;text-align: center">
+                            <button type="button" class="btn btn-light" placement="top"
+                              ngbPopover="{{schedule.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                              {{k+1}}</button></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let student of studentListArr ; let j = index;">
+                          <th scope="row" style="width:50px ;text-align: center">
+                            <i class="fa fa-trash-o" (click)="onDeleteStudent(student.key)" ></i>
+                            &nbsp; {{j+1}}
+                            </th>
+
+                          <td>{{student.key}}</td>
+                          <td>{{student.name}}</td>
+                          <!--td>{{student.attendance['22-05-2018-21-59-12'].date}}</td-->
+                          <td *ngFor="let schedule of scheduleHomeworkList ; let k = index" style="text-align: center">
+                            <div *ngIf="student.hw != undefined ">
+                            <div *ngIf="student.hw[schedule.id] != undefined ">
+                                {{student.hw[schedule.id].score}}
+                            </div></div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </ng-template>
               </ngb-tab>
             </ngb-tabset>

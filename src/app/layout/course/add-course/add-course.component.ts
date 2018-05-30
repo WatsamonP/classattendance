@@ -15,7 +15,9 @@ export class AddCourseComponent implements OnInit {
 
   courseForm: FormGroup;
   isSubmit = null;
-
+  years: any;
+  yearsList: number[] = [];
+  terms: number[] = [1,2,3];
   constructor(
     private auth: AuthService,
     private courseService: CourseService,
@@ -25,6 +27,11 @@ export class AddCourseComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
+    //setyearlist
+    this.years = new Date().getFullYear() + 543;
+    for (var i = 0; i < 5; i++) {
+        this.yearsList.push(this.years-i)
+    };
   }
 
   buildForm(): void {
@@ -37,15 +44,14 @@ export class AddCourseComponent implements OnInit {
         Validators.required,
       ]),
       year: new FormControl('', [
-        Validators.required,
-        Validators.pattern("^\\d{4}$")
+        Validators.required
       ]),
       trimester: new FormControl('', [
-        Validators.required,
-        Validators.pattern("^[123]$")
+        Validators.required
       ])
     });
   }
+
   //Validators
   get id() {
      return this.courseForm.get('id');
@@ -61,7 +67,8 @@ export class AddCourseComponent implements OnInit {
   }
   insertCourse(){
     //this.courseService.setCourseId(this.courseForm.value.id);
-    //console.log(this.courseForm.value);
+    console.log(this.courseForm.value);
+    console.log(this.yearsList);
     this.isSubmit = true;
     if (this.courseForm.invalid) {
         return;
