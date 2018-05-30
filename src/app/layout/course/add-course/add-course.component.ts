@@ -38,7 +38,7 @@ export class AddCourseComponent implements OnInit {
     this.courseForm = new FormGroup({
       id: new FormControl('', [
         Validators.required,
-        Validators.pattern("^\\d{6}$")
+        Validators.pattern("^[1-9]\\d{5}$")
        ]),
       name: new FormControl('', [
         Validators.required,

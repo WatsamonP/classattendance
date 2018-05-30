@@ -39,6 +39,7 @@ export class KeysPipe implements PipeTransform {
     animations: [routerTransition(), slideInDownAnimation],
 
 })
+
 export class CourseComponent implements OnInit {
   isSubmit = null;
   //Course
@@ -145,7 +146,6 @@ export class CourseComponent implements OnInit {
 
     // buildForm for Student /////////////////////////////////////////////////////////////
     this.buildForm();
-
   }
 
   // Button
@@ -267,8 +267,24 @@ export class CourseComponent implements OnInit {
   }
   // to excel
   exportToExcel(event) {
-    console.log(this.studentList);
+    var exA = [];
+    //array to export
+    for(var i=0; i<this.studentList.length; i++){
+      var temp: {
+          id: string,
+          name: string,
+          score: string
+      } = {} as  {id: string, name: string, score: string} ;
+      temp.id = this.studentList[i].id;
+      temp.name = this.studentList[i].name;
+      //for(var j=0; j<this.scheduleAttendanceList.length; j++){
+        temp.score = this.studentList[i].attendance[this.scheduleAttendanceList[0].id].score;
+      //}
+      exA.push(temp);
+    }
     console.log(this.studentListArr);
-    this.excelService.exportAsExcelFile( this.studentList , 'studentlist');
+    console.log(this.scheduleAttendanceList);
+    console.log(exA);
+    //this.excelService.exportAsExcelFile( exA , exA , exA ,'studentlist');
   }
 }

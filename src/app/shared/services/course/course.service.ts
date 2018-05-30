@@ -53,7 +53,8 @@ export class CourseService {
       id: course.id,
       name : course.name,
       year : course.year,
-      trimester : course.trimester
+      trimester : course.trimester,
+      img : 'pic'
     });
   }
 
@@ -62,8 +63,7 @@ export class CourseService {
       id: courseID,
       name : course.name,
       year : course.year,
-      trimester : course.trimester,
-      frequency : course.frequency
+      trimester : course.trimester
     });
   }
 
@@ -72,4 +72,3 @@ export class CourseService {
   }
 
 }
-  

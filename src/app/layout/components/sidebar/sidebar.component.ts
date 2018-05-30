@@ -29,7 +29,7 @@ export class SidebarComponent {
   courseList: Course[];
 
   constructor(
-    private translate: TranslateService, 
+    private translate: TranslateService,
     public router: Router,
     private courseService: CourseService,
     private activatedRoute: ActivatedRoute,
@@ -61,7 +61,7 @@ export class SidebarComponent {
           //this.router.navigated = false;
         }
       });
-  } 
+  }
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
