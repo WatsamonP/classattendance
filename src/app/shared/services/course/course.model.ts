@@ -3,5 +3,5 @@ export class Course {
   name: string;
   year: number;
   trimester: number;
-  frequency : number;
+  percentAtt: number;
 }

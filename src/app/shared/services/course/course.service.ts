@@ -63,7 +63,8 @@ export class CourseService {
       id: courseID,
       name : course.name,
       year : course.year,
-      trimester : course.trimester
+      trimester : course.trimester,
+      percentAtt : course.percentAtt
     });
   }
 

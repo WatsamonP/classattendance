@@ -68,6 +68,16 @@ export class CourseComponent implements OnInit {
   csv: string;
   x : any;
   y : any;
+  percentFlag = false;
+  totalStudentPercent = [];
+  totalMissClass = [];
+  showMissClass = {flag: false, name:"OFF"};
+  showPercentage= {flag: false, name:"OFF"};
+  showGroup= {flag: false, name:"OFF"};
+  scoreCase = {high: 5, med:4, low:2};
+  btn_attendance = [];
+  radioSelected : 1;
+  scheduleAttendanceSortList : any;
   constructor(
     private auth: AuthService,
     private courseService: CourseService,
@@ -86,6 +96,7 @@ export class CourseComponent implements OnInit {
     this.route.paramMap.subscribe((params: ParamMap) => {
       let id = parseInt(params.get('id'));
       this.courseId = id;
+      this.totalStudentPercent = [];
 
       //Query Course
       this.db.list(`users/${this.auth.currentUserId}/course/`).snapshotChanges().map(actions => {
@@ -99,23 +110,9 @@ export class CourseComponent implements OnInit {
       this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/students`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
-          if(items[0].attendance == undefined ){
-            this.count_attendance = 0;
-          }else{
-            this.count_attendance = items[0].attendance.length;
-          }
-          if(items[0].quiz == undefined ){
-            this.count_quiz = 0;
-          }else{
-            this.count_quiz = items[0].quiz.length;
-          }
-          if(items[0].hw == undefined ){
-            this.count_hw = 0;
-          }else{
-            this.count_hw = items[0].hw.length;
-          }
           this.studentList = items;
           this.studentListArr = Object.keys(items).map(key => Object.assign({ key }, items[key]));
+
             return items.map(item => item.key);
         });
 
@@ -124,6 +121,25 @@ export class CourseComponent implements OnInit {
       return actions.map(action => ({ key: action.key, ...action.payload.val() }));
       }).subscribe(items => {
         this.scheduleAttendanceList = items;
+        var count=0;
+        //this.btn_attendance = [{id:5,name:"-5-"},{id:6,name:"-6-"},{id:7,name:"-7-"}];
+        this.btn_attendance =[];
+        for(var i=0 ; i<this.scheduleAttendanceList.length ;i++){
+          if(i>3){
+            this.btn_attendance.push({id:i+1,name: '-'+(i+1)+'-'});
+          }
+        }
+        let sdtLen =  this.scheduleAttendanceList.length;
+        this.scheduleAttendanceSortList = [];
+        var i=0;
+        count=0;
+        for (sdtLen; sdtLen > i; i++) {
+          count++;
+          this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
+          if(count==7){
+            break;
+          }
+        };
           return items.map(item => item.key);
       });
 
@@ -146,7 +162,66 @@ export class CourseComponent implements OnInit {
 
     // buildForm for Student /////////////////////////////////////////////////////////////
     this.buildForm();
+
   }
+
+  radioCheck(id){
+    let sdtLen =  this.scheduleAttendanceList.length;
+    this.scheduleAttendanceSortList = [];
+    var i=0;
+    let count=0
+    for (id ; id > i; i++) {
+      this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
+    };
+  }
+
+  findPercentage(percent : Number){
+    
+    let schedule,score,temp,temp2,fullScore;
+    if(this.scheduleAttendanceList.length==0){
+      console.log('ZERO')
+    }else{
+
+      for(var i=0; i<this.studentListArr.length ; i++){
+        temp = 0;
+        fullScore = 0;
+        for(var j=0; j<this.scheduleAttendanceList.length ; j++){
+          schedule = this.scheduleAttendanceList[j].key;
+          score = this.studentListArr[i].attendance[schedule].score;
+          fullScore = fullScore + Number(this.scheduleAttendanceList[j].onTimeScore);
+          temp = temp + score;
+        }
+        this.totalStudentPercent.push(Number(temp)*Number(percent)/Number(fullScore));
+        this.studentListArr = Object.keys(this.studentListArr)
+        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercent[key]}));
+        
+      }
+    }
+  }
+
+  findMissClassNumber(){
+    let schedule,score,temp,temp2;
+    if(this.scheduleAttendanceList.length==0){
+      console.log('ZERO')
+    }else{
+      for(var i=0; i<this.studentListArr.length ; i++){
+        temp = 0;
+        for(var j=0; j<this.scheduleAttendanceList.length ; j++){
+          schedule = this.scheduleAttendanceList[j].key;
+          if(this.studentListArr[i].attendance[schedule].status == 'Missed Class'){
+            temp = temp + 1;
+          }
+        }
+        this.totalMissClass.push(temp);
+        this.studentListArr = Object.keys(this.studentListArr)
+        .map(key => Object.assign({ key }, this.studentListArr[key], {totalMiss:this.totalMissClass[key]}));
+      }
+    }
+    console.log(this.studentListArr);
+  }
+
+
+
 
   // Button
   onEditCourse(course: Course) {
@@ -175,6 +250,9 @@ export class CourseComponent implements OnInit {
       name: new FormControl('', [
         //Validators.required
       ]),
+      group: new FormControl('', [
+        //Validators.required
+      ]),
     });
     //
     this.attendanceForm = new FormGroup({
@@ -186,7 +264,7 @@ export class CourseComponent implements OnInit {
       name: new FormControl('', []),
       year: new FormControl('', []),
       trimester: new FormControl('', []),
-      frequency: new FormControl(0, []),
+      percentAtt: new FormControl(0, []),
     });
   }
 
@@ -212,6 +290,41 @@ export class CourseComponent implements OnInit {
   }
   onSwitchcsv(){
     this.csvhidden= !this.csvhidden;
+  }
+  onSwitchShowPercent(percent){
+    if(percent != undefined){
+      this.showPercentage.flag= !this.showPercentage.flag;
+      if(this.showPercentage.flag){
+        this.showPercentage.name = "ON";
+        this.totalStudentPercent = [];
+        this.findPercentage(percent);
+      }else{
+        this.showPercentage.name = "OFF";
+        this.totalStudentPercent = [];
+      }
+    }else{
+      alert('แก้ไข Percent การเข้าเรียน');
+    }
+    
+  }
+  onSwitchShowMissClass(){
+    this.showMissClass.flag= !this.showMissClass.flag;
+    if(this.showMissClass.flag){
+      this.showMissClass.name = "ON";
+      this.totalMissClass = [];  
+      this.findMissClassNumber();
+    }else{
+      this.showMissClass.name = "OFF";
+      this.totalMissClass = [];  
+    }
+  }
+  onSwitchShowGroup(){
+    this.showGroup.flag= !this.showGroup.flag;
+    if(this.showGroup.flag){
+      this.showGroup.name = "ON";
+    }else{
+      this.showGroup.name = "OFF";
+    }
   }
   ///////////////////////////////////////////////////////////
   openOnEdit(content) {
@@ -244,6 +357,7 @@ export class CourseComponent implements OnInit {
        }
     }
   }
+
   onUploadcsv(cid : number){
     var csvArray = this.csv.split(/\r?\n/);
     var csvArray2d = new Array();

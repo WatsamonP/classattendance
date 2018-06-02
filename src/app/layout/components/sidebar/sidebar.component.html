@@ -1,23 +1,30 @@
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive}">
   <div class="list-group">
 
-    <div class="nested-menu">
+    <!--div class="nested-menu">
       <a class="list-group-item" (click)="addExpandClass('pages')">
         <span><i class="fa fa-fw fa-dashboard"></i>&nbsp;{{ 'จัดการรายวิชา' | translate }}</span>
-      </a >
+      </a -->
 
-      <li class="nested" [class.expand]="showMenu === 'pages'">
-        <ul class="submenu">
-          <li *ngFor="let item of courseList">
+      <!--li class="nested" [class.expand]="showMenu === 'pages'">
+        <ul class="submenu"-->
+          <!--li *ngFor="let item of courseList">
             <a (click)="setCourseKey(item.key)"
               [routerLink]="['/course', item.id]"
               class="list-group-item"
                >
               <span>{{ item.id }}</span></a>
-          </li>
-        </ul>
-      </li>
-    </div>  
+          </li-->
+        <!--/ul>
+      </li-->
+    <!--/div-->  
+    <div *ngFor="let item of courseList; let i = index">
+      <a (click)="setCourseKey(item.key)"
+        [routerLink]="['/course', item.id]"
+        class="list-group-item"
+      >
+      <span><i class="fa fa-check-square"></i> {{ item.id }}</span></a>
+    </div>
 
     <a routerLink="/add-course" [routerLinkActive]="['router-link-active']" class="list-group-item">
       <i class="fa fa-plus"></i>&nbsp;{{ 'เพิ่มรายวิชา' | translate }}

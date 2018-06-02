@@ -56,6 +56,7 @@ export class StudentService {
       .set({
         id: student.id,
         name : student.name,
+        group : student.group
       });
   }
   // Null Variable
