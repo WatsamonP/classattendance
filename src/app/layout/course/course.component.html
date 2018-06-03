@@ -64,7 +64,7 @@
             </div>
           </div>
         </div>
-    
+
         <div class="col-md-2 text-right">
           <button type="submit" class="btn btn-success">
             <i class="fa fa-save" aria-hidden="true"></i> บันทึก
@@ -73,7 +73,7 @@
       </div>
     </form>
   </div>
-  <!-- CSV Form -->  
+  <!-- CSV Form -->
   <div class="alert alert-warning mb-0" [hidden]="csvhidden">
     <input type="file" (change)="onFileSelect($event.target.files)">
     <button type="submit" class="btn btn-warning text-white" (click)="onUploadcsv(item.id)">
@@ -94,8 +94,8 @@
               <div class="col">
                 <div class="input-group-prepend" style="padding-top: 10px">
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label *ngFor="let slot of btn_attendance" 
-                        class="btn btn-light active" (click)="radioCheck(slot.id)">
+                    <label *ngFor="let slot of btn_attendance"
+                        class="btn btn-light active" (click)="radioCheckA(slot.id)">
                       <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
                         {{slot.name}}
                     </label>
@@ -137,7 +137,7 @@
                     <th *ngIf="showGroup.flag" style="width:50px; text-align: center">กลุ่ม</th>
                     <th *ngIf="showMissClass.flag" style="width:50px; text-align: center">
                       <div class="text-danger" style="font-size: 12px">ขาดเรียน</div>
-                    </th> 
+                    </th>
                     <th *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:50px ;text-align: center">
                       <button type="button" class="btn btn-light" placement="top"
                         ngbPopover="{{schedule.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
@@ -146,7 +146,7 @@
                     </th>
                     <th *ngIf="showPercentage.flag" style="width:50px; text-align: center">
                       <div class="text-primary" style="font-size: 14px">{{item.percentAtt}}%</div>
-                    </th>    
+                    </th>
                     <th class="no-border"></th>
                   </tr>
                 </thead>
@@ -182,7 +182,7 @@
                     </ng-container>
                     <!--/-->
                     <ng-container *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="text-align: center">
-                      <td *ngIf="student.attendance != undefined 
+                      <td *ngIf="student.attendance != undefined
                           && student.attendance[schedule.id] != undefined;
                           then studentScore; else errorData">
                       </td>
@@ -244,14 +244,14 @@
         <!--QuizTab-->
         <ngb-tab title="Quiz">
           <ng-template ngbTabContent>
-
+          
           </ng-template>
         </ngb-tab>
         <!--///////////////////////////////////////-->
         <!--HomeworkTab-->
         <ngb-tab title="Homework">
           <ng-template ngbTabContent>
- 
+
           </ng-template>
         </ngb-tab>
         <!--///////////////////////////////////////-->
@@ -286,7 +286,7 @@
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">เทอม</label>
           <div class="col-sm-9">
-            <input type="number" formControlName="trimester" class="form-control" 
+            <input type="number" formControlName="trimester" class="form-control"
               [(ngModel)]="item.trimester">
           </div>
         </div>
@@ -318,4 +318,3 @@
 </div>
 </div>
 </div>
-

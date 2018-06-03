@@ -65,8 +65,12 @@ export class CourseComponent implements OnInit {
   showGroup= {flag: false, name:"OFF"};
   scoreCase = {high: 5, med:4, low:2};
   btn_attendance = [];
+  btn_quiz = [];
+  btn_hw = [];
   radioSelected : 1;
   scheduleAttendanceSortList : any;
+  scheduleQuizSortList : any;
+  scheduleHomeworkSortList : any;
   groupList : any;
   constructor(
     private auth: AuthService,
@@ -103,7 +107,7 @@ export class CourseComponent implements OnInit {
           }
             return items.map(item => item.key);
         });
-      
+
       // iden Quert ///////////////////////////////////////////
       if(this.groupId != 'all'){
         // For a Group  /////////////////////////////////////////////
@@ -147,14 +151,50 @@ export class CourseComponent implements OnInit {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scheduleQuizList = items;
+          this.btn_attendance =[];
+          for(var i=0 ; i<this.scheduleQuizList.length ;i++){
+            if(i>3){
+              this.btn_quiz.push({id:i+1,name: '-'+(i+1)+'-'});
+            }
+          }
+
+          let sdtLen =  this.scheduleQuizList.length;
+          this.scheduleQuizSortList = [];
+          var i=0;
+          var count=0;
+          for (sdtLen; sdtLen > i; i++) {
+            count++;
+            this.scheduleQuizSortList.push(this.scheduleQuizList[i]);
+            if(count==7){
+              break;
+            }
+          };
             return items.map(item => item.key);
         });
-  
+
         // 3. Query Homwork
         this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/hw`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scheduleHomeworkList = items;
+          this.btn_hw =[];
+          for(var i=0 ; i<this.scheduleHomeworkList.length ;i++){
+            if(i>3){
+              this.btn_hw.push({id:i+1,name: '-'+(i+1)+'-'});
+            }
+          }
+
+          let sdtLen =  this.scheduleHomeworkList.length;
+          this.scheduleHomeworkSortList = [];
+          var i=0;
+          var count=0;
+          for (sdtLen; sdtLen > i; i++) {
+            count++;
+            this.scheduleHomeworkSortList.push(this.scheduleHomeworkList[i]);
+            if(count==7){
+              break;
+            }
+          };
             return items.map(item => item.key);
         });
 
@@ -203,7 +243,7 @@ export class CourseComponent implements OnInit {
           this.scheduleQuizList = items;
             return items.map(item => item.key);
         });
-  
+
         // 3. Query Homwork
         this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/hw`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
@@ -211,7 +251,7 @@ export class CourseComponent implements OnInit {
           this.scheduleHomeworkList = items;
             return items.map(item => item.key);
         });
-      
+
       } //End All Group
     });
 
@@ -219,7 +259,7 @@ export class CourseComponent implements OnInit {
     this.buildForm();
   }
 
-  radioCheck(id){
+  radioCheckA(id){
     let sdtLen =  this.scheduleAttendanceList.length;
     this.scheduleAttendanceSortList = [];
     var i=0;
@@ -228,9 +268,27 @@ export class CourseComponent implements OnInit {
       this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
     };
   }
+  radioCheckQ(id){
+    let sdtLen =  this.scheduleQuizList.length;
+    this.scheduleQuizSortList = [];
+    var i=0;
+    let count=0
+    for (id ; id > i; i++) {
+      this.scheduleQuizSortList.push(this.scheduleQuizList[i]);
+    };
+  }
+  radioCheckH(id){
+    let sdtLen =  this.scheduleHomeworkList.length;
+    this.scheduleHomeworkSortList = [];
+    var i=0;
+    let count=0
+    for (id ; id > i; i++) {
+      this.scheduleHomeworkSortList.push(this.scheduleHomeworkList[i]);
+    };
+  }
 
   findPercentage(percent : Number){
-    
+
     let schedule,score,temp,temp2,fullScore;
     if(this.scheduleAttendanceList.length==0){
       console.log('ZERO')
@@ -248,7 +306,7 @@ export class CourseComponent implements OnInit {
         this.totalStudentPercent.push(Number(temp)*Number(percent)/Number(fullScore));
         this.studentListArr = Object.keys(this.studentListArr)
         .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercent[key]}));
-        
+
       }
     }
   }
@@ -336,7 +394,7 @@ export class CourseComponent implements OnInit {
     }else{
       alert('ไม่มีกลุ่มเรียนนี้');
       // ปล ใส่ Validation ให้หน่อย
-      // หรือ แก้ในหน้า HTML ให้เป็น List 
+      // หรือ แก้ในหน้า HTML ให้เป็น List
     }
   }
 
@@ -368,17 +426,17 @@ export class CourseComponent implements OnInit {
     }else{
       alert('แก้ไข Percent การเข้าเรียน');
     }
-    
+
   }
   onSwitchShowMissClass(){
     this.showMissClass.flag= !this.showMissClass.flag;
     if(this.showMissClass.flag){
       this.showMissClass.name = "ON";
-      this.totalMissClass = [];  
+      this.totalMissClass = [];
       this.findMissClassNumber();
     }else{
       this.showMissClass.name = "OFF";
-      this.totalMissClass = [];  
+      this.totalMissClass = [];
     }
   }
   onSwitchShowGroup(){
@@ -422,9 +480,10 @@ export class CourseComponent implements OnInit {
   }
 
   onUploadcsv(cid : string){
+    console.log(this.studentForm.value)
     var csvArray = this.csv.split(/\r?\n/);
     var csvArray2d = new Array();
-    var regex = new RegExp("^[ก-๙]+\\s[ก-๙]+$");
+    var regex = new RegExp("^[ก-๙a-zA-Z]+\\s[ก-๙a-zA-Z]+$");
     for (var i = 1; i < csvArray.length-1; i++){
       csvArray2d[i] = csvArray[i].split(",");
       //console.log(csvArray2d[i][2]);
@@ -432,6 +491,7 @@ export class CourseComponent implements OnInit {
       if(regex.test(csvArray2d[i][2])){
         this.studentForm.value.id = csvArray2d[i][1];
         this.studentForm.value.name = csvArray2d[i][2];
+        this.studentForm.value.group = csvArray2d[i][4];
         this.studentService.insertStudentCid(this.studentForm.value,cid);
         if(i == csvArray.length-2)
           this.toastr.success("Upload Successfully");
