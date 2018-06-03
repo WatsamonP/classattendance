@@ -53,7 +53,8 @@ export class CourseService {
       name : course.name,
       year : course.year,
       trimester : course.trimester,
-      groupNo : course.group
+      groupNo : course.group,
+      img : 'pic'
     });
 
     if(course.group != 1){
@@ -62,7 +63,6 @@ export class CourseService {
         this.db.object(`users/${this.auth.currentUserId}/course/${course.id}/group/${groupName}`).set({
           id : groupName,
           name : 'Group '+i,
-          img : 'pic'
         });
       }      
     }
@@ -70,7 +70,6 @@ export class CourseService {
   this.db.object(`users/${this.auth.currentUserId}/course/${course.id}/group/all`).set({
     id : 'all',
     name : 'All Group',
-    img : 'pic'
   });
       
     
