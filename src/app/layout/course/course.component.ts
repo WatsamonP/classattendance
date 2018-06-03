@@ -109,7 +109,7 @@ export class CourseComponent implements OnInit {
         });
 
       // iden Quert ///////////////////////////////////////////
-      if(this.groupId != 'all'){
+      //if(this.groupId != 'all'){
         // For a Group  /////////////////////////////////////////////
         this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/students`).snapshotChanges().map(actions => {
           return actions.map(action => ({ key: action.key, ...action.payload.val() }));
@@ -197,7 +197,7 @@ export class CourseComponent implements OnInit {
           };
             return items.map(item => item.key);
         });
-
+      /*
       }else{
         // For All Group  /////////////////////////////////////////////
         //Query Student
@@ -253,7 +253,9 @@ export class CourseComponent implements OnInit {
         });
 
       } //End All Group
+      */
     });
+  
 
     // buildForm for Student /////////////////////////////////////////////////////////////
     this.buildForm();
