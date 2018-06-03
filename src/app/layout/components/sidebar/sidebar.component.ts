@@ -27,6 +27,9 @@ export class SidebarComponent {
   // Course Var
   public selectedId;
   courseList: Course[];
+  courseListArr : any;
+  courseGroup : any;
+  groupList : any;
 
   constructor(
     private translate: TranslateService,
@@ -47,6 +50,8 @@ export class SidebarComponent {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
       }).subscribe(items => {
         this.courseList = items;
+        this.groupList = [];
+ 
         return items.map(item => item.key);
       });
 
@@ -84,10 +89,16 @@ export class SidebarComponent {
   }
 
   addExpandClass(element: any) {
-    if (element === this.showMenu) {
+    if ( element === this.showMenu ) {
       this.showMenu = '0';
     } else {
       this.showMenu = element;
+      for(var i=0; i<this.courseList.length; i++){
+        if(this.courseList[i].id == element.toString()){
+          this.groupList = Object.keys(this.courseList[i].group)
+            .map(key => Object.assign({ key }, this.courseList[i].group[key]));
+        }
+      }
     }
   }
 
@@ -119,9 +130,10 @@ export class SidebarComponent {
     this.courseService.setCourseId(id);
   }
 
-  setCourseKey(key : string){
+  setCourseKey(key : string, group :string){
+
     //this.toastr.success('เลือก'+id);
-    this.courseService.setCourseKey(key);
+    this.courseService.setCourseKey(key, group);
   }
 
 

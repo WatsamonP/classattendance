@@ -1,24 +1,34 @@
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive}">
   <div class="list-group">
 
-    <div class="nested-menu">
-      <a class="list-group-item" (click)="addExpandClass('pages')">
-        <span><i class="fa fa-fw fa-dashboard"></i>&nbsp;{{ 'จัดการรายวิชา' | translate }}</span>
-      </a >
-
-      <li class="nested" [class.expand]="showMenu === 'pages'">
-        <ul class="submenu">
-          <li *ngFor="let item of courseList">
-            <a (click)="setCourseKey(item.key)"
-              [routerLink]="['/course', item.id]"
-              class="list-group-item"
-               >
-              <span>{{ item.id }}</span></a>
-          </li>
-        </ul>
-      </li>
-    </div>  
-
+    <div *ngFor="let item of courseList; let i = index">
+      
+      <div *ngIf="item.groupNo == '1'">
+        <a [routerLink]="['/course', item.id, 'all']" class="list-group-item">
+          <i class="fa fa-plus"></i>&nbsp;{{ item.id }}
+        </a>
+      </div>
+      <div *ngIf="item.groupNo != '1'">
+        <div class="nested-menu">
+          <a class="list-group-item" (click)="addExpandClass(item.id)">
+            <span><i class="fa fa-fw fa-dashboard"></i>&nbsp;{{ item.id }}</span>
+          </a >
+          <li class="nested" [ngClass]="{'expand' : showMenu === item.id }">
+          <li class="nested" [class.expand]="showMenu === item.id"> 
+            <ul class="submenu">
+                <li *ngFor="let g of groupList; let j = index">
+                  <a (click)="setCourseKey(item.key, g.id)"
+                    [routerLink]="['/course', item.id, g.id]"
+                    class="list-group-item"
+                  >
+                  <span>{{g.name}}</span></a>
+                </li>
+          
+            </ul>
+            </li>
+        </div>
+      </div>
+    </div>
     <a routerLink="/add-course" [routerLinkActive]="['router-link-active']" class="list-group-item">
       <i class="fa fa-plus"></i>&nbsp;{{ 'เพิ่มรายวิชา' | translate }}
     </a>

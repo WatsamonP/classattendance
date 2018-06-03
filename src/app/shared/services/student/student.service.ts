@@ -51,11 +51,19 @@ export class StudentService {
   }
   
   // Work ////////////////////////////////////////////////////////////////////////////////
-  insertStudentCid(student : Student, cid : number){
+  insertStudentCid(student : Student, cid : string){
+    this.db.object(`users/${this.auth.currentUserId}/course/${cid}/group/group${student.group}/students/${student.id}`)
+      .set({
+        id: student.id,
+        name : student.name,
+        group : student.group
+      });
+    /////
     this.db.object(`users/${this.auth.currentUserId}/course/${cid}/students/${student.id}`)
       .set({
         id: student.id,
         name : student.name,
+        group : student.group
       });
   }
   // Null Variable

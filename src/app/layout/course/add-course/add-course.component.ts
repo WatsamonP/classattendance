@@ -48,7 +48,10 @@ export class AddCourseComponent implements OnInit {
       ]),
       trimester: new FormControl('', [
         Validators.required
-      ])
+      ]),
+      group: new FormControl('', [
+        Validators.required
+      ]),
     });
   }
 
@@ -65,6 +68,9 @@ export class AddCourseComponent implements OnInit {
   get trimester() {
      return this.courseForm.get('trimester');
   }
+  get group() {
+    return this.courseForm.get('group');
+ }
   insertCourse(){
     //this.courseService.setCourseId(this.courseForm.value.id);
     console.log(this.courseForm.value);
