@@ -268,23 +268,175 @@ export class CourseComponent implements OnInit {
   // to excel
   exportToExcel(event) {
     var exA = [];
-    //array to export
-    for(var i=0; i<this.studentList.length; i++){
-      var temp: {
+    var exQ = [];
+    var exH = [];
+    if(this.scheduleAttendanceList.length > 0)
+      for(var i=0; i<this.studentListArr.length; i++){
+        var temp: {
           id: string,
           name: string,
-          score: string
-      } = {} as  {id: string, name: string, score: string} ;
-      temp.id = this.studentList[i].id;
-      temp.name = this.studentList[i].name;
-      //for(var j=0; j<this.scheduleAttendanceList.length; j++){
-        temp.score = this.studentList[i].attendance[this.scheduleAttendanceList[0].id].score;
-      //}
-      exA.push(temp);
-    }
-    console.log(this.studentListArr);
-    console.log(this.scheduleAttendanceList);
+          att1: string, att2: string, att3: string, att4: string, att5: string,
+          att6: string, att7: string, att8: string, att9: string, att10: string,
+          att11: string, att12: string, att13: string, att14: string, att15: string,
+          att16: string, att17: string, att18: string, att19: string, att20: string,
+          att21: string, att22: string, att23: string, att24: string, att25: string,
+          att26: string, att27: string, att28: string, att29: string, att30: string
+        } = {} as {id: string, name: string, att1: string,att2: string,att3: string, att4: string, att5: string,att6: string, att7: string,
+          att8: string, att9: string, att10: string,att11: string, att12: string, att13: string, att14: string, att15: string,att16: string,
+          att17: string, att18: string, att19: string, att20: string,att21: string, att22: string, att23: string, att24: string, att25: string,
+          att26: string, att27: string, att28: string, att29: string, att30: string};
+        temp.id = this.studentListArr[i].id;
+        temp.name = this.studentListArr[i].name;
+        temp.att1 = this.studentListArr[i].attendance[this.scheduleAttendanceList[0].id].score;
+        if(this.scheduleAttendanceList.length <= 1){ exA.push(temp); continue; }
+        temp.att2 = this.studentListArr[i].attendance[this.scheduleAttendanceList[1].id].score;
+        if(this.scheduleAttendanceList.length <= 2){ exA.push(temp); continue; }
+        temp.att3 = this.studentListArr[i].attendance[this.scheduleAttendanceList[2].id].score;
+        if(this.scheduleAttendanceList.length <= 3){ exA.push(temp); continue; }
+        temp.att4 = this.studentListArr[i].attendance[this.scheduleAttendanceList[3].id].score;
+        if(this.scheduleAttendanceList.length <= 4){ exA.push(temp); continue; }
+        temp.att5 = this.studentListArr[i].attendance[this.scheduleAttendanceList[4].id].score;
+        if(this.scheduleAttendanceList.length <= 5){ exA.push(temp); continue; }
+        temp.att6 = this.studentListArr[i].attendance[this.scheduleAttendanceList[5].id].score;
+        if(this.scheduleAttendanceList.length <= 6){ exA.push(temp); continue; }
+        temp.att7 = this.studentListArr[i].attendance[this.scheduleAttendanceList[6].id].score;
+        if(this.scheduleAttendanceList.length <= 7){ exA.push(temp); continue; }
+        temp.att8 = this.studentListArr[i].attendance[this.scheduleAttendanceList[7].id].score;
+        if(this.scheduleAttendanceList.length <= 8){ exA.push(temp); continue; }
+        temp.att9 = this.studentListArr[i].attendance[this.scheduleAttendanceList[8].id].score;
+        if(this.scheduleAttendanceList.length <= 9){ exA.push(temp); continue; }
+        temp.att10 = this.studentListArr[i].attendance[this.scheduleAttendanceList[9].id].score;
+        if(this.scheduleAttendanceList.length <= 10){ exA.push(temp); continue; }
+        temp.att11 = this.studentListArr[i].attendance[this.scheduleAttendanceList[10].id].score;
+        if(this.scheduleAttendanceList.length <= 11){ exA.push(temp); continue; }
+        temp.att12 = this.studentListArr[i].attendance[this.scheduleAttendanceList[11].id].score;
+        if(this.scheduleAttendanceList.length <= 12){ exA.push(temp); continue; }
+        temp.att13 = this.studentListArr[i].attendance[this.scheduleAttendanceList[12].id].score;
+        if(this.scheduleAttendanceList.length <= 13){ exA.push(temp); continue; }
+        temp.att14 = this.studentListArr[i].attendance[this.scheduleAttendanceList[13].id].score;
+        if(this.scheduleAttendanceList.length <= 14){ exA.push(temp); continue; }
+        temp.att15 = this.studentListArr[i].attendance[this.scheduleAttendanceList[14].id].score;
+        if(this.scheduleAttendanceList.length <= 15){ exA.push(temp); continue; }
+        temp.att16 = this.studentListArr[i].attendance[this.scheduleAttendanceList[15].id].score;
+        if(this.scheduleAttendanceList.length <= 16){ exA.push(temp); continue; }
+        temp.att17 = this.studentListArr[i].attendance[this.scheduleAttendanceList[16].id].score;
+        if(this.scheduleAttendanceList.length <= 17){ exA.push(temp); continue; }
+        temp.att18 = this.studentListArr[i].attendance[this.scheduleAttendanceList[17].id].score;
+        if(this.scheduleAttendanceList.length <= 18){ exA.push(temp); continue; }
+        temp.att19 = this.studentListArr[i].attendance[this.scheduleAttendanceList[18].id].score;
+        if(this.scheduleAttendanceList.length <= 19){ exA.push(temp); continue; }
+        temp.att20 = this.studentListArr[i].attendance[this.scheduleAttendanceList[19].id].score;
+        if(this.scheduleAttendanceList.length <= 20){ exA.push(temp); continue; }
+        temp.att21 = this.studentListArr[i].attendance[this.scheduleAttendanceList[20].id].score;
+        if(this.scheduleAttendanceList.length <= 21){ exA.push(temp); continue; }
+        temp.att22 = this.studentListArr[i].attendance[this.scheduleAttendanceList[21].id].score;
+        if(this.scheduleAttendanceList.length <= 22){ exA.push(temp); continue; }
+        temp.att23 = this.studentListArr[i].attendance[this.scheduleAttendanceList[22].id].score;
+        if(this.scheduleAttendanceList.length <= 23){ exA.push(temp); continue; }
+        temp.att24 = this.studentListArr[i].attendance[this.scheduleAttendanceList[23].id].score;
+        if(this.scheduleAttendanceList.length <= 24){ exA.push(temp); continue; }
+        temp.att25 = this.studentListArr[i].attendance[this.scheduleAttendanceList[24].id].score;
+        if(this.scheduleAttendanceList.length <= 25){ exA.push(temp); continue; }
+        temp.att26 = this.studentListArr[i].attendance[this.scheduleAttendanceList[25].id].score;
+        if(this.scheduleAttendanceList.length <= 26){ exA.push(temp); continue; }
+        temp.att27 = this.studentListArr[i].attendance[this.scheduleAttendanceList[26].id].score;
+        if(this.scheduleAttendanceList.length <= 27){ exA.push(temp); continue; }
+        temp.att28 = this.studentListArr[i].attendance[this.scheduleAttendanceList[27].id].score;
+        if(this.scheduleAttendanceList.length <= 28){ exA.push(temp); continue; }
+        temp.att29 = this.studentListArr[i].attendance[this.scheduleAttendanceList[28].id].score;
+        if(this.scheduleAttendanceList.length <= 29){ exA.push(temp); continue; }
+        temp.att30 = this.studentListArr[i].attendance[this.scheduleAttendanceList[29].id].score;
+      };
+
+    if(this.scheduleQuizList.length > 0)
+      for(var i=0; i<this.studentListArr.length; i++){
+        var temp2: {
+          id: string,
+          name: string,
+          quiz1: string, quiz2: string, quiz3: string, quiz4: string, quiz5: string,
+          quiz6: string, quiz7: string, quiz8: string, quiz9: string, quiz10: string,
+          quiz11: string, quiz12: string, quiz13: string, quiz14: string, quiz15: string
+          } = {} as {id: string, name: string, quiz1: string,quiz2: string,quiz3: string, quiz4: string, quiz5: string,quiz6: string, quiz7: string,
+              quiz8: string, quiz9: string, quiz10: string,quiz11: string, quiz12: string, quiz13: string, quiz14: string, quiz15: string };
+          temp2.id = this.studentListArr[i].id;
+          temp2.name = this.studentListArr[i].name;
+          temp2.quiz1 = this.studentListArr[i].quiz[this.scheduleQuizList[0].id].score;
+          if(this.scheduleQuizList.length <= 1){ exQ.push(temp2); continue; }
+          temp2.quiz2 = this.studentListArr[i].quiz[this.scheduleQuizList[1].id].score;
+          if(this.scheduleQuizList.length <= 2){ exQ.push(temp2); continue; }
+          temp2.quiz3 = this.studentListArr[i].quiz[this.scheduleQuizList[2].id].score;
+          if(this.scheduleQuizList.length <= 3){ exQ.push(temp2); continue; }
+          temp2.quiz4 = this.studentListArr[i].quiz[this.scheduleQuizList[3].id].score;
+          if(this.scheduleQuizList.length <= 4){ exQ.push(temp2); continue; }
+          temp2.quiz5 = this.studentListArr[i].quiz[this.scheduleQuizList[4].id].score;
+          if(this.scheduleQuizList.length <= 5){ exQ.push(temp2); continue; }
+          temp2.quiz6 = this.studentListArr[i].quiz[this.scheduleQuizList[5].id].score;
+          if(this.scheduleQuizList.length <= 6){ exQ.push(temp2); continue; }
+          temp2.quiz7 = this.studentListArr[i].quiz[this.scheduleQuizList[6].id].score;
+          if(this.scheduleQuizList.length <= 7){ exQ.push(temp2); continue; }
+          temp2.quiz8 = this.studentListArr[i].quiz[this.scheduleQuizList[7].id].score;
+          if(this.scheduleQuizList.length <= 8){ exQ.push(temp2); continue; }
+          temp2.quiz9 = this.studentListArr[i].quiz[this.scheduleQuizList[8].id].score;
+          if(this.scheduleQuizList.length <= 9){ exQ.push(temp2); continue; }
+          temp2.quiz10 = this.studentListArr[i].quiz[this.scheduleQuizList[9].id].score;
+          if(this.scheduleQuizList.length <= 10){ exQ.push(temp2); continue; }
+          temp2.quiz11 = this.studentListArr[i].quiz[this.scheduleQuizList[10].id].score;
+          if(this.scheduleQuizList.length <= 11){ exQ.push(temp2); continue; }
+          temp2.quiz12 = this.studentListArr[i].quiz[this.scheduleQuizList[11].id].score;
+          if(this.scheduleQuizList.length <= 12){ exQ.push(temp2); continue; }
+          temp2.quiz13 = this.studentListArr[i].quiz[this.scheduleQuizList[12].id].score;
+          if(this.scheduleQuizList.length <= 13){ exQ.push(temp2); continue; }
+          temp2.quiz14 = this.studentListArr[i].quiz[this.scheduleQuizList[13].id].score;
+          if(this.scheduleQuizList.length <= 14){ exQ.push(temp2); continue; }
+          temp2.quiz15 = this.studentListArr[i].quiz[this.scheduleQuizList[14].id].score;
+      };
+
+    if(this.scheduleHomeworkList.length > 0)
+        for(var i=0; i<this.studentListArr.length; i++){
+          var temp3: {
+            id: string,
+            name: string,
+            hw1: string, hw2: string, hw3: string, hw4: string, hw5: string,
+            hw6: string, hw7: string, hw8: string, hw9: string, hw10: string,
+            hw11: string, hw12: string, hw13: string, hw14: string, hw15: string
+          } = {} as {id: string, name: string, hw1: string,hw2: string,hw3: string, hw4: string, hw5: string,hw6: string, hw7: string,
+            hw8: string, hw9: string, hw10: string,hw11: string, hw12: string, hw13: string, hw14: string, hw15: string };
+          temp3.id = this.studentListArr[i].id;
+          temp3.name = this.studentListArr[i].name;
+          temp3.hw1 = this.studentListArr[i].hw[this.scheduleHomeworkList[0].id].score;
+          if(this.scheduleHomeworkList.length <= 1){ exH.push(temp3); continue; }
+          temp3.hw2 = this.studentListArr[i].hw[this.scheduleHomeworkList[1].id].score;
+          if(this.scheduleHomeworkList.length <= 2){ exH.push(temp3); continue; }
+          temp3.hw3 = this.studentListArr[i].hw[this.scheduleHomeworkList[2].id].score;
+          if(this.scheduleHomeworkList.length <= 3){ exH.push(temp3); continue; }
+          temp3.hw4 = this.studentListArr[i].hw[this.scheduleHomeworkList[3].id].score;
+          if(this.scheduleHomeworkList.length <= 4){ exH.push(temp3); continue; }
+          temp3.hw5 = this.studentListArr[i].hw[this.scheduleHomeworkList[4].id].score;
+          if(this.scheduleHomeworkList.length <= 5){ exH.push(temp3); continue; }
+          temp3.hw6 = this.studentListArr[i].hw[this.scheduleHomeworkList[5].id].score;
+          if(this.scheduleHomeworkList.length <= 6){ exH.push(temp3); continue; }
+          temp3.hw7 = this.studentListArr[i].hw[this.scheduleHomeworkList[6].id].score;
+          if(this.scheduleHomeworkList.length <= 7){ exH.push(temp3); continue; }
+          temp3.hw8 = this.studentListArr[i].hw[this.scheduleHomeworkList[7].id].score;
+          if(this.scheduleHomeworkList.length <= 8){ exH.push(temp3); continue; }
+          temp3.hw9 = this.studentListArr[i].hw[this.scheduleHomeworkList[8].id].score;
+          if(this.scheduleHomeworkList.length <= 9){ exH.push(temp3); continue; }
+          temp3.hw10 = this.studentListArr[i].hw[this.scheduleHomeworkList[9].id].score;
+          if(this.scheduleHomeworkList.length <= 10){ exH.push(temp3); continue; }
+          temp3.hw11 = this.studentListArr[i].hw[this.scheduleHomeworkList[10].id].score;
+          if(this.scheduleHomeworkList.length <= 11){ exH.push(temp3); continue; }
+          temp3.hw12 = this.studentListArr[i].hw[this.scheduleHomeworkList[11].id].score;
+          if(this.scheduleHomeworkList.length <= 12){ exH.push(temp3); continue; }
+          temp3.hw13 = this.studentListArr[i].hw[this.scheduleHomeworkList[12].id].score;
+          if(this.scheduleHomeworkList.length <= 13){ exH.push(temp3); continue; }
+          temp3.hw14 = this.studentListArr[i].hw[this.scheduleHomeworkList[13].id].score;
+          if(this.scheduleHomeworkList.length <= 14){ exH.push(temp3); continue; }
+          temp3.hw15 = this.studentListArr[i].hw[this.scheduleHomeworkList[14].id].score;
+      };
+      console.log(this.studentListArr);
     console.log(exA);
-    //this.excelService.exportAsExcelFile( exA , exA , exA ,'studentlist');
+    console.log(exQ);
+    console.log(exH);
+    this.excelService.exportAsExcelFile( exA , exQ , exH ,'studentlist');
   }
 }
