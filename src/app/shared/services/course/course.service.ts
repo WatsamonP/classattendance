@@ -56,7 +56,7 @@ export class CourseService {
       groupNo : course.group
     });
 
-    
+    if(course.group != 1){
       for(var i=1 ; i<=course.group ;i++){
         let groupName='group'+i;
         this.db.object(`users/${this.auth.currentUserId}/course/${course.id}/group/${groupName}`).set({
@@ -64,13 +64,15 @@ export class CourseService {
           name : 'Group '+i,
           img : 'pic'
         });
-      }
-  
-      this.db.object(`users/${this.auth.currentUserId}/course/${course.id}/group/all`).set({
-        id : 'all',
-        name : 'All Group',
-        img : 'pic'
-      });
+      }      
+    }
+      
+  this.db.object(`users/${this.auth.currentUserId}/course/${course.id}/group/all`).set({
+    id : 'all',
+    name : 'All Group',
+    img : 'pic'
+  });
+      
     
   }
 
