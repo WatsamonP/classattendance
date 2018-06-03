@@ -17,6 +17,7 @@ export class CourseService {
   courseObject: AngularFireObject<any>;
   selectedCourseId : number;
   selectedCourseKey : string;
+  selectedGroup : string;
 
   constructor(
     private db: AngularFireDatabase,
@@ -40,11 +41,9 @@ export class CourseService {
     //console.log(this.selectedCourseId);
     return this.selectedCourseId;
   }
-  setCourseKey(key : string){
+  setCourseKey(key : string, group : string){
     this.selectedCourseKey = key;
-  }
-  getCourseKey(){
-    return this.selectedCourseKey;
+    this.selectedGroup = group;
   }
 
   // INSERT UPDATE DELETE
@@ -54,8 +53,25 @@ export class CourseService {
       name : course.name,
       year : course.year,
       trimester : course.trimester,
-      img : 'pic'
+      groupNo : course.group
     });
+
+    
+      for(var i=1 ; i<=course.group ;i++){
+        let groupName='group'+i;
+        this.db.object(`users/${this.auth.currentUserId}/course/${course.id}/group/${groupName}`).set({
+          id : groupName,
+          name : 'Group '+i,
+          img : 'pic'
+        });
+      }
+  
+      this.db.object(`users/${this.auth.currentUserId}/course/${course.id}/group/all`).set({
+        id : 'all',
+        name : 'All Group',
+        img : 'pic'
+      });
+    
   }
 
   updateCourse(course : Course, courseID : number){

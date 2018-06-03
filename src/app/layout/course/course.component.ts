@@ -21,23 +21,11 @@ import { toArray } from 'rxjs/operator/toArray';
 import { DYNAMIC_TYPE } from '@angular/compiler/src/output/output_ast';
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({name: 'keyValues'})
-export class KeysPipe implements PipeTransform {
-  transform(value, args:string[]) : any {
-    let keys = [];
-    for (let key in value) {
-      keys.push({key: key, value: value[key]});
-    }
-    return keys;
-  }
-}
-
 @Component({
     selector: 'app-course',
     templateUrl: './course.component.html',
     styleUrls: ['./course.component.scss'],
     animations: [routerTransition(), slideInDownAnimation],
-
 })
 
 export class CourseComponent implements OnInit {
@@ -45,6 +33,7 @@ export class CourseComponent implements OnInit {
   //Course
   courseList: Course[];
   courseId;
+  groupId;
   private selectedId: number;
   //Student
   studentForm: FormGroup;
@@ -78,6 +67,7 @@ export class CourseComponent implements OnInit {
   btn_attendance = [];
   radioSelected : 1;
   scheduleAttendanceSortList : any;
+  groupList : any;
   constructor(
     private auth: AuthService,
     private courseService: CourseService,
@@ -95,7 +85,9 @@ export class CourseComponent implements OnInit {
     //let id = parseInt(this.route.snapshot.paramMap.get('id'));
     this.route.paramMap.subscribe((params: ParamMap) => {
       let id = parseInt(params.get('id'));
+      let group = params.get('group').toString();
       this.courseId = id;
+      this.groupId = group;
       this.totalStudentPercent = [];
 
       //Query Course
@@ -103,66 +95,128 @@ export class CourseComponent implements OnInit {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.courseList = items;
+          for(var i=0; i<this.courseList.length; i++){
+            if(this.courseList[i].id == this.courseId ){
+              this.groupList = Object.keys(this.courseList[i].group)
+                .map(key => Object.assign({ key }, this.courseList[i].group[key]));
+            }
+          }
             return items.map(item => item.key);
         });
-
-      //Query Student
-      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/students`).snapshotChanges().map(actions => {
-        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-        }).subscribe(items => {
+      
+      // iden Quert ///////////////////////////////////////////
+      if(this.groupId != 'all'){
+        // For a Group  /////////////////////////////////////////////
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/students`).snapshotChanges().map(actions => {
+          return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+          }).subscribe(items => {
           this.studentList = items;
           this.studentListArr = Object.keys(items).map(key => Object.assign({ key }, items[key]));
 
             return items.map(item => item.key);
         });
 
-      //Query Course
-      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/attendance`).snapshotChanges().map(actions => {
-      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-      }).subscribe(items => {
-        this.scheduleAttendanceList = items;
-        var count=0;
-        //this.btn_attendance = [{id:5,name:"-5-"},{id:6,name:"-6-"},{id:7,name:"-7-"}];
-        this.btn_attendance =[];
-        for(var i=0 ; i<this.scheduleAttendanceList.length ;i++){
-          if(i>3){
-            this.btn_attendance.push({id:i+1,name: '-'+(i+1)+'-'});
-          }
-        }
-        let sdtLen =  this.scheduleAttendanceList.length;
-        this.scheduleAttendanceSortList = [];
-        var i=0;
-        count=0;
-        for (sdtLen; sdtLen > i; i++) {
-          count++;
-          this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
-          if(count==7){
-            break;
-          }
-        };
-          return items.map(item => item.key);
-      });
+        // 1. Query scheduleAttendanceList
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/attendance`).snapshotChanges().map(actions => {
+          return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+          }).subscribe(items => {
+            this.scheduleAttendanceList = items;
+            this.btn_attendance =[];
+            for(var i=0 ; i<this.scheduleAttendanceList.length ;i++){
+              if(i>3){
+                this.btn_attendance.push({id:i+1,name: '-'+(i+1)+'-'});
+              }
+            }
 
-      //Query Quiz
-      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/quiz`).snapshotChanges().map(actions => {
-      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-      }).subscribe(items => {
-        this.scheduleQuizList = items;
-          return items.map(item => item.key);
-      });
+            let sdtLen =  this.scheduleAttendanceList.length;
+            this.scheduleAttendanceSortList = [];
+            var i=0;
+            var count=0;
+            for (sdtLen; sdtLen > i; i++) {
+              count++;
+              this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
+              if(count==7){
+                break;
+              }
+            };
+            return items.map(item => item.key);
+        });
 
-      //Query Homework
-      this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/hw`).snapshotChanges().map(actions => {
-      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-      }).subscribe(items => {
-        this.scheduleHomeworkList = items;
-          return items.map(item => item.key);
-      });
+        // 2. Query Quiz
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/quiz`).snapshotChanges().map(actions => {
+        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+        }).subscribe(items => {
+          this.scheduleQuizList = items;
+            return items.map(item => item.key);
+        });
+  
+        // 3. Query Homwork
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/hw`).snapshotChanges().map(actions => {
+        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+        }).subscribe(items => {
+          this.scheduleHomeworkList = items;
+            return items.map(item => item.key);
+        });
+
+      }else{
+        // For All Group  /////////////////////////////////////////////
+        //Query Student
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/students`).snapshotChanges().map(actions => {
+          return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+          }).subscribe(items => {
+          this.studentList = items;
+          this.studentListArr = Object.keys(items).map(key => Object.assign({ key }, items[key]));
+
+            return items.map(item => item.key);
+        });
+
+        // 1. Query scheduleAttendanceList
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/attendance`).snapshotChanges().map(actions => {
+          return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+          }).subscribe(items => {
+            this.scheduleAttendanceList = items;
+            this.btn_attendance =[];
+            for(var i=0 ; i<this.scheduleAttendanceList.length ;i++){
+              if(i>3){
+                this.btn_attendance.push({id:i+1,name: '-'+(i+1)+'-'});
+              }
+            }
+
+            let sdtLen =  this.scheduleAttendanceList.length;
+            this.scheduleAttendanceSortList = [];
+            var i=0;
+            var count=0;
+            for (sdtLen; sdtLen > i; i++) {
+              count++;
+              this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
+              if(count==7){
+                break;
+              }
+            };
+            return items.map(item => item.key);
+        });
+
+        // 2. Query Quiz
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/quiz`).snapshotChanges().map(actions => {
+        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+        }).subscribe(items => {
+          this.scheduleQuizList = items;
+            return items.map(item => item.key);
+        });
+  
+        // 3. Query Homwork
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/hw`).snapshotChanges().map(actions => {
+        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+        }).subscribe(items => {
+          this.scheduleHomeworkList = items;
+            return items.map(item => item.key);
+        });
+      
+      } //End All Group
     });
 
     // buildForm for Student /////////////////////////////////////////////////////////////
     this.buildForm();
-
   }
 
   radioCheck(id){
@@ -240,6 +294,9 @@ export class CourseComponent implements OnInit {
   get id() {
      return this.studentForm.get('id');
   }
+  get group() {
+    return this.studentForm.get('group');
+  }
   // buildForm for Student /////////////////////////////////////////////////////////////
   buildForm(): void {
     this.studentForm = new FormGroup({
@@ -268,13 +325,19 @@ export class CourseComponent implements OnInit {
     });
   }
 
-  createStudent(cid : number){
+  createStudent(cid : string, course){
     this.isSubmit = true;
     if (this.studentForm.invalid) {
         return;
     }
+    if(this.studentForm.value.group <= course.groupNo){
       this.studentService.insertStudentCid(this.studentForm.value,cid);
       this.toastr.success("Add Successfully");
+    }else{
+      alert('ไม่มีกลุ่มเรียนนี้');
+      // ปล ใส่ Validation ให้หน่อย
+      // หรือ แก้ในหน้า HTML ให้เป็น List 
+    }
   }
 
   onDeleteStudent(id: string) {
@@ -358,7 +421,7 @@ export class CourseComponent implements OnInit {
     }
   }
 
-  onUploadcsv(cid : number){
+  onUploadcsv(cid : string){
     var csvArray = this.csv.split(/\r?\n/);
     var csvArray2d = new Array();
     var regex = new RegExp("^[ก-๙]+\\s[ก-๙]+$");

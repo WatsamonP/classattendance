@@ -4,4 +4,5 @@ export class Course {
   year: number;
   trimester: number;
   percentAtt: number;
+  group : any;
 }
