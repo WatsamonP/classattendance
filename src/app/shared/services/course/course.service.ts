@@ -64,15 +64,15 @@ export class CourseService {
           id : groupName,
           name : 'Group '+i,
         });
-      }      
+      }
     }
-      
+
   this.db.object(`users/${this.auth.currentUserId}/course/${course.id}/group/all`).set({
     id : 'all',
     name : 'All Group',
   });
-      
-    
+
+
   }
 
   updateCourse(course : Course, courseID : number){
@@ -81,7 +81,9 @@ export class CourseService {
       name : course.name,
       year : course.year,
       trimester : course.trimester,
-      percentAtt : course.percentAtt
+      percentAtt : course.percentAtt,
+      percentQuiz : course.percentQuiz,
+      percentHw : course.percentHw
     });
   }
 

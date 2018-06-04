@@ -72,6 +72,9 @@ export class CourseComponent implements OnInit {
   scheduleQuizSortList : any;
   scheduleHomeworkSortList : any;
   groupList : any;
+  years: any;
+  yearsList: number[] = [];
+  terms: number[] = [1,2,3];
   constructor(
     private auth: AuthService,
     private courseService: CourseService,
@@ -116,7 +119,7 @@ export class CourseComponent implements OnInit {
           return actions.map(action => ({ key: action.key, ...action.payload.val() }));
           }).subscribe(items => {
           this.studentList = items;
-          
+
           let temp = [];
           for(var i=0; i<this.studentList.length ;i++){
             console.log(this.studentList[i].group + ' HH' + this.groupId);
@@ -207,7 +210,7 @@ export class CourseComponent implements OnInit {
           };
             return items.map(item => item.key);
         });
-      
+
       }else{
         // For All Group  /////////////////////////////////////////////
         //Query Student
@@ -265,10 +268,15 @@ export class CourseComponent implements OnInit {
       } //End All Group
 
     });
-  
+
 
     // buildForm for Student /////////////////////////////////////////////////////////////
     this.buildForm();
+    //setyearlist
+    this.years = new Date().getFullYear() + 543;
+    for (var i = 0; i < 5; i++) {
+        this.yearsList.push(this.years-i)
+    };
   }
 
   radioCheckA(id){
@@ -349,6 +357,7 @@ export class CourseComponent implements OnInit {
 
   // Button
   onEditCourse(course: Course) {
+    console.log(this.editCourseForm.value)
     this.courseService.updateCourse(this.editCourseForm.value,this.courseId);
     this.toastr.success("แก้ไข"+this.courseId
       +" : "+ this.editCourseForm.value.name+" สำเร็จ");
@@ -392,6 +401,8 @@ export class CourseComponent implements OnInit {
       year: new FormControl('', []),
       trimester: new FormControl('', []),
       percentAtt: new FormControl(0, []),
+      percentQuiz: new FormControl(0, []),
+      percentHw: new FormControl(0, []),
     });
   }
 
