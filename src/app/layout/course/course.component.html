@@ -231,9 +231,14 @@
                     <td *ngIf="showGroup.flag"></td>
                     <td *ngIf="showMissClass.flag"></td>
                     <td *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:50px ;text-align: center">
-                      {{schedule.countOnTime + schedule.countLate}}</td>
+                      <a placement="top"
+                        ngbPopover="มาเรียน: {{schedule.countOnTime+schedule.countLate}} | ขาดเรียน: {{schedule.countMiss}}
+                                    | ลา: {{schedule.countLeave}}"
+                        popoverTitle="รายละเอียด">
+                          <b>{{schedule.countOnTime + schedule.countLate}}/{{studentListArr.length}}</b></a>
+                      </td>
                     <td *ngIf="showPercentage.flag"></td>
-                    <td class="no-border"></td>
+                    <td style="display:none;"></td>
                   </tr>
                 </tbody>
               </table>
