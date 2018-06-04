@@ -92,6 +92,7 @@ export class CourseComponent implements OnInit {
       let group = params.get('group').toString();
       this.courseId = id;
       this.groupId = group;
+      console.log(this.groupId);
       this.totalStudentPercent = [];
 
       //Query Course
@@ -109,19 +110,28 @@ export class CourseComponent implements OnInit {
         });
 
       // iden Quert ///////////////////////////////////////////
-      //if(this.groupId != 'all'){
+      if(this.groupId != 'all'){
         // For a Group  /////////////////////////////////////////////
-        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/students`).snapshotChanges().map(actions => {
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/students`).snapshotChanges().map(actions => {
           return actions.map(action => ({ key: action.key, ...action.payload.val() }));
           }).subscribe(items => {
           this.studentList = items;
-          this.studentListArr = Object.keys(items).map(key => Object.assign({ key }, items[key]));
-
+          
+          let temp = [];
+          for(var i=0; i<this.studentList.length ;i++){
+            console.log(this.studentList[i].group + ' HH' + this.groupId);
+            if(this.studentList[i].group == this.groupId){
+              temp.push(this.studentList[i]);
+              continue;
+            }
+          }
+          this.studentListArr = Object.keys(temp)
+            .map(key => Object.assign({ key }, temp[key]));
             return items.map(item => item.key);
         });
 
         // 1. Query scheduleAttendanceList
-        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/attendance`).snapshotChanges().map(actions => {
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/attendance`).snapshotChanges().map(actions => {
           return actions.map(action => ({ key: action.key, ...action.payload.val() }));
           }).subscribe(items => {
             this.scheduleAttendanceList = items;
@@ -147,7 +157,7 @@ export class CourseComponent implements OnInit {
         });
 
         // 2. Query Quiz
-        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/quiz`).snapshotChanges().map(actions => {
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/quiz`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scheduleQuizList = items;
@@ -173,7 +183,7 @@ export class CourseComponent implements OnInit {
         });
 
         // 3. Query Homwork
-        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/hw`).snapshotChanges().map(actions => {
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/hw`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scheduleHomeworkList = items;
@@ -197,7 +207,7 @@ export class CourseComponent implements OnInit {
           };
             return items.map(item => item.key);
         });
-      /*
+      
       }else{
         // For All Group  /////////////////////////////////////////////
         //Query Student
@@ -211,7 +221,7 @@ export class CourseComponent implements OnInit {
         });
 
         // 1. Query scheduleAttendanceList
-        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/attendance`).snapshotChanges().map(actions => {
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/attendance`).snapshotChanges().map(actions => {
           return actions.map(action => ({ key: action.key, ...action.payload.val() }));
           }).subscribe(items => {
             this.scheduleAttendanceList = items;
@@ -237,7 +247,7 @@ export class CourseComponent implements OnInit {
         });
 
         // 2. Query Quiz
-        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/quiz`).snapshotChanges().map(actions => {
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/quiz`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scheduleQuizList = items;
@@ -245,7 +255,7 @@ export class CourseComponent implements OnInit {
         });
 
         // 3. Query Homwork
-        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/group/${this.groupId}/schedule/hw`).snapshotChanges().map(actions => {
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/hw`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scheduleHomeworkList = items;
@@ -253,7 +263,7 @@ export class CourseComponent implements OnInit {
         });
 
       } //End All Group
-      */
+
     });
   
 
