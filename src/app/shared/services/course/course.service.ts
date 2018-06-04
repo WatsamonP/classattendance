@@ -59,7 +59,7 @@ export class CourseService {
 
     if(course.group != 1){
       for(var i=1 ; i<=course.group ;i++){
-        let groupName='group'+i;
+        let groupName=i;
         this.db.object(`users/${this.auth.currentUserId}/course/${course.id}/group/${groupName}`).set({
           id : groupName,
           name : 'Group '+i,
