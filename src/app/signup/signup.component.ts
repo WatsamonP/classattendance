@@ -55,7 +55,7 @@ export class SignupComponent implements OnInit {
       ]),
       tel: new FormControl('',[
         Validators.required,
-        Validators.pattern("^\\d{9,10}$")
+        Validators.pattern("^[0]\\d{8,9}$")
       ])
     });
   }
