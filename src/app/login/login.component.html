@@ -1,74 +1,90 @@
 <div class="login-page" [@routerTransition]>
-  <div class="row justify-content-md-center">
-    <div class="col-md-6">
-      <!--img class="user-avatar" src="assets/images/logo.png" width="150px" /-->
-      <img src="assets/images/logo.png" width="250px" />
-      <h1>SIGN IN</h1>
-
-      <form [formGroup]="loginForm" (ngSubmit)="login()">
-        <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Email</label>
-          <div class="col-sm-9">
+  <div class="row">
+    
+    <div class="col-md-5">
+      <br><br><br>
+      <img src="assets/images/logo.png" width="280px" />
+    </div>
+    <div class="col-md-7">
+      <h1 style="background: #fc6d0d; padding: 10px;">SIGN IN</h1>
+      <form [formGroup]="loginForm" style="padding-top: 10px;background-color: rgba(0, 0, 0, 0.2)">
+        <div class="row">
+          <label class="col-md-3 col-form-label">Email</label>
+          <div class="col-md-8">
             <input type="email" formControlName="email" class="form-control">
           </div>
+          <div class="col-md-1"></div>
         </div>
-
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Password</label>
-          <div class="col-sm-9">
+          <label class="col-md-3 col-form-label">Password</label>
+          <div class="col-md-8">
             <input type="password" formControlName="password" class="form-control">
           </div>
+          <div class="col-md-1"></div>
         </div>
-
         <div class="row">
-          <div class="col-6 text-left">
+          <div class="col-4 text-left">
+            &nbsp;&nbsp;&nbsp;
             <a class="text-muted" [routerLink]="['/signup']">
               สมัครสมาชิกใหม่ ?
             </a>
           </div>
-          <div class="col-6 text-right">
-            <button type="submit" class="btn btn-primary">
+          <div class="col-7 text-right">
+            <button class="btn btn-dark" (click)="openForgotPassword(forgot)">
+              ลืมรหัสผ่าน            
+            </button>
+            &nbsp;&nbsp;&nbsp;            
+            <button class="btn btn-sut" (click)="login()">
               <i class="fa fa-lock" aria-hidden="true"></i>
               เข้าสู่ระบบ
             </button>
           </div>
+          <div class="col-md-1"></div>
+        </div><br>
+      </form>
+      <!--/div-->
+      <div class="row" style="background-color: #222">&nbsp;</div><br>
+      <h3 style="background-color: #17a2b8;padding: 10px;">STUDENT</h3>
+      <div style="background-color: rgba(0, 0, 0, 0.2)">
+        <div class="row" style="padding-top: 10px; padding-bottom: 10px">
+          <div class="col-md-3 text-light">
+            <i class="fa fa-address-card" style="font-size: 90px"></i><br/>
+              <!--h4>STUDENT</h4-->
+          </div>
+          <div class="col-9 text-left">
+            <a [routerLink]="['/qrcode']" class="btn btn-sq btn-danger" style="width: 115px">
+              <i class="fa fa-download fa-2x"></i><br/>
+              ดาวน์โหลด<br>กระดาษ Quiz
+            </a>
+            &nbsp;&nbsp;&nbsp;
+            <a [routerLink]="['/studentcheck']" class="btn btn-sq btn-success" style="width: 115px">
+              <i class="fa fa-check-square fa-2x"></i><br/>
+              ตรวจสอบ<br>คะแนน
+            </a>
+          </div>
         </div>
-        <br />
-        <div class="row">
-          <div class="col-3">
-            สำหรับนักศึกษา
-          </div>
-          <div class="col-4">
-            <a class="text-white" [routerLink]="['/qrcode']">
-              <button class="btn btn-success">
-                ดาวน์โหลด กระดาษ Quiz
-              </button>
-            </a>
-          </div>
-          <div class="col-4">
-            <a class="text-white" [routerLink]="['/studentcheck']">
-              <button class="btn btn-success">
-                ตรวจสอบคะแนน
-              </button>
-            </a>
-          </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #forgot let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title">ลืมรหัสผ่าน</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="loginForm">
+          <div class="form-group row">
+        <label class="col-md-3 col-form-label">Email</label>
+        <div class="col-md-8">
+          <input type="email" formControlName="email" class="form-control">
+        </div>
         </div>
       </form>
-
-            <!--form role="form">
-                <div class="form-content">
-                    <div class="form-group">
-                        <input type="text" ng-model="name" class="form-control input-underline input-lg" id="" placeholder="Email">
-                    </div>
-
-                    <div class="form-group">
-                        <input type="password" class="form-control input-underline input-lg" id="" placeholder="Password">
-                    </div>
-                </div>
-                <a class="btn rounded-btn" [routerLink]="['/dashboard']" (click)="onLoggedin()"> Log in </a>
-                &nbsp;
-                <a class="btn rounded-btn" [routerLink]="['/signup']">Register</a>
-            </form-->
-        </div>
     </div>
-</div>
+    <div class="modal-footer">
+      <button class="btn btn-warning" (click)="forgotPassword()">Submit</button>
+    </div>
+  </ng-template>

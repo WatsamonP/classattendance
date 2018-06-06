@@ -95,7 +95,6 @@ export class CourseComponent implements OnInit {
       let group = params.get('group').toString();
       this.courseId = id;
       this.groupId = group;
-      console.log(this.groupId);
       this.totalStudentPercent = [];
 
       //Query Course
@@ -381,7 +380,7 @@ export class CourseComponent implements OnInit {
     this.studentForm = new FormGroup({
       id: new FormControl('', [
         Validators.required,
-        Validators.pattern("^[B]\\d{7}$")
+        Validators.pattern("^[B|M|D]\\d{7}$")
       ]),
       name: new FormControl('', [
         //Validators.required

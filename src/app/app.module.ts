@@ -7,6 +7,7 @@ import { Http ,HttpModule} from '@angular/http'
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Firebase
 import { environment } from '../environments/environment';
@@ -52,6 +53,7 @@ export function createTranslateLoader(http: HttpClient) {
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     FormsModule,ReactiveFormsModule,
+    NgbModule.forRoot()
   ],
   declarations: [AppComponent],
   providers: [AuthService, AuthGuard, AngularFireDatabase, UserService, ExcelService, Http],

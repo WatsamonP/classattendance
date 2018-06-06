@@ -1,3 +1,102 @@
-<div [@routerTransition]>
-  work
-<div>
+<div class="login-page" [@routerTransition]>
+  <div class="row">
+    <img src="assets/images/logo.png" width="80px" height="80px"/>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-4" style="background-color: #007bff; padding: 10px">
+      <h3 style="background-color: #ffffff" class="text-primary">STUDENT</h3><br>
+      <form [formGroup]="studentScoreForm">
+        <div class="row">
+          <label class="col-md-4 col-form-label">รหัสวิชา</label>
+          <div class="col-md-8">
+            <input type="text" formControlName="cid" class="form-control">
+          </div>
+          <div class="col-md-1"></div>
+        </div><br>
+        <div class="row">
+          <label class="col-md-4 col-form-label">รหัสนักศึกษา</label>
+          <div class="col-md-8">
+            <input type="text" formControlName="sid" class="form-control">
+          </div>
+        </div>
+        <button class="btn btn-dark" (click)="onClick()">
+          CLICK            
+        </button>
+      </form>
+      <!--br>
+      <a class="text-left" *ngFor="let course of courseData; let i = index">
+          <a class="btn btn-sq btn-danger" style="width: 120px">
+            <i class="fa fa-download fa-2x"></i><br/>
+            {{course[0].profile.firstName}}
+          </a>
+        </a-->
+    </div>
+
+    <div class="col-8" style="background-color: #4b99e7; padding: 10px">
+      <div *ngIf="showTableSelectCourse==true">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th>รหัสวิชา</th>
+              <th>วิชา</th>
+              <th>อาจารย์</th>
+              <th>
+                เลือกรายวิชา
+              </th>
+            </tr>
+          </thead>
+          <tbody> 
+            <tr *ngFor="let course of courseList; let i = index">
+              <td>{{course[1].course.id}}</td>
+              <td>{{course[1].course.name}}</td>
+              <td>{{course[0].profile.firstName}} {{course[0].profile.lastName}}</td>
+              <td>
+                <button class="btn btn-dark btn-sm" (click)="onClickCourseCourse(course[1].course)">
+                  เลือก            
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--/////////////////////////////////////////////////////////////////////////////////-->
+      <div *ngIf="showTableSelectStudent==true">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th>รหัสวิชา</th>
+              <th>วิชา</th>
+              <th>อาจารย์</th>
+              <th>
+                เลือกรายวิชา
+              </th>
+            </tr>
+          </thead>
+          <tbody> 
+            <tr *ngFor="let s of student; let i = index">
+              <td>{{s[1].course.id}}</td>
+              <td>{{s[1].course.name}}</td>
+              <td>{{s[2].profile.firstName}} {{s[2].profile.lastName}}</td>
+              <td>
+                <button class="btn btn-dark btn-sm" (click)="onClickCourseStd()">
+                  เลือก            
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <div class="row" style="background-color: #f05353;">
+    <div *ngIf="showTableSelectCourseScore">
+      Hi
+    </div>
+    <!--/////////////////////////////////////////////////////////////////////////////////-->
+    <div *ngIf="showTableSelectStudentScore">
+      Hi
+    </div>
+  </div>
+</div>

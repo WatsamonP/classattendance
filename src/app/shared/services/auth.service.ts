@@ -112,8 +112,14 @@ export class AuthService {
   resetPassword(email: string) {
     const fbAuth = firebase.auth();
     return fbAuth.sendPasswordResetEmail(email)
-      .then(() => console.log('email sent'))
-      .catch((error) => console.log(error))
+      .then(() => {
+        console.log('email sent');
+        this.toastr.success("Send Password Reset to Email");
+      })
+      .catch((error) => {
+        console.log(error);
+        this.toastr.warning("EMAIL นี้ยังไม่ได้ลงทะเบียน");
+      });
   }
   getCurrentLoggedIn() {
     this.afAuth.authState.subscribe(auth => {
