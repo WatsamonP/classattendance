@@ -233,7 +233,7 @@
                     <td colspan="3" style="width:70px; text-align: center">Total</td>
                     <td *ngIf="showGroup.flag"></td>
                     <td *ngIf="showMissClass.flag"></td>
-                    <td *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:50px ;text-align: center">
+                    <td *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:70px ;text-align: center">
                       <a placement="top"
                         ngbPopover="มาเรียน: {{schedule[0].data.countOnTime+schedule[0].data.countLate}} | ขาดเรียน: {{schedule[0].data.countMiss}}
                                     | ลา: {{schedule[0].data.countLeave}}"
@@ -292,7 +292,7 @@
                     <th style="width:100px; text-align: center">ID</th>
                     <th style="width:250px; text-align: center">ชื่อ-นามสกุล</th>
                     <th *ngIf="showGroup.flag" style="width:50px; text-align: center">กลุ่ม</th>
-                    <th *ngFor="let schedule of scheduleQuizSortList ; let k = index" style="width:50px ;text-align: center">
+                    <th *ngFor="let schedule of scheduleQuizSortList ; let k = index" style="width:70px ;text-align: center">
                       <button type="button" class="btn btn-light" placement="top"
                         ngbPopover="{{schedule[0].data.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
                         {{schedule[1].index}}
@@ -393,7 +393,7 @@
                     <th style="width:100px; text-align: center">ID</th>
                     <th style="width:250px; text-align: center">ชื่อ-นามสกุล</th>
                     <th *ngIf="showGroup.flag" style="width:50px; text-align: center">กลุ่ม</th>
-                    <th *ngFor="let schedule of scheduleHomeworkSortList ; let k = index" style="width:50px ;text-align: center">
+                    <th *ngFor="let schedule of scheduleHomeworkSortList ; let k = index" style="width:70px ;text-align: center">
                       <button type="button" class="btn btn-light" placement="top"
                         ngbPopover="{{schedule[0].data.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
                         {{schedule[1].index}}
