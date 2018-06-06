@@ -102,11 +102,7 @@ export class CourseComponent implements OnInit {
       let group = params.get('group').toString();
       this.courseId = id;
       this.groupId = group;
-<<<<<<< HEAD
-      this.totalStudentPercent = [];
-=======
-      console.log(this.groupId);
->>>>>>> 154951c4b8446fdfe989ead6031c35f77cae541c
+
 
       //Query Course
       this.db.list(`users/${this.auth.currentUserId}/course/`).snapshotChanges().map(actions => {
