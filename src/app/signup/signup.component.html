@@ -1,7 +1,155 @@
 <div class="login-page" [@routerTransition]>
-  <div class="row justify-content-md-center">
+  <form [formGroup]="userForm" (ngSubmit)="signup()">
+    <div class="row">
+      <div class="col-md-6">
+          <br><br><br>
+        <img src="assets/images/logo.png" width="280px" />
+        <br><br>
+        
+        <a class="text-muted">
+          มีบัญชีผู้แล้ว 
+        </a>&nbsp;&nbsp;
+        <button type="button" class="btn btn-outline-warning" [routerLink]="['/login']">
+          <i class="fa fa-sign-in"></i> SIGN IN
+        </button>
+ 
+      </div>
+
+      <div class="col-md-6" style="background-color: rgb(31, 29, 29); padding: 10px" >
+        <h4 style="background: #fc6d0d; padding: 5px;">SIGN UP</h4>
+        <div class="row" style="padding: 8px">
+          <div class="col-sm-12">
+            <div class="input-group mb">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="width: 120px;">
+                  <i class="fa fa-user-circle-o" aria-hidden="true"></i> Email
+                </span>
+              </div>
+              <input type="email" formControlName="email" class="form-control">
+              <div *ngIf="email.errors && isSubmit != null" [ngClass] = "'error'" style="width: 120px;text-align: center">
+                <div *ngIf="email.errors.required">
+                      <font size="2" color="red"> กรุณากรอกอีเมล</font>
+                </div>
+    			      <div *ngIf="email.errors.pattern">
+    				          <font size="2" color="red"> อีเมลไม่ถูกต้อง</font>
+    			      </div>
+    		      </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="padding: 8px">
+          <div class="col-sm-12">
+            <div class="input-group mb">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="width: 120px;">
+                  <i class="fa fa-key" aria-hidden="true"></i> Password </span>
+              </div>
+              <input type="password" formControlName="password" class="form-control">
+              <div *ngIf="password.errors && isSubmit != null" [ngClass] = "'error'" style="width: 120px;text-align: center">
+                <div *ngIf="password.errors.required">
+                  <font size="2" color="red">กรุณากรอกพาสเวิร์ด</font>
+                </div>
+                <div *ngIf="password.errors.minlength">
+                  <font size="2" color="red">* อย่างน้อย6ตัว</font>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <br>
+        <h5 style="background: #fc6d0d; padding: 5px;">Profile</h5>
+
+        <div class="row" style="padding: 8px">
+          <div class="col-sm-12">
+            <div class="input-group mb">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="width: 120px;">
+                  <i class="fa fa-user" aria-hidden="true"></i> Username</span>
+              </div>
+              <input type="text" formControlName="username" class="form-control">
+              <div *ngIf="username.errors && isSubmit != null" [ngClass] = "'error'" style="width: 100px;text-align: center">
+                <div *ngIf="username.errors.required">
+                  <font size="2" color="red">ห้ามเว้นว่าง</font>
+                </div>
+    		      </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="padding: 8px">
+          <div class="col-sm-12">
+            <div class="input-group mb">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="width: 120px;">First Name</span>
+              </div>
+              <input type="email" formControlName="firstName" class="form-control">
+              <div *ngIf="firstName.errors && isSubmit != null" [ngClass] = "'error'" style="width: 100px;text-align: center">
+                <div *ngIf="firstName.errors.required">
+                  <font size="2" color="red">ห้ามเว้นว่าง</font>
+                </div>
+                <div *ngIf="firstName.errors.pattern">
+                  <font size="2" color="red">เฉพาะตัวอักษรเท่านั้น</font>
+                </div>
+    		      </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="padding: 8px">
+          <div class="col-sm-12">
+            <div class="input-group mb">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="width: 120px;">Last Name</span>
+              </div>
+              <input type="text" formControlName="lastName" class="form-control">
+              <div *ngIf="lastName.errors && isSubmit != null" [ngClass] = "'error'" style="width: 100px;text-align: center">
+                <div *ngIf="lastName.errors.required">
+                  <font size="2" color="red">ห้ามเว้นว่าง</font>
+                </div>
+                <div *ngIf="lastName.errors.pattern">
+                  <font size="2" color="red">เฉพาะตัวอักษรเท่านั้น</font>
+                </div>
+    		      </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="padding: 8px">
+          <div class="col-sm-12">
+            <div class="input-group mb">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="width: 120px;">
+                    <i class="fa fa-phone" aria-hidden="true"></i> Tel.</span>
+              </div>
+              <input type="text" formControlName="tel" class="form-control">
+              <div *ngIf="tel.errors && isSubmit != null" [ngClass] = "'error'" style="width: 100px;text-align: center">
+                <div *ngIf="tel.errors.required">
+                  <font size="2" color="red">ห้ามเว้นว่าง</font>
+                </div>
+                <div *ngIf="tel.errors.pattern">
+                  <font size="2" color="red">ไม่ถูกต้อง</font>
+                </div>
+    		      </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="padding: 5px">
+          <div class="col-6 text-left"></div>
+          <div class="col-6 text-right">
+            <button type="submit" class="btn btn-sut">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                สมัครสมาชิก
+            </button>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </form>
+  <!--div class="row justify-content-md-center">
     <div class="col-md-10">
-      <!--img class="user-avatar" src="assets/images/logo.png" width="150px" /-->
       <img src="assets/images/logo.png" width="250px" />
       <h1>สมัครสมาชิก</h1>
 
@@ -116,26 +264,6 @@
         </div>
       </form>
 
-            <!--form role="form">
-                <div class="form-content">
-                    <div class="form-group">
-                        <input type="text" class="form-control input-underline input-lg" id="" placeholder="Full Name">
-                    </div>
-
-                    <div class="form-group">
-                        <input type="text" class="form-control input-underline input-lg" id="" placeholder="Email">
-                    </div>
-
-                    <div class="form-group">
-                        <input type="password" class="form-control input-underline input-lg" id="" placeholder="Password">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control input-underline input-lg" id="" placeholder="Repeat Password">
-                    </div>
-                </div>
-                <a class="btn rounded-btn" [routerLink]="['/dashboard']"> Register </a>&nbsp;
-                <a class="btn rounded-btn" [routerLink]="['/login']"> Log in </a>
-            </form-->
         </div>
-    </div>
+    </div-->
 </div>

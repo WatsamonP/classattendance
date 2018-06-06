@@ -3,8 +3,7 @@ import { routerTransition } from '../router.animations';
 import { ReactiveFormsModule, FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from "../shared/services/auth.service";
 import { AngularFireDatabase, AngularFireObject, AngularFireList } from 'angularfire2/database';
-import { Course } from '../shared/services/course/course.model';
-import { Student } from '../shared/services/student/student.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-studentcheck',
@@ -15,40 +14,44 @@ import { Student } from '../shared/services/student/student.model';
 export class StudentcheckComponent implements OnInit {
 
   studentScoreForm: FormGroup;
-  studentData: Student[];
   courseList: any;
   student : any;
   courseData : any;
   teachData : any;
-  showTableSelectCourse;
-  showTableSelectStudent;
-  showTableSelectCourseScore;
-  showTableSelectStudentScore;
+  studentCourseData : any;
+  showTableCourse;
+  showTableStd;
+  showTableData;
+
+  score : any;
   constructor(
     private db: AngularFireDatabase,
-    private auth: AuthService
+    private auth: AuthService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
     this.buildForm();
-    this.showTableSelectCourse = false;
-    this.showTableSelectStudent = false
-    this.showTableSelectCourseScore = false;
-    this.showTableSelectStudentScore = false;
+    this.showTableCourse = false;
+    this.showTableStd = false;
+    this.showTableData = false
   }
 
   onClick(){
-    //this.studentScoreForm.value.sid == '' || this.studentScoreForm.value.cid == ''
+    this.showTableCourse = false;
+    this.showTableStd = false;
+    this.showTableData = false;
     if(this.studentScoreForm.value.sid != '' && this.studentScoreForm.value.cid != ''){
-      console.log("OK");
-    }else if(this.studentScoreForm.value.sid != ''){
-      console.log("sid");
       this.studentIden();
+      this.showTableData = true;
+    }else if(this.studentScoreForm.value.sid != ''){
+      this.studentIden();
+      this.showTableStd = true;
     }else if(this.studentScoreForm.value.cid != ''){
-      console.log("cid")
       this.courseIden();
+      this.showTableCourse = true;
     }else{
-      console.log("err");
+      this.toastr.success("กรุณาป้อนรหัสวิชา หรือรหัสนักศึกษา");
     }
   }
 
@@ -67,7 +70,6 @@ export class StudentcheckComponent implements OnInit {
       }
       for(var i=0; i<this.courseData.length; i++){
         for(var j=0; j<this.courseData[i].length; j++){
-          //console.log(this.courseData[i][j]);
           if(this.courseData[i][j].students != undefined){
             temp[j] = Object.keys(this.courseData[i][j].students)
               .map(key => Object.assign({ key }, 
@@ -92,11 +94,21 @@ export class StudentcheckComponent implements OnInit {
               ]
             k++;
           }
+
         }
       }
-      this.showTableSelectStudent = true;
-      console.log(this.student);
+      //console.log(this.student);
+      if(this.studentScoreForm.value.cid != ''){
+        this.studentCourseData = [];
+        for(var i=0; i<this.student.length; i++){
+          if(this.student[i][1].course.id == this.studentScoreForm.value.cid){
+            this.studentCourseData = this.student[i];
+            this.score = this.student[i][1].course;
+          }
+        }
+      }
     });
+    return this.student;
   }
 
   courseIden(){
@@ -112,10 +124,14 @@ export class StudentcheckComponent implements OnInit {
         }
       }
     });
-    this.showTableSelectCourse = true;
+    return this.courseList;
   }
 
-
+  something(course){
+    this.score = course;
+    console.log(this.score);
+    this.showTableData = true;
+  }
 
   onClickCourseCourse(something){
     let temp;
@@ -131,11 +147,6 @@ export class StudentcheckComponent implements OnInit {
       }
     }
     console.log(this.student);
-    this.showTableSelectCourseScore = true;
-  }
-
-  onClickCourseStd(){
-    this.showTableSelectStudentScore = true;
   }
 
   buildForm(): void {
@@ -144,7 +155,7 @@ export class StudentcheckComponent implements OnInit {
         Validators.required,
         Validators.pattern("^[1-9]\\d{5}$")
        ]),
-      sid: new FormControl('B5800018', [
+      sid: new FormControl('', [
         Validators.required,
         Validators.pattern("^[B|M|D]\\d{7}$")
       ]),
