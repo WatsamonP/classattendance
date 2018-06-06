@@ -1,46 +1,75 @@
 <div class="login-page" [@routerTransition]>
-  <div class="row">
-    <img src="assets/images/logo.png" width="80px" height="80px"/>
-  </div>
-  <br>
-  <div class="row">
-    <div class="col-4" style="background-color: #007bff; padding: 10px">
-      <h3 style="background-color: #ffffff" class="text-primary">STUDENT</h3><br>
-      <form [formGroup]="studentScoreForm">
-        <div class="row">
-          <label class="col-md-4 col-form-label">รหัสวิชา</label>
-          <div class="col-md-8">
-            <input type="text" formControlName="cid" class="form-control">
-          </div>
-          <div class="col-md-1"></div>
-        </div><br>
-        <div class="row">
-          <label class="col-md-4 col-form-label">รหัสนักศึกษา</label>
-          <div class="col-md-8">
-            <input type="text" formControlName="sid" class="form-control">
-          </div>
+  <div class="row navbar navbar-expand-lg">
+    <ul class="navbar-nav mr-auto">
+      <div class="input-group">
+        <div>
+          <button type="button" class="btn btn-danger" [routerLink]="['/qrcode']">
+            <i class="fa fa-download"></i> ดาวน์โหลดกระดาษ Quiz
+          </button>
         </div>
-        <button class="btn btn-dark" (click)="onClick()">
-          CLICK            
+      </div>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <ul class="navbar-nav mr-auto">
+        <button type="button" class="btn btn-outline-info" [routerLink]="['/signup']">
+          <i class="fa fa-user-circle"></i> SIGN UP
+        </button>&nbsp;&nbsp;
+        <button type="button" class="btn btn-outline-warning" [routerLink]="['/login']">
+          <i class="fa fa-sign-in"></i> SIGN IN
         </button>
+      </ul>
+    </form>
+  </div>
+  <div class="row" style="padding-top: 10px">
+    <div class="col-4" style="background-color: #343a40" >
+      <div class="row" style="background-color: #16191b">
+        <div class="col-2">
+          <img src="assets/images/logo.png" width="60px" height="65px" style="padding-top: 5px"/>
+        </div>
+        <div class="col-10">
+          <h3 class="text-light" style="padding-top: 5px">ตรวจสอบคะแนน</h3>
+          <div> คะแนนเข้าเรียน/ Quiz/ การบ้าน</div>
+        </div>
+      </div>
+      <form [formGroup]="studentScoreForm" style="padding-top: 10px">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">
+              <i class="fa fa-book" aria-hidden="true"></i> รหัสวิชา
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+          </div>
+          <input type="text" formControlName="cid" class="form-control">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">
+              <i class="fa fa-address-card" aria-hidden="true"></i> รหัสนักศึกษา
+            </span>
+          </div>
+          <input type="text" formControlName="sid" class="form-control">
+        </div>
       </form>
-      <!--br>
-      <a class="text-left" *ngFor="let course of courseData; let i = index">
-          <a class="btn btn-sq btn-danger" style="width: 120px">
-            <i class="fa fa-download fa-2x"></i><br/>
-            {{course[0].profile.firstName}}
-          </a>
-        </a-->
+      <div class="row" style="padding: 5px">
+        <div class="col-md-8 text-muted text-left" style="font-size: 12px; padding-top: 10px">
+          ค้นหาจากรหัสวิชา หรือรหัสนักศึกษา
+        </div>
+        <div class="col-md-4 text-right">
+          <button class="btn btn-warning" (click)="onClick()">
+            <i class="fa fa-search" aria-hidden="true"></i> ค้นหา            
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="col-8" style="background-color: #4b99e7; padding: 10px">
-      <div *ngIf="showTableSelectCourse==true">
+    <div class="col-8" style="background-color: #4d555e; padding: 10px">
+      <div *ngIf="showTableCourse">
         <table class="table">
           <thead class="thead-dark">
             <tr>
               <th>รหัสวิชา</th>
               <th>วิชา</th>
-              <th>อาจารย์</th>
+              <th>อาจารย์ผู้สอน</th>
               <th>
                 เลือกรายวิชา
               </th>
@@ -52,7 +81,7 @@
               <td>{{course[1].course.name}}</td>
               <td>{{course[0].profile.firstName}} {{course[0].profile.lastName}}</td>
               <td>
-                <button class="btn btn-dark btn-sm" (click)="onClickCourseCourse(course[1].course)">
+                <button class="btn btn-primary btn-sm" (click)="something(course[1].course)">
                   เลือก            
                 </button>
               </td>
@@ -61,13 +90,13 @@
         </table>
       </div>
       <!--/////////////////////////////////////////////////////////////////////////////////-->
-      <div *ngIf="showTableSelectStudent==true">
+      <div *ngIf="showTableStd">
         <table class="table">
           <thead class="thead-dark">
             <tr>
               <th>รหัสวิชา</th>
               <th>วิชา</th>
-              <th>อาจารย์</th>
+              <th>อาจารย์ผู้สอน</th>
               <th>
                 เลือกรายวิชา
               </th>
@@ -79,7 +108,7 @@
               <td>{{s[1].course.name}}</td>
               <td>{{s[2].profile.firstName}} {{s[2].profile.lastName}}</td>
               <td>
-                <button class="btn btn-dark btn-sm" (click)="onClickCourseStd()">
+                <button class="btn btn-primary btn-sm" (click)="something(s[1].course)">
                   เลือก            
                 </button>
               </td>
@@ -90,13 +119,40 @@
     </div>
 
   </div>
-  <div class="row" style="background-color: #f05353;">
-    <div *ngIf="showTableSelectCourseScore">
-      Hi
+  <br>
+  <div class="row">
+    <div *ngIf="showTableData">
+      <div class="card" style="padding: 5px">
+        <div class="text-left" style="padding-top: 5px;padding-left: 5px">
+          <h3 class="page-header text-primary">
+            <i class="fa fa-book"></i> วิชา {{score.id}} : {{score.name}}&nbsp;&nbsp;
+          </h3>
+        </div>
+        <div class="card-body table-responsive">
+          <ngb-tabset>
+            <!--AttendanceTab-->
+            <ngb-tab title="เข้าเรียน">
+              <ng-template ngbTabContent>
+                
+                
+              </ng-template>
+            </ngb-tab>
+            <!--QuizTab-->
+            <ngb-tab title="Quiz">
+              <ng-template ngbTabContent>
+                
+              </ng-template>
+            </ngb-tab>
+            <!--HomeworkTab-->
+            <ngb-tab title="Homework">
+              <ng-template ngbTabContent>
+                
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+        </div>
+      </div>
     </div>
     <!--/////////////////////////////////////////////////////////////////////////////////-->
-    <div *ngIf="showTableSelectStudentScore">
-      Hi
-    </div>
   </div>
 </div>

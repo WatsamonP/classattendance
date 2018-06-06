@@ -1,34 +1,72 @@
 <div class="login-page" [@routerTransition]>
-<div class="row justify-content-md-center">
-  <div>
-    <img src="{{qrcode}}"
-         class="qr-code img-thumbnail img-responsive">
+  <div class="row navbar navbar-expand-lg bg-dark">
+    <ul class="navbar-nav mr-auto">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">
+            <i class="fa fa-address-card" aria-hidden="true"></i> STUDENT
+          </span>
+        </div>
+        <div class="input-group-prepend">
+          <button type="button" class="btn btn-success" [routerLink]="['/studentcheck']">
+            <i class="fa fa-check-square"></i> ตรวจสอบคะแนน
+          </button>
+        </div>
+      </div>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <ul class="navbar-nav mr-auto">
+        <button type="button" class="btn btn-outline-info" [routerLink]="['/signup']">
+          <i class="fa fa-user-circle"></i> SIGN UP
+        </button>&nbsp;&nbsp;
+        <button type="button" class="btn btn-outline-warning" [routerLink]="['/login']">
+          <i class="fa fa-sign-in"></i> SIGN IN
+        </button>
+      </ul>
+    </form>
   </div>
   <br>
-  <form [formGroup]="uForm" (ngSubmit)="onDownload()">
-  <div class="form-horizontal">
-    <br>
-      <label class="control-label col-sm-2" for="content">StudentID:</label>
-      <div class="col-sm-12">
+
+<form [formGroup]="uForm" (ngSubmit)="onDownload()">
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-3">
+      <div>
+        <img src="{{qrcode}}"
+          class="qr-code img-thumbnail img-responsive">
+      </div>
+    </div>
+    <div class="col-md-4">
+      <br>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">
+            <i class="fa fa-user-circle-o" aria-hidden="true"></i> Student ID </span>
+        </div>
         <input type="text" formControlName="content" placeholder="ex.B1234567">
         <div *ngIf="content.errors && isSubmit != null" [ngClass] = "'error'">
-             <div *ngIf="content.errors.required">
-                  <font size="2" color="red">กรุณาป้อนรหัสนักศึกษา</font>
-             </div>
-			       <div *ngIf="content.errors.pattern">
-				          <font size="2" color="red">รหัสนักศึกษาไม่ถูกต้อง</font>
-			       </div>
-		    </div>
+          <div *ngIf="content.errors.required">
+            <font size="2" color="red">กรุณาป้อนรหัสนักศึกษา</font>
+          </div>
+          <div *ngIf="content.errors.pattern">
+            <font size="2" color="red">รหัสนักศึกษาไม่ถูกต้อง</font>
+          </div>
+       </div>
+      </div><br>
+
+      <div class="col-sm-offset-2 col-sm-12">
+        <button type="button" class="btn btn-outline-primary btn-block" (click)="onGen()">Generate Only</button>
       </div>
       <br>
       <div class="col-sm-offset-2 col-sm-12">
-      <button type="button" class="btn btn-lg btn-primary btn-block" (click)="onGen()">Generate Only</button>
+        <button type="submit" class="btn btn-outline-success btn-block">Generate & Download</button>
       </div>
-      <br>
-      <div class="col-sm-offset-2 col-sm-12">
-        <button type="submit" class="btn btn-lg btn-success btn-block">Generate & Download</button>
-      </div>
+
+
+    </div>
+    <div class="col-md-2"></div>
   </div>
-  </form>
-</div>
+
+</form>
+
 <div>
