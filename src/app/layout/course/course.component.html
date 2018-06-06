@@ -143,8 +143,8 @@
                     </th>
                     <th *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:40px ;text-align: center">
                       <button type="button" class="btn btn-light" placement="top"
-                        ngbPopover="{{schedule.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
-                        {{k+1}}
+                        ngbPopover="{{schedule[0].data.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                        {{schedule[1].index}}
                       </button>
                     </th>
                     <th *ngIf="showPercentageA.flag" style="width:50px; text-align: center">
@@ -186,7 +186,7 @@
                     <!--/-->
                     <ng-container *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="text-align: center">
                       <td *ngIf="student.attendance != undefined
-                          && student.attendance[schedule.id] != undefined;
+                          && student.attendance[schedule[0].data.id] != undefined;
                           then studentScore; else errorData">
                       </td>
                       <!--/-->
@@ -194,29 +194,29 @@
                         <td class="red"></td>
                       </ng-template>
                       <ng-template #studentScore>
-                        <td *ngIf="student.attendance[schedule.id].status == 'Missed Class';
+                        <td *ngIf="student.attendance[schedule[0].data.id].status == 'Missed Class';
                                   else checkStatus" style="text-align: center">
                           <a placement="top"
-                            ngbPopover="{{student.attendance[schedule.id].date | date:'medium'}} : {{student.attendance[schedule.id].status}}"
+                            ngbPopover="{{student.attendance[schedule[0].data.id].date | date:'medium'}} : {{student.attendance[schedule[0].data.id].status}}"
                             popoverTitle="รายละเอียด" class="text-danger">
-                          {{student.attendance[schedule.id].score}}</a>
+                          {{student.attendance[schedule[0].data.id].score}}</a>
                         </td>
                       </ng-template>
                       <ng-template #checkStatus>
-                        <td *ngIf="student.attendance[schedule.id].status == 'Late'
-                              || student.attendance[schedule.id].status == 'Leave'; else onTime" style="text-align: center">
+                        <td *ngIf="student.attendance[schedule[0].data.id].status == 'Late'
+                              || student.attendance[schedule[0].data.id].status == 'Leave'; else onTime" style="text-align: center">
                           <a class="text-warning" placement="top"
-                            ngbPopover="{{student.attendance[schedule.id].date | date:'medium'}} : {{student.attendance[schedule.id].status}}"
+                            ngbPopover="{{student.attendance[schedule[0].data.id].date | date:'medium'}} : {{student.attendance[schedule[0].data.id].status}}"
                             popoverTitle="รายละเอียด">
-                            {{student.attendance[schedule.id].score}}</a>
+                            {{student.attendance[schedule[0].data.id].score}}</a>
                         </td>
                       </ng-template>
                       <ng-template #onTime>
                         <td class="att_onTime">
                           <a placement="top"
-                            ngbPopover="{{student.attendance[schedule.id].date | date:'medium'}} : {{student.attendance[schedule.id].status}}"
+                            ngbPopover="{{student.attendance[schedule[0].data.id].date | date:'medium'}} : {{student.attendance[schedule[0].data.id].status}}"
                             popoverTitle="รายละเอียด">
-                            {{student.attendance[schedule.id].score}}</a>
+                            {{student.attendance[schedule[0].data.id].score}}</a>
                         </td>
                       </ng-template>
                     </ng-container>
@@ -235,10 +235,10 @@
                     <td *ngIf="showMissClass.flag"></td>
                     <td *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:50px ;text-align: center">
                       <a placement="top"
-                        ngbPopover="มาเรียน: {{schedule.countOnTime+schedule.countLate}} | ขาดเรียน: {{schedule.countMiss}}
-                                    | ลา: {{schedule.countLeave}}"
+                        ngbPopover="มาเรียน: {{schedule[0].data.countOnTime+schedule[0].data.countLate}} | ขาดเรียน: {{schedule[0].data.countMiss}}
+                                    | ลา: {{schedule[0].data.countLeave}}"
                         popoverTitle="รายละเอียด">
-                          <b>{{schedule.countOnTime + schedule.countLate}}/{{studentListArr.length}}</b></a>
+                          <b>{{schedule[0].data.countOnTime + schedule[0].data.countLate}}/{{studentListArr.length}}</b></a>
                       </td>
                     <td *ngIf="showPercentageA.flag"></td>
                     <td style="display:none;"></td>
@@ -294,8 +294,8 @@
                     <th *ngIf="showGroup.flag" style="width:50px; text-align: center">กลุ่ม</th>
                     <th *ngFor="let schedule of scheduleQuizSortList ; let k = index" style="width:50px ;text-align: center">
                       <button type="button" class="btn btn-light" placement="top"
-                        ngbPopover="{{schedule.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
-                        {{k+1}}
+                        ngbPopover="{{schedule[0].data.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                        {{schedule[1].index}}
                       </button>
                     </th>
                     <th *ngIf="showPercentageQ.flag" style="width:50px; text-align: center">
@@ -315,7 +315,7 @@
                     <!--/-->
                     <ng-container *ngFor="let schedule of scheduleQuizSortList ; let k = index" style="text-align: center">
                       <td *ngIf="student.quiz != undefined
-                          && student.quiz[schedule.id] != undefined;
+                          && student.quiz[schedule[0].data.id] != undefined;
                           then studentScore; else errorData">
                       </td>
                       <!--/-->
@@ -323,15 +323,15 @@
                         <td class="red"></td>
                       </ng-template>
                       <ng-template #studentScore>
-                        <td *ngIf="student.quiz[schedule.id].score == '0';
+                        <td *ngIf="student.quiz[schedule[0].data.id].score == '0';
                                   else notzero" style="text-align: center">
                           <a class="text-danger">
-                          {{student.quiz[schedule.id].score}}</a>
+                          {{student.quiz[schedule[0].data.id].score}}</a>
                         </td>
                       </ng-template>
                       <ng-template #notzero>
                         <td class="att_onTime">
-                            {{student.quiz[schedule.id].score}}
+                            {{student.quiz[schedule[0].data.id].score}}
                         </td>
                       </ng-template>
                     </ng-container>
@@ -395,8 +395,8 @@
                     <th *ngIf="showGroup.flag" style="width:50px; text-align: center">กลุ่ม</th>
                     <th *ngFor="let schedule of scheduleHomeworkSortList ; let k = index" style="width:50px ;text-align: center">
                       <button type="button" class="btn btn-light" placement="top"
-                        ngbPopover="{{schedule.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
-                        {{k+1}}
+                        ngbPopover="{{schedule[0].data.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                        {{schedule[1].index}}
                       </button>
                     </th>
                     <th *ngIf="showPercentageH.flag" style="width:50px; text-align: center">
@@ -416,7 +416,7 @@
                     <!--/-->
                     <ng-container *ngFor="let schedule of scheduleHomeworkSortList ; let k = index" style="text-align: center">
                       <td *ngIf="student.hw != undefined
-                          && student.hw[schedule.id] != undefined;
+                          && student.hw[schedule[0].data.id] != undefined;
                           then studentScore; else errorData">
                       </td>
                       <!--/-->
@@ -424,15 +424,15 @@
                         <td class="red"></td>
                       </ng-template>
                       <ng-template #studentScore>
-                        <td *ngIf="student.hw[schedule.id].score == '0';
+                        <td *ngIf="student.hw[schedule[0].data.id].score == '0';
                                   else notzero" style="text-align: center">
                           <a class="text-danger">
-                          {{student.hw[schedule.id].score}}</a>
+                          {{student.hw[schedule[0].data.id].score}}</a>
                         </td>
                       </ng-template>
                       <ng-template #notzero>
                         <td class="att_onTime">
-                            {{student.hw[schedule.id].score}}
+                            {{student.hw[schedule[0].data.id].score}}
                         </td>
                       </ng-template>
                     </ng-container>

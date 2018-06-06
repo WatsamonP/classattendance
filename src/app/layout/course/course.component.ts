@@ -158,7 +158,7 @@ export class CourseComponent implements OnInit {
             var count=0;
             for (sdtLen; sdtLen > i; i++) {
               count++;
-              this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
+              this.scheduleAttendanceSortList[i] = [{data: this.scheduleAttendanceList[i]},{index : i+1}];
               if(count==5){
                 break;
               }
@@ -183,7 +183,7 @@ export class CourseComponent implements OnInit {
           var count=0;
           for (sdtLen; sdtLen > i; i++) {
             count++;
-            this.scheduleQuizSortList.push(this.scheduleQuizList[i]);
+            this.scheduleQuizSortList[i] = [{data: this.scheduleQuizList[i]},{index : i+1}];
             if(count==5){
               break;
             }
@@ -208,7 +208,7 @@ export class CourseComponent implements OnInit {
           var count=0;
           for (sdtLen; sdtLen > i; i++) {
             count++;
-            this.scheduleHomeworkSortList.push(this.scheduleHomeworkList[i]);
+            this.scheduleHomeworkSortList[i] = [{data: this.scheduleHomeworkList[i]},{index : i+1}];
             if(count==5){
               break;
             }
@@ -244,7 +244,7 @@ export class CourseComponent implements OnInit {
             var count=0;
             for (sdtLen; sdtLen > i; i++) {
               count++;
-              this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
+              this.scheduleAttendanceSortList[i] = [{data: this.scheduleAttendanceList[i]},{index : i+1}];
               if(count==5){
                 break;
               }
@@ -269,7 +269,7 @@ export class CourseComponent implements OnInit {
           var count=0;
           for (sdtLen; sdtLen > i; i++) {
             count++;
-            this.scheduleQuizSortList.push(this.scheduleQuizList[i]);
+            this.scheduleQuizSortList[i] = [{data: this.scheduleQuizList[i]},{index : i+1}];
             if(count==5){
               break;
             }
@@ -294,7 +294,7 @@ export class CourseComponent implements OnInit {
           var count=0;
           for (sdtLen; sdtLen > i; i++) {
             count++;
-            this.scheduleHomeworkSortList.push(this.scheduleHomeworkList[i]);
+            this.scheduleHomeworkSortList[i] = [{data: this.scheduleHomeworkList[i]},{index : i+1}];
             if(count==5){
               break;
             }
@@ -320,9 +320,12 @@ export class CourseComponent implements OnInit {
     this.scheduleAttendanceSortList = [];
     console.log(id-5);
     var i= id-5;
+    var j=0;
     for (id ; id > i; i++) {
-      if(this.scheduleAttendanceList[i] != undefined)
-        this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
+      if(this.scheduleAttendanceList[i] != undefined){
+        this.scheduleAttendanceSortList[j] = [{data: this.scheduleAttendanceList[i]},{index : i+1}];
+        j++;
+      }
     };
     console.log(this.scheduleAttendanceSortList);
   }
@@ -331,9 +334,12 @@ export class CourseComponent implements OnInit {
     this.scheduleQuizSortList = [];
     console.log(id-5);
     var i= id-5;
+    var j=0;
     for (id ; id > i; i++) {
-      if(this.scheduleQuizList[i] != undefined)
-        this.scheduleQuizSortList.push(this.scheduleQuizList[i]);
+      if(this.scheduleQuizList[i] != undefined){
+        this.scheduleQuizSortList[j] = [{data: this.scheduleQuizList[i]},{index : i+1}];
+        j++;
+      }
     };
     console.log(this.scheduleQuizSortList);
   }
@@ -342,9 +348,12 @@ export class CourseComponent implements OnInit {
     this.scheduleHomeworkSortList = [];
     console.log(id-5);
     var i= id-5;
+    var j=0;
     for (id ; id > i; i++) {
-      if(this.scheduleHomeworkList[i] != undefined)
-        this.scheduleHomeworkSortList.push(this.scheduleHomeworkList[i]);
+      if(this.scheduleHomeworkList[i] != undefined){
+        this.scheduleHomeworkSortList[j] = [{data: this.scheduleHomeworkList[i]},{index : i+1}];
+        j++;
+      }
     };
     console.log(this.scheduleHomeworkSortList);
   }
