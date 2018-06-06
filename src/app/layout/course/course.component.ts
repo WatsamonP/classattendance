@@ -58,10 +58,14 @@ export class CourseComponent implements OnInit {
   x : any;
   y : any;
   percentFlag = false;
-  totalStudentPercent = [];
+  totalStudentPercentA = [];
+  totalStudentPercentQ = [];
+  totalStudentPercentH = [];
   totalMissClass = [];
   showMissClass = {flag: false, name:"OFF"};
-  showPercentage= {flag: false, name:"OFF"};
+  showPercentageA= {flag: false, name:"OFF"};
+  showPercentageQ= {flag: false, name:"OFF"};
+  showPercentageH= {flag: false, name:"OFF"};
   showGroup= {flag: false, name:"OFF"};
   scoreCase = {high: 5, med:4, low:2};
   btn_attendance = [];
@@ -75,6 +79,9 @@ export class CourseComponent implements OnInit {
   years: any;
   yearsList: number[] = [];
   terms: number[] = [1,2,3];
+  percentAtt: number;
+  percentQuiz: number;
+  percentHw: number;
   constructor(
     private auth: AuthService,
     private courseService: CourseService,
@@ -95,7 +102,11 @@ export class CourseComponent implements OnInit {
       let group = params.get('group').toString();
       this.courseId = id;
       this.groupId = group;
+<<<<<<< HEAD
       this.totalStudentPercent = [];
+=======
+      console.log(this.groupId);
+>>>>>>> 154951c4b8446fdfe989ead6031c35f77cae541c
 
       //Query Course
       this.db.list(`users/${this.auth.currentUserId}/course/`).snapshotChanges().map(actions => {
@@ -106,6 +117,9 @@ export class CourseComponent implements OnInit {
             if(this.courseList[i].id == this.courseId ){
               this.groupList = Object.keys(this.courseList[i].group)
                 .map(key => Object.assign({ key }, this.courseList[i].group[key]));
+              this.percentAtt = this.courseList[i].percentAtt;
+              this.percentQuiz = this.courseList[i].percentQuiz;
+              this.percentHw = this.courseList[i].percentHw;
             }
           }
             return items.map(item => item.key);
@@ -306,8 +320,7 @@ export class CourseComponent implements OnInit {
     };
   }
 
-  findPercentage(percent : Number){
-
+  findPercentageA(percent : Number){
     let schedule,score,temp,temp2,fullScore;
     if(this.scheduleAttendanceList.length==0){
       console.log('ZERO')
@@ -322,9 +335,55 @@ export class CourseComponent implements OnInit {
           fullScore = fullScore + Number(this.scheduleAttendanceList[j].onTimeScore);
           temp = temp + score;
         }
-        this.totalStudentPercent.push(Number(temp)*Number(percent)/Number(fullScore));
+        this.totalStudentPercentA.push(Number(temp)*Number(percent)/Number(fullScore));
         this.studentListArr = Object.keys(this.studentListArr)
-        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercent[key]}));
+        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentA[key]}));
+
+      }
+    }
+  }
+
+  findPercentageQ(percent : Number){
+    let schedule,score,temp,temp2,fullScore;
+    if(this.scheduleQuizList.length==0){
+      console.log('ZERO')
+    }else{
+
+      for(var i=0; i<this.studentListArr.length ; i++){
+        temp = 0;
+        fullScore = 0;
+        for(var j=0; j<this.scheduleQuizList.length ; j++){
+          schedule = this.scheduleQuizList[j].key;
+          score = this.studentListArr[i].quiz[schedule].score;
+          fullScore = fullScore + Number(this.scheduleQuizList[j].totalScore);
+          temp = temp + score;
+        }
+        this.totalStudentPercentQ.push(Number(temp)*Number(percent)/Number(fullScore));
+        this.studentListArr = Object.keys(this.studentListArr)
+        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentQ[key]}));
+
+      }
+    }
+  }
+
+  findPercentageH(percent : Number){
+    let schedule,score,temp,temp2,fullScore;
+    if(this.scheduleAttendanceList.length==0){
+      console.log('ZERO')
+    }else{
+
+      for(var i=0; i<this.studentListArr.length ; i++){
+        temp = 0;
+        fullScore = 0;
+        for(var j=0; j<this.scheduleHomeworkList.length ; j++){
+          schedule = this.scheduleHomeworkList[j].key;
+          score = this.studentListArr[i].hw[schedule].score;
+          fullScore = fullScore + Number(this.scheduleHomeworkList[j].totalScore);
+          temp = temp + score;
+        }
+        this.totalStudentPercentH.push(Number(temp)*Number(percent)/Number(fullScore));
+        this.studentListArr = Object.keys(this.studentListArr)
+        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentH[key]}));
 
       }
     }
@@ -434,22 +493,60 @@ export class CourseComponent implements OnInit {
   onSwitchcsv(){
     this.csvhidden= !this.csvhidden;
   }
-  onSwitchShowPercent(percent){
+  onSwitchShowPercentA(percent){
     if(percent != undefined){
-      this.showPercentage.flag= !this.showPercentage.flag;
-      if(this.showPercentage.flag){
-        this.showPercentage.name = "ON";
-        this.totalStudentPercent = [];
-        this.findPercentage(percent);
+      this.showPercentageA.flag= !this.showPercentageA.flag;
+      if(this.showPercentageA.flag){
+        this.showPercentageA.name = "ON";
+        this.totalStudentPercentA = [];
+        this.showPercentageQ.flag = false;
+        this.showPercentageH.flag = false;
+        this.findPercentageA(percent);
       }else{
-        this.showPercentage.name = "OFF";
-        this.totalStudentPercent = [];
+        this.showPercentageA.name = "OFF";
+        this.totalStudentPercentA = [];
       }
     }else{
-      alert('แก้ไข Percent การเข้าเรียน');
+      this.toastr.warning("กรุณาตั้งค่า % การเข้าเรียน");
     }
-
   }
+
+  onSwitchShowPercentQ(percent){
+    if(percent != undefined){
+      this.showPercentageQ.flag= !this.showPercentageQ.flag;
+      if(this.showPercentageQ.flag){
+        this.showPercentageQ.name = "ON";
+        this.totalStudentPercentQ = [];
+        this.showPercentageA.flag = false;
+        this.showPercentageH.flag = false;
+        this.findPercentageQ(percent);
+      }else{
+        this.showPercentageQ.name = "OFF";
+        this.totalStudentPercentQ = [];
+      }
+    }else{
+      this.toastr.warning("กรุณาตั้งค่า % ควิซ");
+    }
+  }
+
+  onSwitchShowPercentH(percent){
+    if(percent != undefined){
+      this.showPercentageH.flag= !this.showPercentageH.flag;
+      if(this.showPercentageH.flag){
+        this.showPercentageH.name = "ON";
+        this.totalStudentPercentH = [];
+        this.showPercentageA.flag = false;
+        this.showPercentageQ.flag = false;
+        this.findPercentageH(percent);
+      }else{
+        this.showPercentageH.name = "OFF";
+        this.totalStudentPercentH = [];
+      }
+    }else{
+      this.toastr.warning("กรุณาตั้งค่า % การบ้าน");
+    }
+  }
+
   onSwitchShowMissClass(){
     this.showMissClass.flag= !this.showMissClass.flag;
     if(this.showMissClass.flag){
@@ -529,23 +626,26 @@ export class CourseComponent implements OnInit {
     var exA = [];
     var exQ = [];
     var exH = [];
-    if(this.scheduleAttendanceList.length > 0)
+    if(this.scheduleAttendanceList.length > 0){
+      this.findPercentageA(this.percentAtt);
       for(var i=0; i<this.studentListArr.length; i++){
         var temp: {
           id: string,
           name: string,
+          percentAtt: number,
           att1: string, att2: string, att3: string, att4: string, att5: string,
           att6: string, att7: string, att8: string, att9: string, att10: string,
           att11: string, att12: string, att13: string, att14: string, att15: string,
           att16: string, att17: string, att18: string, att19: string, att20: string,
           att21: string, att22: string, att23: string, att24: string, att25: string,
           att26: string, att27: string, att28: string, att29: string, att30: string
-        } = {} as {id: string, name: string, att1: string,att2: string,att3: string, att4: string, att5: string,att6: string, att7: string,
+        } = {} as {id: string, name: string, percentAtt: number, att1: string,att2: string,att3: string, att4: string, att5: string,att6: string, att7: string,
           att8: string, att9: string, att10: string,att11: string, att12: string, att13: string, att14: string, att15: string,att16: string,
           att17: string, att18: string, att19: string, att20: string,att21: string, att22: string, att23: string, att24: string, att25: string,
           att26: string, att27: string, att28: string, att29: string, att30: string};
         temp.id = this.studentListArr[i].id;
         temp.name = this.studentListArr[i].name;
+        temp.percentAtt = this.studentListArr[i].percent;
         temp.att1 = this.studentListArr[i].attendance[this.scheduleAttendanceList[0].id].score;
         if(this.scheduleAttendanceList.length <= 1){ exA.push(temp); continue; }
         temp.att2 = this.studentListArr[i].attendance[this.scheduleAttendanceList[1].id].score;
@@ -605,20 +705,24 @@ export class CourseComponent implements OnInit {
         temp.att29 = this.studentListArr[i].attendance[this.scheduleAttendanceList[28].id].score;
         if(this.scheduleAttendanceList.length <= 29){ exA.push(temp); continue; }
         temp.att30 = this.studentListArr[i].attendance[this.scheduleAttendanceList[29].id].score;
+        if(this.scheduleAttendanceList.length <= 30){ exA.push(temp); continue; }
       };
+    }
 
-    if(this.scheduleQuizList.length > 0)
+    if(this.scheduleQuizList.length > 0){
+      this.findPercentageQ(this.percentQuiz);
       for(var i=0; i<this.studentListArr.length; i++){
         var temp2: {
           id: string,
-          name: string,
+          name: string, percentQuiz: number,
           quiz1: string, quiz2: string, quiz3: string, quiz4: string, quiz5: string,
           quiz6: string, quiz7: string, quiz8: string, quiz9: string, quiz10: string,
           quiz11: string, quiz12: string, quiz13: string, quiz14: string, quiz15: string
-          } = {} as {id: string, name: string, quiz1: string,quiz2: string,quiz3: string, quiz4: string, quiz5: string,quiz6: string, quiz7: string,
+          } = {} as {id: string, name: string, percentQuiz: number, quiz1: string,quiz2: string,quiz3: string, quiz4: string, quiz5: string,quiz6: string, quiz7: string,
               quiz8: string, quiz9: string, quiz10: string,quiz11: string, quiz12: string, quiz13: string, quiz14: string, quiz15: string };
           temp2.id = this.studentListArr[i].id;
           temp2.name = this.studentListArr[i].name;
+          temp2.percentQuiz = this.studentListArr[i].percent;
           temp2.quiz1 = this.studentListArr[i].quiz[this.scheduleQuizList[0].id].score;
           if(this.scheduleQuizList.length <= 1){ exQ.push(temp2); continue; }
           temp2.quiz2 = this.studentListArr[i].quiz[this.scheduleQuizList[1].id].score;
@@ -648,20 +752,23 @@ export class CourseComponent implements OnInit {
           temp2.quiz14 = this.studentListArr[i].quiz[this.scheduleQuizList[13].id].score;
           if(this.scheduleQuizList.length <= 14){ exQ.push(temp2); continue; }
           temp2.quiz15 = this.studentListArr[i].quiz[this.scheduleQuizList[14].id].score;
+          if(this.scheduleQuizList.length <= 15){ exQ.push(temp2); continue; }
       };
-
-    if(this.scheduleHomeworkList.length > 0)
-        for(var i=0; i<this.studentListArr.length; i++){
+    }
+    if(this.scheduleHomeworkList.length > 0){
+      this.findPercentageH(this.percentHw);
+      for(var i=0; i<this.studentListArr.length; i++){
           var temp3: {
             id: string,
-            name: string,
+            name: string, percentHw: number,
             hw1: string, hw2: string, hw3: string, hw4: string, hw5: string,
             hw6: string, hw7: string, hw8: string, hw9: string, hw10: string,
             hw11: string, hw12: string, hw13: string, hw14: string, hw15: string
-          } = {} as {id: string, name: string, hw1: string,hw2: string,hw3: string, hw4: string, hw5: string,hw6: string, hw7: string,
+          } = {} as {id: string, name: string, percentHw: number, hw1: string,hw2: string,hw3: string, hw4: string, hw5: string,hw6: string, hw7: string,
             hw8: string, hw9: string, hw10: string,hw11: string, hw12: string, hw13: string, hw14: string, hw15: string };
           temp3.id = this.studentListArr[i].id;
           temp3.name = this.studentListArr[i].name;
+          temp3.percentHw = this.studentListArr[i].percent;
           temp3.hw1 = this.studentListArr[i].hw[this.scheduleHomeworkList[0].id].score;
           if(this.scheduleHomeworkList.length <= 1){ exH.push(temp3); continue; }
           temp3.hw2 = this.studentListArr[i].hw[this.scheduleHomeworkList[1].id].score;
@@ -691,8 +798,10 @@ export class CourseComponent implements OnInit {
           temp3.hw14 = this.studentListArr[i].hw[this.scheduleHomeworkList[13].id].score;
           if(this.scheduleHomeworkList.length <= 14){ exH.push(temp3); continue; }
           temp3.hw15 = this.studentListArr[i].hw[this.scheduleHomeworkList[14].id].score;
+          if(this.scheduleHomeworkList.length <= 15){ exH.push(temp3); continue; }
       };
-      console.log(this.studentListArr);
+    }
+    console.log(this.studentListArr);
     console.log(exA);
     console.log(exQ);
     console.log(exH);

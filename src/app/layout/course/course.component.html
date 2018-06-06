@@ -118,8 +118,8 @@
                   </div>&nbsp;&nbsp;&nbsp;
                   <div class="text-primary">
                       % คะแนน<br>
-                    <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercent(item.percentAtt)">
-                      {{showPercentage.name}}
+                    <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentA(item.percentAtt)">
+                      {{showPercentageA.name}}
                     </button>
                   </div>&nbsp;&nbsp;&nbsp;
                 </div>
@@ -138,13 +138,13 @@
                     <th *ngIf="showMissClass.flag" style="width:50px; text-align: center">
                       <div class="text-danger" style="font-size: 12px">ขาดเรียน</div>
                     </th>
-                    <th *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:50px ;text-align: center">
+                    <th *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:40px ;text-align: center">
                       <button type="button" class="btn btn-light" placement="top"
                         ngbPopover="{{schedule.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
                         {{k+1}}
                       </button>
                     </th>
-                    <th *ngIf="showPercentage.flag" style="width:50px; text-align: center">
+                    <th *ngIf="showPercentageA.flag" style="width:50px; text-align: center">
                       <div class="text-primary" style="font-size: 14px">{{item.percentAtt}}%</div>
                     </th>
                     <th class="no-border"></th>
@@ -218,9 +218,9 @@
                       </ng-template>
                     </ng-container>
                     <!--/-->
-                    <ng-container *ngIf="showPercentage.flag" style="text-align: center">
+                    <ng-container *ngIf="showPercentageA.flag" style="text-align: center">
                       <td class="att_Percent">
-                        {{student.percent}}
+                        {{student.percent | number:'1.2'}}
                       </td>
                     </ng-container>
                     <td style="display:none;"></td>
@@ -237,7 +237,7 @@
                         popoverTitle="รายละเอียด">
                           <b>{{schedule.countOnTime + schedule.countLate}}/{{studentListArr.length}}</b></a>
                       </td>
-                    <td *ngIf="showPercentage.flag"></td>
+                    <td *ngIf="showPercentageA.flag"></td>
                     <td style="display:none;"></td>
                   </tr>
                 </tbody>
@@ -272,8 +272,8 @@
                   </div>&nbsp;&nbsp;&nbsp;
                   <div class="text-primary">
                       % คะแนน<br>
-                    <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercent(item.percentQuiz)">
-                      {{showPercentage.name}}
+                    <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentQ(item.percentQuiz)">
+                      {{showPercentageQ.name}}
                     </button>
                   </div>&nbsp;&nbsp;&nbsp;
                 </div>
@@ -295,8 +295,8 @@
                         {{k+1}}
                       </button>
                     </th>
-                    <th *ngIf="showPercentage.flag" style="width:50px; text-align: center">
-                      <div class="text-primary" style="font-size: 14px">{{item.percentAtt}}%</div>
+                    <th *ngIf="showPercentageQ.flag" style="width:50px; text-align: center">
+                      <div class="text-primary" style="font-size: 14px">{{item.percentQuiz}}%</div>
                     </th>
                     <th class="no-border"></th>
                   </tr>
@@ -333,22 +333,14 @@
                       </ng-template>
                     </ng-container>
                     <!--/-->
-                    <ng-container *ngIf="showPercentage.flag" style="text-align: center">
+                    <ng-container *ngIf="showPercentageQ.flag" style="text-align: center">
                       <td class="att_Percent">
-                        {{student.percent}}
+                        {{student.percent  | number:'1.2'}}
                       </td>
                     </ng-container>
                     <td style="display:none;"></td>
                   </tr>
-                  <!--Total Row-->
-                  <tr>
-                    <td colspan="3" style="width:70px; text-align: center">Total</td>
-                    <td *ngIf="showGroup.flag"></td>
-                  <!--  <td *ngFor="let schedule of scheduleQuizSortList ; let k = index" style="width:50px ;text-align: center">
-                      {{schedule.countOnTime + schedule.countLate}}</td>-->
-                    <td *ngIf="showPercentage.flag"></td>
-                    <td class="no-border"></td>
-                  </tr>
+
                 </tbody>
               </table>
             </div>
@@ -381,8 +373,8 @@
                   </div>&nbsp;&nbsp;&nbsp;
                   <div class="text-primary">
                       % คะแนน<br>
-                    <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercent(item.percentHw)">
-                      {{showPercentage.name}}
+                    <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentH(item.percentHw)">
+                      {{showPercentageH.name}}
                     </button>
                   </div>&nbsp;&nbsp;&nbsp;
                 </div>
@@ -404,8 +396,8 @@
                         {{k+1}}
                       </button>
                     </th>
-                    <th *ngIf="showPercentage.flag" style="width:50px; text-align: center">
-                      <div class="text-primary" style="font-size: 14px">{{item.percentAtt}}%</div>
+                    <th *ngIf="showPercentageH.flag" style="width:50px; text-align: center">
+                      <div class="text-primary" style="font-size: 14px">{{item.percentHw}}%</div>
                     </th>
                     <th class="no-border"></th>
                   </tr>
@@ -442,22 +434,14 @@
                       </ng-template>
                     </ng-container>
                     <!--/-->
-                    <ng-container *ngIf="showPercentage.flag" style="text-align: center">
+                    <ng-container *ngIf="showPercentageH.flag" style="text-align: center">
                       <td class="att_Percent">
-                        {{student.percent}}
+                        {{student.percent  | number:'1.2'}}
                       </td>
                     </ng-container>
                     <td style="display:none;"></td>
                   </tr>
-                  <!--Total Row-->
-                  <tr>
-                    <td colspan="3" style="width:70px; text-align: center">Total</td>
-                    <td *ngIf="showGroup.flag"></td>
-                  <!--  <td *ngFor="let schedule of scheduleHomeworkSortList ; let k = index" style="width:50px ;text-align: center">
-                      {{schedule.countOnTime + schedule.countLate}}</td>-->
-                    <td *ngIf="showPercentage.flag"></td>
-                    <td class="no-border"></td>
-                  </tr>
+
                 </tbody>
               </table>
             </div>
