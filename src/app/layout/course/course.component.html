@@ -46,6 +46,9 @@
           <input type="text" formControlName="id" class="form-control" placeholder="รหัสประจำตัว"
               [(ngModel)]="studentService.selectedStudent.id">
           <div *ngIf="id.errors && isSubmit != null" [ngClass] = "'error'">
+            <div *ngIf="id.errors.required">
+              <font size="2" color="red">กรุณาป้อนรหัสนักศึกษา</font>
+            </div>
             <div *ngIf="id.errors.pattern">
               <font size="2" color="red">รหัสนักศึกษาไม่ถูกต้อง</font>
             </div>
@@ -53,14 +56,14 @@
         </div>
         <div class="col-md-5">
           <input type="text" formControlName="name" class="form-control" placeholder="ชื่อ-นามสกุล"
-            [(ngModel)]="studentService.selectedStudent.name">
+              [(ngModel)]="studentService.selectedStudent.name">
         </div>
         <div class="col-md-2">
           <input type="text" formControlName="group" class="form-control" placeholder="กลุ่มเรียน"
               [(ngModel)]="studentService.selectedStudent.group">
           <div *ngIf="group.errors && isSubmit != null" [ngClass] = "'error'">
-            <div *ngIf="group.errors.pattern">
-              <font size="2" color="red">ไม่มีกลุ่มเรียนนี้</font>
+            <div *ngIf="group.errors.required">
+              <font size="2" color="red">กรุณาป้อนกลุ่มเรียน</font>
             </div>
           </div>
         </div>
@@ -490,7 +493,6 @@
           <label class="col-sm-3 col-form-label">เทอม</label>
           <div class="col-sm-9">
             <select formControlName="trimester" class="form-control"  [ngModel]="item.trimester" >
-              <option>เลือกเทอม</option>
               <option *ngFor="let term of terms">{{term}}</option>
             </select>
           </div>

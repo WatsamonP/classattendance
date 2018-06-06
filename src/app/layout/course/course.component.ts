@@ -131,7 +131,7 @@ export class CourseComponent implements OnInit {
 
           let temp = [];
           for(var i=0; i<this.studentList.length ;i++){
-            console.log(this.studentList[i].group + ' HH' + this.groupId);
+            //console.log(this.studentList[i].group + ' HH' + this.groupId);
             if(this.studentList[i].group == this.groupId){
               temp.push(this.studentList[i]);
               continue;
@@ -149,11 +149,9 @@ export class CourseComponent implements OnInit {
             this.scheduleAttendanceList = items;
             this.btn_attendance =[];
             for(var i=0 ; i<this.scheduleAttendanceList.length ;i++){
-              if(i>3){
-                this.btn_attendance.push({id:i+1,name: '-'+(i+1)+'-'});
-              }
+                if(i%5==0)
+                  this.btn_attendance.push({id:i+5,name: (i+1)+'-'+(i+5)});
             }
-
             let sdtLen =  this.scheduleAttendanceList.length;
             this.scheduleAttendanceSortList = [];
             var i=0;
@@ -161,7 +159,7 @@ export class CourseComponent implements OnInit {
             for (sdtLen; sdtLen > i; i++) {
               count++;
               this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
-              if(count==7){
+              if(count==5){
                 break;
               }
             };
@@ -173,11 +171,10 @@ export class CourseComponent implements OnInit {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scheduleQuizList = items;
-          this.btn_attendance =[];
+          this.btn_quiz =[];
           for(var i=0 ; i<this.scheduleQuizList.length ;i++){
-            if(i>3){
-              this.btn_quiz.push({id:i+1,name: '-'+(i+1)+'-'});
-            }
+              if(i%5==0)
+                this.btn_quiz.push({id:i+5,name: (i+1)+'-'+(i+5)});
           }
 
           let sdtLen =  this.scheduleQuizList.length;
@@ -187,7 +184,7 @@ export class CourseComponent implements OnInit {
           for (sdtLen; sdtLen > i; i++) {
             count++;
             this.scheduleQuizSortList.push(this.scheduleQuizList[i]);
-            if(count==7){
+            if(count==5){
               break;
             }
           };
@@ -201,9 +198,8 @@ export class CourseComponent implements OnInit {
           this.scheduleHomeworkList = items;
           this.btn_hw =[];
           for(var i=0 ; i<this.scheduleHomeworkList.length ;i++){
-            if(i>3){
-              this.btn_hw.push({id:i+1,name: '-'+(i+1)+'-'});
-            }
+              if(i%5==0)
+                this.btn_hw.push({id:i+5,name: (i+1)+'-'+(i+5)});
           }
 
           let sdtLen =  this.scheduleHomeworkList.length;
@@ -213,7 +209,7 @@ export class CourseComponent implements OnInit {
           for (sdtLen; sdtLen > i; i++) {
             count++;
             this.scheduleHomeworkSortList.push(this.scheduleHomeworkList[i]);
-            if(count==7){
+            if(count==5){
               break;
             }
           };
@@ -239,11 +235,9 @@ export class CourseComponent implements OnInit {
             this.scheduleAttendanceList = items;
             this.btn_attendance =[];
             for(var i=0 ; i<this.scheduleAttendanceList.length ;i++){
-              if(i>3){
-                this.btn_attendance.push({id:i+1,name: '-'+(i+1)+'-'});
-              }
+                if(i%5==0)
+                  this.btn_attendance.push({id:i+5,name: (i+1)+'-'+(i+5)});
             }
-
             let sdtLen =  this.scheduleAttendanceList.length;
             this.scheduleAttendanceSortList = [];
             var i=0;
@@ -251,7 +245,7 @@ export class CourseComponent implements OnInit {
             for (sdtLen; sdtLen > i; i++) {
               count++;
               this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
-              if(count==7){
+              if(count==5){
                 break;
               }
             };
@@ -263,6 +257,23 @@ export class CourseComponent implements OnInit {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scheduleQuizList = items;
+          this.btn_quiz =[];
+          for(var i=0 ; i<this.scheduleQuizList.length ;i++){
+              if(i%5==0)
+                this.btn_quiz.push({id:i+5,name: (i+1)+'-'+(i+5)});
+          }
+
+          let sdtLen =  this.scheduleQuizList.length;
+          this.scheduleQuizSortList = [];
+          var i=0;
+          var count=0;
+          for (sdtLen; sdtLen > i; i++) {
+            count++;
+            this.scheduleQuizSortList.push(this.scheduleQuizList[i]);
+            if(count==5){
+              break;
+            }
+          };
             return items.map(item => item.key);
         });
 
@@ -271,13 +282,29 @@ export class CourseComponent implements OnInit {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scheduleHomeworkList = items;
+          this.btn_hw =[];
+          for(var i=0 ; i<this.scheduleHomeworkList.length ;i++){
+              if(i%5==0)
+                this.btn_hw.push({id:i+5,name: (i+1)+'-'+(i+5)});
+          }
+
+          let sdtLen =  this.scheduleHomeworkList.length;
+          this.scheduleHomeworkSortList = [];
+          var i=0;
+          var count=0;
+          for (sdtLen; sdtLen > i; i++) {
+            count++;
+            this.scheduleHomeworkSortList.push(this.scheduleHomeworkList[i]);
+            if(count==5){
+              break;
+            }
+          };
             return items.map(item => item.key);
         });
 
       } //End All Group
 
     });
-
 
     // buildForm for Student /////////////////////////////////////////////////////////////
     this.buildForm();
@@ -291,29 +318,35 @@ export class CourseComponent implements OnInit {
   radioCheckA(id){
     let sdtLen =  this.scheduleAttendanceList.length;
     this.scheduleAttendanceSortList = [];
-    var i=0;
-    let count=0
+    console.log(id-5);
+    var i= id-5;
     for (id ; id > i; i++) {
-      this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
+      if(this.scheduleAttendanceList[i] != undefined)
+        this.scheduleAttendanceSortList.push(this.scheduleAttendanceList[i]);
     };
+    console.log(this.scheduleAttendanceSortList);
   }
   radioCheckQ(id){
     let sdtLen =  this.scheduleQuizList.length;
     this.scheduleQuizSortList = [];
-    var i=0;
-    let count=0
+    console.log(id-5);
+    var i= id-5;
     for (id ; id > i; i++) {
-      this.scheduleQuizSortList.push(this.scheduleQuizList[i]);
+      if(this.scheduleQuizList[i] != undefined)
+        this.scheduleQuizSortList.push(this.scheduleQuizList[i]);
     };
+    console.log(this.scheduleQuizSortList);
   }
   radioCheckH(id){
     let sdtLen =  this.scheduleHomeworkList.length;
     this.scheduleHomeworkSortList = [];
-    var i=0;
-    let count=0
+    console.log(id-5);
+    var i= id-5;
     for (id ; id > i; i++) {
-      this.scheduleHomeworkSortList.push(this.scheduleHomeworkList[i]);
+      if(this.scheduleHomeworkList[i] != undefined)
+        this.scheduleHomeworkSortList.push(this.scheduleHomeworkList[i]);
     };
+    console.log(this.scheduleHomeworkSortList);
   }
 
   findPercentageA(percent : Number){
@@ -441,7 +474,7 @@ export class CourseComponent implements OnInit {
         //Validators.required
       ]),
       group: new FormControl('', [
-        //Validators.required
+        Validators.required
       ]),
     });
     //
@@ -469,9 +502,7 @@ export class CourseComponent implements OnInit {
       this.studentService.insertStudentCid(this.studentForm.value,cid);
       this.toastr.success("Add Successfully");
     }else{
-      alert('ไม่มีกลุ่มเรียนนี้');
-      // ปล ใส่ Validation ให้หน่อย
-      // หรือ แก้ในหน้า HTML ให้เป็น List
+      this.toastr.warning("ไม่มีกลุ่มเรียนนี้");
     }
   }
 
@@ -595,27 +626,34 @@ export class CourseComponent implements OnInit {
   }
 
   onUploadcsv(cid : string){
-    console.log(this.studentForm.value)
     var csvArray = this.csv.split(/\r?\n/);
     var csvArray2d = new Array();
     var regex = new RegExp("^[ก-๙a-zA-Z]+\\s[ก-๙a-zA-Z]+$");
-    for (var i = 1; i < csvArray.length-1; i++){
+    var overgroup = false;
+    for (var i = 1; i < csvArray.length-2; i++){
       csvArray2d[i] = csvArray[i].split(",");
-      //console.log(csvArray2d[i][2]);
-      //console.log(regex.test(csvArray2d[i][2]));
-      if(regex.test(csvArray2d[i][2])){
-        this.studentForm.value.id = csvArray2d[i][1];
-        this.studentForm.value.name = csvArray2d[i][2];
-        this.studentForm.value.group = csvArray2d[i][4];
-        this.studentService.insertStudentCid(this.studentForm.value,cid);
-        if(i == csvArray.length-2)
-          this.toastr.success("Upload Successfully");
-      }else{
-        this.toastr.error("Upload Failed : Please upload UTF-8 Format");
-        break;
-      }
-
+      if(csvArray2d[i][4] > this.groupList.length-1)
+        overgroup = true;
     }
+    console.log(overgroup)
+    if(overgroup)
+      this.toastr.warning("จำนวนกลุ่มในไฟล์ csv มากกว่า จำนวนกลุ่มที่สร้างไว้");
+    else{
+      for (var i = 1; i < csvArray.length-2; i++){
+        if(regex.test(csvArray2d[i][2])){
+          this.studentForm.value.id = csvArray2d[i][1];
+          this.studentForm.value.name = csvArray2d[i][2];
+          this.studentForm.value.group = csvArray2d[i][4];
+          this.studentService.insertStudentCid(this.studentForm.value,cid);
+          if(i == csvArray.length-2)
+            this.toastr.success("Upload Successfully");
+        }else{
+            this.toastr.error("Upload Failed : Please upload UTF-8 Format");
+            break;
+        }
+      }
+    }
+    this.csv = "";
   }
   // to excel
   exportToExcel(event) {
