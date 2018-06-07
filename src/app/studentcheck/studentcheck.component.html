@@ -122,33 +122,370 @@
   <br>
   <div class="row">
     <div *ngIf="showTableData">
-      <div class="card" style="padding: 5px">
+      <div class="card" style="padding: 5px;width: 100%">
         <div class="text-left" style="padding-top: 5px;padding-left: 5px">
           <h3 class="page-header text-primary">
-            <i class="fa fa-book"></i> วิชา {{score.id}} : {{score.name}}&nbsp;&nbsp;
+            <i class="fa fa-book"></i> วิชา {{item.id}} : {{item.name}}&nbsp;&nbsp;
           </h3>
         </div>
-        <div class="card-body table-responsive">
+        <div class="card-body text-dark">
           <ngb-tabset>
             <!--AttendanceTab-->
             <ngb-tab title="เข้าเรียน">
               <ng-template ngbTabContent>
-                
-                
+                <!--ON/OFF Switch-->
+                <div class="row justify-content-between" style="padding-top: 15px">
+                  <div class="col">
+                    <div class="input-group-prepend" style="padding-top: 10px">
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label *ngFor="let slot of btn_attendance"
+                            class="btn btn-light active" (click)="radioCheckA(slot.id)">
+                          <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
+                            {{slot.name}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="row justify-content-end" style="text-align: center">
+                      <div class="text-warning">
+                        แสดงกลุ่มเรียน<br>
+                        <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
+                          {{showGroup.name}}
+                        </button>
+                      </div>&nbsp;&nbsp;&nbsp;
+                      <div class="text-danger">
+                        ขาดเรียน<br>
+                        <button type="button" class="btn btn-danger btn-sm" (click)="onSwitchShowMissClass()">
+                          {{showMissClass.name}}
+                        </button>
+                      </div>&nbsp;&nbsp;&nbsp;
+                      <div class="text-primary">
+                          % คะแนน<br>
+                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentA(item.percentAtt)">
+                          {{showPercentageA.name}}
+                        </button>
+                      </div>&nbsp;&nbsp;&nbsp;
+                    </div>
+                  </div>
+                </div>
+              <!---->
+                <!--Table Content-->
+                <div class="card-body">
+                  <table class="table table-hover table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="width:70px; text-align: center">#</th>
+                        <th style="width:100px; text-align: center">ID</th>
+                        <th style="width:250px; text-align: center">ชื่อ-นามสกุล</th>
+                        <th *ngIf="showGroup.flag" style="width:50px; text-align: center">กลุ่ม</th>
+                        <th *ngIf="showMissClass.flag" style="width:50px; text-align: center">
+                          <div class="text-danger" style="font-size: 12px">ขาดเรียน</div>
+                        </th>
+                        <th *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:40px ;text-align: center">
+                          <button type="button" class="btn btn-light" placement="top"
+                            ngbPopover="{{schedule[0].data.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                            {{schedule[1].index}}
+                          </button>
+                        </th>
+                        <th *ngIf="showPercentageA.flag" style="width:50px; text-align: center">
+                          <div class="text-primary" style="font-size: 14px">{{item.percentAtt}}%</div>
+                        </th>
+                        <th class="no-border"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let student of studentListArr ; let j = index;">
+                        <th scope="row" style="text-align: center">{{j+1}}</th>
+                        <td>{{student.key}}</td>
+                        <td>{{student.name}}</td>
+                        <td *ngIf="showGroup.flag" style="text-align: center">{{student.group}}</td>
+                        <!--/-->
+                        <ng-container *ngIf="showMissClass.flag" style="text-align: center">
+                          <td *ngIf="student.totalMiss >= scoreCase.high; else checkMed" class="missHigh">
+                            {{student.totalMiss}}
+                          </td>
+                          <ng-template #checkMed>
+                            <td *ngIf="(student.totalMiss >= scoreCase.med) && (student.totalMiss < scoreCase.high)
+                              ; else checkLow" class="missMed">
+                              {{student.totalMiss}}
+                            </td>
+                          </ng-template>
+                          <ng-template #checkLow>
+                            <td *ngIf="(student.totalMiss >= scoreCase.low) && (student.totalMiss < scoreCase.med)
+                              ; else normalCase" class="missLow">
+                                {{student.totalMiss}}
+                            </td>
+                          </ng-template>
+                          <ng-template #normalCase>
+                            <td class="missNormal">{{student.totalMiss}}
+                            </td>
+                          </ng-template>
+                        </ng-container>
+                        <!--/-->
+                        <ng-container *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="text-align: center">
+                          <td *ngIf="student.attendance != undefined
+                              && student.attendance[schedule[0].data.id] != undefined;
+                              then studentScore; else errorData">
+                          </td>
+                          <!--/-->
+                          <ng-template #errorData>
+                            <td class="red"></td>
+                          </ng-template>
+                          <ng-template #studentScore>
+                            <td *ngIf="student.attendance[schedule[0].data.id].status == 'Missed Class';
+                                      else checkStatus" style="text-align: center">
+                              <a placement="top"
+                                ngbPopover="{{student.attendance[schedule[0].data.id].date | date:'medium'}} : {{student.attendance[schedule[0].data.id].status}}"
+                                popoverTitle="รายละเอียด" class="text-danger">
+                              {{student.attendance[schedule[0].data.id].score}}</a>
+                            </td>
+                          </ng-template>
+                          <ng-template #checkStatus>
+                            <td *ngIf="student.attendance[schedule[0].data.id].status == 'Late'
+                                  || student.attendance[schedule[0].data.id].status == 'Leave'; else onTime" style="text-align: center">
+                              <a class="text-warning" placement="top"
+                                ngbPopover="{{student.attendance[schedule[0].data.id].date | date:'medium'}} : {{student.attendance[schedule[0].data.id].status}}"
+                                popoverTitle="รายละเอียด">
+                                {{student.attendance[schedule[0].data.id].score}}</a>
+                            </td>
+                          </ng-template>
+                          <ng-template #onTime>
+                            <td class="att_onTime">
+                              <a placement="top"
+                                ngbPopover="{{student.attendance[schedule[0].data.id].date | date:'medium'}} : {{student.attendance[schedule[0].data.id].status}}"
+                                popoverTitle="รายละเอียด">
+                                {{student.attendance[schedule[0].data.id].score}}</a>
+                            </td>
+                          </ng-template>
+                        </ng-container>
+                        <!--/-->
+                        <ng-container *ngIf="showPercentageA.flag" style="text-align: center">
+                          <td class="att_Percent">
+                            {{student.percent | number:'1.2'}}
+                          </td>
+                        </ng-container>
+                        <td style="display:none;"></td>
+                      </tr>
+                      <!--Total Row-->
+                      <tr>
+                        <td colspan="3" style="width:70px; text-align: center">Total</td>
+                        <td *ngIf="showGroup.flag"></td>
+                        <td *ngIf="showMissClass.flag"></td>
+                        <td *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:70px ;text-align: center">
+                          <a placement="top"
+                            ngbPopover="มาเรียน: {{schedule[0].data.countOnTime+schedule[0].data.countLate}} | ขาดเรียน: {{schedule[0].data.countMiss}}
+                                        | ลา: {{schedule[0].data.countLeave}}"
+                            popoverTitle="รายละเอียด">
+                              <b>{{schedule[0].data.countOnTime + schedule[0].data.countLate}}/{{studentListArr.length}}</b></a>
+                          </td>
+                        <td *ngIf="showPercentageA.flag"></td>
+                        <td style="display:none;"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </ng-template>
             </ngb-tab>
+            <!--///////////////////////////////////////-->
             <!--QuizTab-->
             <ngb-tab title="Quiz">
               <ng-template ngbTabContent>
-                
+                <!--ON/OFF Switch-->
+                <div class="row justify-content-between" style="padding-top: 15px">
+                  <div class="col">
+                    <div class="input-group-prepend" style="padding-top: 10px">
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label *ngFor="let slot of btn_quiz"
+                            class="btn btn-light active" (click)="radioCheckQ(slot.id)">
+                          <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
+                            {{slot.name}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="row justify-content-end" style="text-align: center">
+                      <div class="text-warning">
+                        แสดงกลุ่มเรียน<br>
+                        <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
+                          {{showGroup.name}}
+                        </button>
+                      </div>&nbsp;&nbsp;&nbsp;
+                      <div class="text-primary">
+                          % คะแนน<br>
+                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentQ(item.percentQuiz)">
+                          {{showPercentageQ.name}}
+                        </button>
+                      </div>&nbsp;&nbsp;&nbsp;
+                    </div>
+                  </div>
+                </div>
+              <!---->
+                <!--Table Content-->
+                <div class="card-body">
+                  <table class="table table-hover table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="width:70px; text-align: center">#</th>
+                        <th style="width:100px; text-align: center">ID</th>
+                        <th style="width:250px; text-align: center">ชื่อ-นามสกุล</th>
+                        <th *ngIf="showGroup.flag" style="width:50px; text-align: center">กลุ่ม</th>
+                        <th *ngFor="let schedule of scheduleQuizSortList ; let k = index" style="width:70px ;text-align: center">
+                          <button type="button" class="btn btn-light" placement="top"
+                            ngbPopover="{{schedule[0].data.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                            {{schedule[1].index}}
+                          </button>
+                        </th>
+                        <th *ngIf="showPercentageQ.flag" style="width:50px; text-align: center">
+                          <div class="text-primary" style="font-size: 14px">{{item.percentQuiz}}%</div>
+                        </th>
+                        <th class="no-border"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let student of studentListArr ; let j = index;">
+                        <th scope="row" style="text-align: center">{{j+1}}</th>
+                        <td>{{student.key}}</td>
+                        <td>{{student.name}}</td>
+                        <td *ngIf="showGroup.flag" style="text-align: center">{{student.group}}</td>
+                        <!--/-->
+                        <ng-container *ngFor="let schedule of scheduleQuizSortList ; let k = index" style="text-align: center">
+                          <td *ngIf="student.quiz != undefined
+                              && student.quiz[schedule[0].data.id] != undefined;
+                              then studentScore; else errorData">
+                          </td>
+                          <!--/-->
+                          <ng-template #errorData>
+                            <td class="red"></td>
+                          </ng-template>
+                          <ng-template #studentScore>
+                            <td *ngIf="student.quiz[schedule[0].data.id].score == '0';
+                                      else notzero" style="text-align: center">
+                              <a class="text-danger">
+                              {{student.quiz[schedule[0].data.id].score}}</a>
+                            </td>
+                          </ng-template>
+                          <ng-template #notzero>
+                            <td class="att_onTime">
+                                {{student.quiz[schedule[0].data.id].score}}
+                            </td>
+                          </ng-template>
+                        </ng-container>
+                        <!--/-->
+                        <ng-container *ngIf="showPercentageQ.flag" style="text-align: center">
+                          <td class="att_Percent">
+                            {{student.percent  | number:'1.2'}}
+                          </td>
+                        </ng-container>
+                        <td style="display:none;"></td>
+                      </tr>
+    
+                    </tbody>
+                  </table>
+                </div>
               </ng-template>
             </ngb-tab>
+            <!--///////////////////////////////////////-->
             <!--HomeworkTab-->
             <ngb-tab title="Homework">
               <ng-template ngbTabContent>
-                
+                <!--ON/OFF Switch-->
+                <div class="row justify-content-between" style="padding-top: 15px">
+                  <div class="col">
+                    <div class="input-group-prepend" style="padding-top: 10px">
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label *ngFor="let slot of btn_hw"
+                            class="btn btn-light active" (click)="radioCheckH(slot.id)">
+                          <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
+                            {{slot.name}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="row justify-content-end" style="text-align: center">
+                      <div class="text-warning">
+                        แสดงกลุ่มเรียน<br>
+                        <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
+                          {{showGroup.name}}
+                        </button>
+                      </div>&nbsp;&nbsp;&nbsp;
+                      <div class="text-primary">
+                          % คะแนน<br>
+                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentH(item.percentHw)">
+                          {{showPercentageH.name}}
+                        </button>
+                      </div>&nbsp;&nbsp;&nbsp;
+                    </div>
+                  </div>
+                </div>
+              <!---->
+                <!--Table Content-->
+                <div class="card-body">
+                  <table class="table table-hover table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="width:70px; text-align: center">#</th>
+                        <th style="width:100px; text-align: center">ID</th>
+                        <th style="width:250px; text-align: center">ชื่อ-นามสกุล</th>
+                        <th *ngIf="showGroup.flag" style="width:50px; text-align: center">กลุ่ม</th>
+                        <th *ngFor="let schedule of scheduleHomeworkSortList ; let k = index" style="width:70px ;text-align: center">
+                          <button type="button" class="btn btn-light" placement="top"
+                            ngbPopover="{{schedule[0].data.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                            {{schedule[1].index}}
+                          </button>
+                        </th>
+                        <th *ngIf="showPercentageH.flag" style="width:50px; text-align: center">
+                          <div class="text-primary" style="font-size: 14px">{{item.percentHw}}%</div>
+                        </th>
+                        <th class="no-border"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let student of studentListArr ; let j = index;">
+                        <th scope="row" style="text-align: center">{{j+1}}</th>
+                        <td>{{student.key}}</td>
+                        <td>{{student.name}}</td>
+                        <td *ngIf="showGroup.flag" style="text-align: center">{{student.group}}</td>
+                        <!--/-->
+                        <ng-container *ngFor="let schedule of scheduleHomeworkSortList ; let k = index" style="text-align: center">
+                          <td *ngIf="student.hw != undefined
+                              && student.hw[schedule[0].data.id] != undefined;
+                              then studentScore; else errorData">
+                          </td>
+                          <!--/-->
+                          <ng-template #errorData>
+                            <td class="red"></td>
+                          </ng-template>
+                          <ng-template #studentScore>
+                            <td *ngIf="student.hw[schedule[0].data.id].score == '0';
+                                      else notzero" style="text-align: center">
+                              <a class="text-danger">
+                              {{student.hw[schedule[0].data.id].score}}</a>
+                            </td>
+                          </ng-template>
+                          <ng-template #notzero>
+                            <td class="att_onTime">
+                                {{student.hw[schedule[0].data.id].score}}
+                            </td>
+                          </ng-template>
+                        </ng-container>
+                        <!--/-->
+                        <ng-container *ngIf="showPercentageH.flag" style="text-align: center">
+                          <td class="att_Percent">
+                            {{student.percent  | number:'1.2'}}
+                          </td>
+                        </ng-container>
+                        <td style="display:none;"></td>
+                      </tr>
+    
+                    </tbody>
+                  </table>
+                </div>
               </ng-template>
             </ngb-tab>
+            <!--///////////////////////////////////////-->
           </ngb-tabset>
         </div>
       </div>

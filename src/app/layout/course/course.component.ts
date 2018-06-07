@@ -224,7 +224,7 @@ export class CourseComponent implements OnInit {
           }).subscribe(items => {
           this.studentList = items;
           this.studentListArr = Object.keys(items).map(key => Object.assign({ key }, items[key]));
-
+          console.log(this.studentListArr)
             return items.map(item => item.key);
         });
 
@@ -249,6 +249,7 @@ export class CourseComponent implements OnInit {
                 break;
               }
             };
+            console.log(this.scheduleAttendanceList);
             return items.map(item => item.key);
         });
 
@@ -303,7 +304,6 @@ export class CourseComponent implements OnInit {
         });
 
       } //End All Group
-
     });
 
     // buildForm for Student /////////////////////////////////////////////////////////////
