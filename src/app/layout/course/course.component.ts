@@ -54,6 +54,7 @@ export class CourseComponent implements OnInit {
   scheduleAttendanceList : any;
   scheduleQuizList : any;
   scheduleHomeworkList : any;
+  scheduleLabList : any;
   csv: string;
   x : any;
   y : any;
@@ -61,20 +62,24 @@ export class CourseComponent implements OnInit {
   totalStudentPercentA = [];
   totalStudentPercentQ = [];
   totalStudentPercentH = [];
+  totalStudentPercentL = [];
   totalMissClass = [];
   showMissClass = {flag: false, name:"OFF"};
   showPercentageA= {flag: false, name:"OFF"};
   showPercentageQ= {flag: false, name:"OFF"};
   showPercentageH= {flag: false, name:"OFF"};
+  showPercentageL= {flag: false, name:"OFF"};
   showGroup= {flag: false, name:"OFF"};
   scoreCase = {high: 5, med:4, low:2};
   btn_attendance = [];
   btn_quiz = [];
   btn_hw = [];
+  btn_lab = [];
   radioSelected : 1;
   scheduleAttendanceSortList : any;
   scheduleQuizSortList : any;
   scheduleHomeworkSortList : any;
+  scheduleLabSortList : any;
   groupList : any;
   years: any;
   yearsList: number[] = [];
@@ -82,6 +87,7 @@ export class CourseComponent implements OnInit {
   percentAtt: number;
   percentQuiz: number;
   percentHw: number;
+  percentLab: number;
   constructor(
     private auth: AuthService,
     private courseService: CourseService,
@@ -116,6 +122,7 @@ export class CourseComponent implements OnInit {
               this.percentAtt = this.courseList[i].percentAtt;
               this.percentQuiz = this.courseList[i].percentQuiz;
               this.percentHw = this.courseList[i].percentHw;
+              this.percentLab = this.courseList[i].percentLab;
             }
           }
             return items.map(item => item.key);
@@ -215,6 +222,30 @@ export class CourseComponent implements OnInit {
           };
             return items.map(item => item.key);
         });
+        // 3. Query Lab
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/lab`).snapshotChanges().map(actions => {
+        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+        }).subscribe(items => {
+          this.scheduleLabList = items;
+          this.btn_lab =[];
+          for(var i=0 ; i<this.scheduleLabList.length ;i++){
+              if(i%5==0)
+                this.btn_lab.push({id:i+5,name: (i+1)+'-'+(i+5)});
+          }
+
+          let sdtLen =  this.scheduleLabList.length;
+          this.scheduleLabSortList = [];
+          var i=0;
+          var count=0;
+          for (sdtLen; sdtLen > i; i++) {
+            count++;
+            this.scheduleLabSortList[i] = [{data: this.scheduleLabList[i]},{index : i+1}];
+            if(count==5){
+              break;
+            }
+          };
+            return items.map(item => item.key);
+        });
 
       }else{
         // For All Group  /////////////////////////////////////////////
@@ -302,6 +333,30 @@ export class CourseComponent implements OnInit {
           };
             return items.map(item => item.key);
         });
+        // 3. Query Lab
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/hw==lab`).snapshotChanges().map(actions => {
+        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+        }).subscribe(items => {
+          this.scheduleLabList = items;
+          this.btn_lab =[];
+          for(var i=0 ; i<this.scheduleLabList.length ;i++){
+              if(i%5==0)
+                this.btn_hw.push({id:i+5,name: (i+1)+'-'+(i+5)});
+          }
+
+          let sdtLen =  this.scheduleLabList.length;
+          this.scheduleLabSortList = [];
+          var i=0;
+          var count=0;
+          for (sdtLen; sdtLen > i; i++) {
+            count++;
+            this.scheduleLabSortList[i] = [{data: this.scheduleLabList[i]},{index : i+1}];
+            if(count==5){
+              break;
+            }
+          };
+            return items.map(item => item.key);
+        });
 
       } //End All Group
     });
@@ -357,6 +412,20 @@ export class CourseComponent implements OnInit {
     };
     console.log(this.scheduleHomeworkSortList);
   }
+  radioCheckL(id){
+    let sdtLen =  this.scheduleLabList.length;
+    this.scheduleLabSortList = [];
+    console.log(id-5);
+    var i= id-5;
+    var j=0;
+    for (id ; id > i; i++) {
+      if(this.scheduleLabList[i] != undefined){
+        this.scheduleLabSortList[j] = [{data: this.scheduleLabList[i]},{index : i+1}];
+        j++;
+      }
+    };
+    console.log(this.scheduleLabSortList);
+  }
 
   findPercentageA(percent : Number){
     let schedule,score,temp,temp2,fullScore;
@@ -406,7 +475,7 @@ export class CourseComponent implements OnInit {
 
   findPercentageH(percent : Number){
     let schedule,score,temp,temp2,fullScore;
-    if(this.scheduleAttendanceList.length==0){
+    if(this.scheduleHomeworkList.length==0){
       console.log('ZERO')
     }else{
 
@@ -422,6 +491,28 @@ export class CourseComponent implements OnInit {
         this.totalStudentPercentH.push(Number(temp)*Number(percent)/Number(fullScore));
         this.studentListArr = Object.keys(this.studentListArr)
         .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentH[key]}));
+
+      }
+    }
+  }
+  findPercentageL(percent : Number){
+    let schedule,score,temp,temp2,fullScore;
+    if(this.scheduleLabList.length==0){
+      console.log('ZERO')
+    }else{
+
+      for(var i=0; i<this.studentListArr.length ; i++){
+        temp = 0;
+        fullScore = 0;
+        for(var j=0; j<this.scheduleLabList.length ; j++){
+          schedule = this.scheduleLabList[j].key;
+          score = this.studentListArr[i].hw[schedule].score;
+          fullScore = fullScore + Number(this.scheduleLabList[j].totalScore);
+          temp = temp + score;
+        }
+        this.totalStudentPercentH.push(Number(temp)*Number(percent)/Number(fullScore));
+        this.studentListArr = Object.keys(this.studentListArr)
+        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentL[key]}));
 
       }
     }
@@ -536,7 +627,11 @@ export class CourseComponent implements OnInit {
         this.showPercentageA.name = "ON";
         this.totalStudentPercentA = [];
         this.showPercentageQ.flag = false;
+        this.showPercentageQ.name = "OFF";
         this.showPercentageH.flag = false;
+        this.showPercentageH.name = "OFF";
+        this.showPercentageL.flag = false;
+        this.showPercentageL.name = "OFF";
         this.findPercentageA(percent);
       }else{
         this.showPercentageA.name = "OFF";
@@ -554,7 +649,11 @@ export class CourseComponent implements OnInit {
         this.showPercentageQ.name = "ON";
         this.totalStudentPercentQ = [];
         this.showPercentageA.flag = false;
+        this.showPercentageA.name = "OFF";
         this.showPercentageH.flag = false;
+        this.showPercentageH.name = "OFF";
+        this.showPercentageL.flag = false;
+        this.showPercentageL.name = "OFF";
         this.findPercentageQ(percent);
       }else{
         this.showPercentageQ.name = "OFF";
@@ -572,7 +671,11 @@ export class CourseComponent implements OnInit {
         this.showPercentageH.name = "ON";
         this.totalStudentPercentH = [];
         this.showPercentageA.flag = false;
+        this.showPercentageA.name = "OFF";
         this.showPercentageQ.flag = false;
+        this.showPercentageQ.name = "OFF";
+        this.showPercentageL.flag = false;
+        this.showPercentageL.name = "OFF";
         this.findPercentageH(percent);
       }else{
         this.showPercentageH.name = "OFF";
@@ -582,6 +685,28 @@ export class CourseComponent implements OnInit {
       this.toastr.warning("กรุณาตั้งค่า % การบ้าน");
     }
   }
+
+    onSwitchShowPercentL(percent){
+      if(percent != undefined){
+        this.showPercentageL.flag= !this.showPercentageL.flag;
+        if(this.showPercentageL.flag){
+          this.showPercentageL.name = "ON";
+          this.totalStudentPercentH = [];
+          this.showPercentageA.flag = false;
+          this.showPercentageA.name = "OFF";
+          this.showPercentageQ.flag = false;
+          this.showPercentageQ.name = "OFF";
+          this.showPercentageH.flag = false;
+          this.showPercentageH.name = "OFF";
+          this.findPercentageL(percent);
+        }else{
+          this.showPercentageL.name = "OFF";
+          this.totalStudentPercentL = [];
+        }
+      }else{
+        this.toastr.warning("กรุณาตั้งค่า % แลป");
+      }
+    }
 
   onSwitchShowMissClass(){
     this.showMissClass.flag= !this.showMissClass.flag;
@@ -669,6 +794,7 @@ export class CourseComponent implements OnInit {
     var exA = [];
     var exQ = [];
     var exH = [];
+    var exL = [];
     if(this.scheduleAttendanceList.length > 0){
       this.findPercentageA(this.percentAtt);
       for(var i=0; i<this.studentListArr.length; i++){
@@ -844,10 +970,56 @@ export class CourseComponent implements OnInit {
           if(this.scheduleHomeworkList.length <= 15){ exH.push(temp3); continue; }
       };
     }
+    if(this.scheduleLabList.length > 0){
+      this.findPercentageL(this.percentLab);
+      for(var i=0; i<this.studentListArr.length; i++){
+          var temp4: {
+            id: string,
+            name: string, percentlab: number,
+            lab1: string, lab2: string, lab3: string, lab4: string, lab5: string,
+            lab6: string, lab7: string, lab8: string, lab9: string, lab10: string,
+            lab11: string, lab12: string, lab13: string, lab14: string, lab15: string
+          } = {} as {id: string, name: string, percentlab: number, lab1: string,lab2: string,lab3: string, lab4: string, lab5: string,lab6: string, lab7: string,
+            lab8: string, lab9: string, lab10: string,lab11: string, lab12: string, lab13: string, lab14: string, lab15: string };
+          temp4.id = this.studentListArr[i].id;
+          temp4.name = this.studentListArr[i].name;
+          temp4.percentlab = this.studentListArr[i].percent;
+          temp4.lab1 = this.studentListArr[i].lab[this.scheduleLabList[0].id].score;
+          if(this.scheduleLabList.length <= 1){ exL.push(temp4); continue; }
+          temp4.lab2 = this.studentListArr[i].lab[this.scheduleLabList[1].id].score;
+          if(this.scheduleLabList.length <= 2){ exL.push(temp4); continue; }
+          temp4.lab3 = this.studentListArr[i].lab[this.scheduleLabList[2].id].score;
+          if(this.scheduleLabList.length <= 3){ exL.push(temp4); continue; }
+          temp4.lab4 = this.studentListArr[i].lab[this.scheduleLabList[3].id].score;
+          if(this.scheduleLabList.length <= 4){ exL.push(temp4); continue; }
+          temp4.lab5 = this.studentListArr[i].lab[this.scheduleLabList[4].id].score;
+          if(this.scheduleLabList.length <= 5){ exL.push(temp4); continue; }
+          temp4.lab6 = this.studentListArr[i].lab[this.scheduleLabList[5].id].score;
+          if(this.scheduleLabList.length <= 6){ exL.push(temp4); continue; }
+          temp4.lab7 = this.studentListArr[i].lab[this.scheduleLabList[6].id].score;
+          if(this.scheduleLabList.length <= 7){ exL.push(temp4); continue; }
+          temp4.lab8 = this.studentListArr[i].lab[this.scheduleLabList[7].id].score;
+          if(this.scheduleLabList.length <= 8){ exL.push(temp4); continue; }
+          temp4.lab9 = this.studentListArr[i].lab[this.scheduleLabList[8].id].score;
+          if(this.scheduleLabList.length <= 9){ exL.push(temp4); continue; }
+          temp4.lab10 = this.studentListArr[i].lab[this.scheduleLabList[9].id].score;
+          if(this.scheduleLabList.length <= 10){ exL.push(temp4); continue; }
+          temp4.lab11 = this.studentListArr[i].lab[this.scheduleLabList[10].id].score;
+          if(this.scheduleLabList.length <= 11){ exL.push(temp4); continue; }
+          temp4.lab12 = this.studentListArr[i].lab[this.scheduleLabList[11].id].score;
+          if(this.scheduleLabList.length <= 12){ exL.push(temp4); continue; }
+          temp4.lab13 = this.studentListArr[i].lab[this.scheduleLabList[12].id].score;
+          if(this.scheduleLabList.length <= 13){ exL.push(temp4); continue; }
+          temp4.lab14 = this.studentListArr[i].lab[this.scheduleLabList[13].id].score;
+          if(this.scheduleLabList.length <= 14){ exL.push(temp4); continue; }
+          temp4.lab15 = this.studentListArr[i].lab[this.scheduleLabList[14].id].score;
+          if(this.scheduleLabList.length <= 15){ exL.push(temp4); continue; }
+      };
+    }
     console.log(this.studentListArr);
     console.log(exA);
     console.log(exQ);
     console.log(exH);
-    this.excelService.exportAsExcelFile( exA , exQ , exH ,'studentlist');
+    this.excelService.exportAsExcelFile( exA , exQ , exH , exL ,'studentlist');
   }
 }

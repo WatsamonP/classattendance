@@ -6,5 +6,6 @@ export class Course {
   percentAtt: number;
   percentQuiz: number;
   percentHw: number;
+  percentLab: number;
   group : any;
 }

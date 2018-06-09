@@ -10,14 +10,16 @@ export class ExcelService {
 
   constructor() { }
 
-  public exportAsExcelFile(json: any[], json2: any[], json3: any[], excelFileName: string): void {
+  public exportAsExcelFile(json: any[], json2: any[], json3: any[], json4:any[],excelFileName: string): void {
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
     const worksheet2: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json2);
     const worksheet3: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json3);
+    const worksheet4: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json4);
     const workbook: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'attendance');
-    XLSX.utils.book_append_sheet(workbook, worksheet2, 'quiz');
-    XLSX.utils.book_append_sheet(workbook, worksheet3, 'homework');
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance');
+    XLSX.utils.book_append_sheet(workbook, worksheet2, 'Quiz');
+    XLSX.utils.book_append_sheet(workbook, worksheet3, 'Homework');
+    XLSX.utils.book_append_sheet(workbook, worksheet4, 'Lab');
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     this.saveAsExcelFile(excelBuffer, excelFileName);
   }

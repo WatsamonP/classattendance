@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormGroup, FormControl, FormBuilder, Validators } 
 import { AuthService } from "../shared/services/auth.service";
 import { AngularFireDatabase, AngularFireObject, AngularFireList } from 'angularfire2/database';
 import { ToastrService } from 'ngx-toastr';
+import { Student } from '../shared/services/student/student.model';
 
 @Component({
   selector: 'app-studentcheck',
@@ -14,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 export class StudentcheckComponent implements OnInit {
 
   studentScoreForm: FormGroup;
+  studentList: Student[];
   courseList: any;
   student : any;
   courseData : any;
@@ -26,27 +28,33 @@ export class StudentcheckComponent implements OnInit {
   showPercentageA= {flag: false, name:"OFF"};
   showPercentageQ= {flag: false, name:"OFF"};
   showPercentageH= {flag: false, name:"OFF"};
+  showPercentageL= {flag: false, name:"OFF"};
   showGroup= {flag: false, name:"OFF"};
   scoreCase = {high: 5, med:4, low:2};
   item : any;
   btn_attendance = [];
   btn_quiz = [];
   btn_hw = [];
+  btn_lab = [];
   scheduleAttendanceList : any;
-  scheduleAttendanceSortList
+  scheduleAttendanceSortList: any;
   scheduleQuizList : any;
   scheduleQuizSortList : any;
   scheduleHomeworkList : any;
   scheduleHomeworkSortList : any;
+  scheduleLabList : any;
+  scheduleLabSortList : any;
   studentListArr : any;
   percentFlag = false;
   totalStudentPercentA = [];
   totalStudentPercentQ = [];
   totalStudentPercentH = [];
+  totalStudentPercentL = [];
   totalMissClass = [];
   percentAtt: number;
   percentQuiz: number;
   percentHw: number;
+  percentLab: number;
 
   constructor(
     private db: AngularFireDatabase,
@@ -75,7 +83,7 @@ export class StudentcheckComponent implements OnInit {
       this.courseIden();
       this.showTableCourse = true;
     }else{
-      this.toastr.success("กรุณาป้อนรหัสวิชา หรือรหัสนักศึกษา");
+      this.toastr.warning("กรุณาป้อนรหัสวิชา หรือรหัสนักศึกษา");
     }
   }
 
@@ -96,7 +104,7 @@ export class StudentcheckComponent implements OnInit {
         for(var j=0; j<this.courseData[i].length; j++){
           if(this.courseData[i][j].students != undefined){
             temp[j] = Object.keys(this.courseData[i][j].students)
-              .map(key => Object.assign({ key }, 
+              .map(key => Object.assign({ key },
                 this.courseData[i][j].students[key]
               ));
               temp[j].push({course:this.courseData[i][j]});
@@ -110,11 +118,12 @@ export class StudentcheckComponent implements OnInit {
       for(var i=0; i<temp.length; i++){
         for(var j=0; j<temp[i].length; j++){
           if(temp[i][j].id == sid){
-            this.student[k] = 
+            this.student[k] =
               [
                 {std:temp[i][j]},
                 {course:temp[i][temp[i].length-2].course},
-                {profile:temp[i][temp[i].length-1].profile.profile}
+                {profile:temp[i][temp[i].length-1].profile.profile},
+                {id:temp[i][temp[i].length-1].profile.key}
               ]
             k++;
           }
@@ -151,68 +160,76 @@ export class StudentcheckComponent implements OnInit {
     return this.courseList;
   }
 
-  something(course){
-    this.item = course;
-    this.std();
-    this.findScore();
+  something(courseid,id){
+    this.item = courseid;
+    //this.std();
+    this.findScore(id,courseid);
     console.log(this.item);
     this.showTableData = true;
-    
   }
 
-  std(){
+  /*std(){
     this.studentListArr = [];
     var len = Object.keys(this.item.students).length;
       for(var i=0; i<len;i++){
         this.studentListArr = Object.keys(this.item.students)
         .map(key => Object.assign({ key }, this.item.students[key]));
     }
-    console.log("Here Student");
-    console.log(this.studentListArr)
-  }
-  
-  findScore(){
+    //console.log("Here Student");
+    //console.log(this.studentListArr);
+  }*/
+
+  findScore(id,cid){
+    this.db.list(`users/${id}/course/${cid}/students`).snapshotChanges().map(actions => {
+      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+      }).subscribe(items => {
+      this.studentList = items;
+
+      let temp = [];
+      for(var i=0; i<this.studentList.length ;i++){
+        //console.log(this.studentList[i].group + ' HH' + this.groupId);
+          temp.push(this.studentList[i]);
+          continue;
+      }
+      this.studentListArr = Object.keys(temp)
+        .map(key => Object.assign({ key }, temp[key]));
+        return items.map(item => item.key);
+    });
     this.percentAtt = this.item.percentAtt;
     this.percentQuiz = this.item.percentQuiz;
     this.percentHw = this.item.percentHw;
-
+    this.percentLab = this.item.percentLab;
     this.scheduleAttendanceList = [];
-    if(this.item.schedule.attendance != undefined){
-      var len = Object.keys(this.item.schedule.attendance).length;
-      for(var i=0; i<len;i++){
-        this.scheduleAttendanceList = Object.keys(this.item.schedule.attendance)
-        .map(key => Object.assign({ key }, this.item.schedule.attendance[i]));
-      }
-      this.btn_attendance =[];
-      for(var i=0 ; i<this.scheduleAttendanceList.length ;i++){
-        if(i%5==0)
-          this.btn_attendance.push({id:i+5,name: (i+1)+'-'+(i+5)});
-      }
-      let sdtLen =  this.scheduleAttendanceList.length;
-      console.log(this.scheduleAttendanceList)
-      this.scheduleAttendanceSortList = [];
-      var i=0;
-      var count=0;
-      for (sdtLen; sdtLen > i; i++) {
-        count++;
-        this.scheduleAttendanceSortList[i] = [{data: this.scheduleAttendanceList[i]},{index : i+1}];
-        if(count==5){
-          break;
+
+    this.db.list(`users/${id}/course/${cid}/schedule/attendance`).snapshotChanges().map(actions => {
+      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+      }).subscribe(items => {
+        this.scheduleAttendanceList = items;
+        this.btn_attendance =[];
+        for(var i=0 ; i<this.scheduleAttendanceList.length ;i++){
+            if(i%5==0)
+              this.btn_attendance.push({id:i+5,name: (i+1)+'-'+(i+5)});
         }
-      };
-    }else{
-      
-    }
+        let sdtLen =  this.scheduleAttendanceList.length;
+        this.scheduleAttendanceSortList = [];
+        var i=0;
+        var count=0;
+        for (sdtLen; sdtLen > i; i++) {
+          count++;
+          this.scheduleAttendanceSortList[i] = [{data: this.scheduleAttendanceList[i]},{index : i+1}];
+          if(count==5){
+            break;
+          }
+        };
+        return items.map(item => item.key);
+    });
     console.log(this.scheduleAttendanceSortList);
 
     // 2. Query Quiz
-    this.scheduleQuizList = [];
-    if(this.item.schedule.quiz != undefined){
-      var len = Object.keys(this.item.schedule.quiz).length;
-      for(var i=0; i<len;i++){
-        this.scheduleQuizList = Object.keys(this.item.schedule.quiz)
-        .map(key => Object.assign({ key }, this.item.schedule.quiz[i]));
-      }
+    this.db.list(`users/${id}/course/${cid}/schedule/quiz`).snapshotChanges().map(actions => {
+    return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+    }).subscribe(items => {
+      this.scheduleQuizList = items;
       this.btn_quiz =[];
       for(var i=0 ; i<this.scheduleQuizList.length ;i++){
           if(i%5==0)
@@ -230,19 +247,14 @@ export class StudentcheckComponent implements OnInit {
           break;
         }
       };
-    }else{
-      
-    }
-
+        return items.map(item => item.key);
+    });
 
     // 3. Query Homwork
-    this.scheduleHomeworkList = [];
-    if(this.item.schedule.hw != undefined){
-      var len = Object.keys(this.item.schedule.hw).length;
-      for(var i=0; i<len;i++){
-        this.scheduleHomeworkList = Object.keys(this.item.schedule.hw)
-        .map(key => Object.assign({ key }, this.item.schedule.hw[i]));
-      }
+    this.db.list(`users/${id}/course/${cid}/schedule/hw`).snapshotChanges().map(actions => {
+    return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+    }).subscribe(items => {
+      this.scheduleHomeworkList = items;
       this.btn_hw =[];
       for(var i=0 ; i<this.scheduleHomeworkList.length ;i++){
           if(i%5==0)
@@ -260,10 +272,32 @@ export class StudentcheckComponent implements OnInit {
           break;
         }
       };
-    }else{
-      
-    }
-    console.log(this.scheduleAttendanceSortList);
+        return items.map(item => item.key);
+    });
+    // 3. Query Lab
+    this.db.list(`users/${id}/course/${cid}/schedule/lab`).snapshotChanges().map(actions => {
+    return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+    }).subscribe(items => {
+      this.scheduleLabList = items;
+      this.btn_lab =[];
+      for(var i=0 ; i<this.scheduleLabList.length ;i++){
+          if(i%5==0)
+            this.btn_lab.push({id:i+5,name: (i+1)+'-'+(i+5)});
+      }
+
+      let sdtLen =  this.scheduleLabList.length;
+      this.scheduleLabSortList = [];
+      var i=0;
+      var count=0;
+      for (sdtLen; sdtLen > i; i++) {
+        count++;
+        this.scheduleLabSortList[i] = [{data: this.scheduleLabList[i]},{index : i+1}];
+        if(count==5){
+          break;
+        }
+      };
+        return items.map(item => item.key);
+    });
 
   }
 
@@ -340,6 +374,20 @@ export class StudentcheckComponent implements OnInit {
     };
     console.log(this.scheduleHomeworkSortList);
   }
+  radioCheckL(id){
+    let sdtLen =  this.scheduleLabList.length;
+    this.scheduleLabSortList = [];
+    console.log(id-5);
+    var i= id-5;
+    var j=0;
+    for (id ; id > i; i++) {
+      if(this.scheduleLabList[i] != undefined){
+        this.scheduleLabSortList[j] = [{data: this.scheduleLabList[i]},{index : i+1}];
+        j++;
+      }
+    };
+    console.log(this.scheduleLabSortList);
+  }
 
   findPercentageA(percent : Number){
     let schedule,score,temp,temp2,fullScore;
@@ -409,6 +457,28 @@ export class StudentcheckComponent implements OnInit {
       }
     }
   }
+  findPercentageL(percent : Number){
+    let schedule,score,temp,temp2,fullScore;
+    if(this.scheduleLabList.length==0){
+      console.log('ZERO')
+    }else{
+
+      for(var i=0; i<this.studentListArr.length ; i++){
+        temp = 0;
+        fullScore = 0;
+        for(var j=0; j<this.scheduleLabList.length ; j++){
+          schedule = this.scheduleLabList[j].key;
+          score = this.studentListArr[i].hw[schedule].score;
+          fullScore = fullScore + Number(this.scheduleLabList[j].totalScore);
+          temp = temp + score;
+        }
+        this.totalStudentPercentH.push(Number(temp)*Number(percent)/Number(fullScore));
+        this.studentListArr = Object.keys(this.studentListArr)
+        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentL[key]}));
+
+      }
+    }
+  }
 
   findMissClassNumber(){
     let schedule,score,temp,temp2;
@@ -431,17 +501,20 @@ export class StudentcheckComponent implements OnInit {
     console.log(this.studentListArr);
   }
 
-  
+
 
   onSwitchShowPercentA(percent){
-    console.log(this.percentAtt)
     if(percent != undefined){
       this.showPercentageA.flag= !this.showPercentageA.flag;
       if(this.showPercentageA.flag){
         this.showPercentageA.name = "ON";
         this.totalStudentPercentA = [];
         this.showPercentageQ.flag = false;
+        this.showPercentageQ.name = "OFF";
         this.showPercentageH.flag = false;
+        this.showPercentageH.name = "OFF";
+        this.showPercentageL.flag = false;
+        this.showPercentageL.name = "OFF";
         this.findPercentageA(percent);
       }else{
         this.showPercentageA.name = "OFF";
@@ -459,7 +532,11 @@ export class StudentcheckComponent implements OnInit {
         this.showPercentageQ.name = "ON";
         this.totalStudentPercentQ = [];
         this.showPercentageA.flag = false;
+        this.showPercentageA.name = "OFF";
         this.showPercentageH.flag = false;
+        this.showPercentageH.name = "OFF";
+        this.showPercentageL.flag = false;
+        this.showPercentageL.name = "OFF";
         this.findPercentageQ(percent);
       }else{
         this.showPercentageQ.name = "OFF";
@@ -477,7 +554,11 @@ export class StudentcheckComponent implements OnInit {
         this.showPercentageH.name = "ON";
         this.totalStudentPercentH = [];
         this.showPercentageA.flag = false;
+        this.showPercentageA.name = "OFF";
         this.showPercentageQ.flag = false;
+        this.showPercentageQ.name = "OFF";
+        this.showPercentageL.flag = false;
+        this.showPercentageL.name = "OFF";
         this.findPercentageH(percent);
       }else{
         this.showPercentageH.name = "OFF";
@@ -487,6 +568,28 @@ export class StudentcheckComponent implements OnInit {
       this.toastr.warning("กรุณาตั้งค่า % การบ้าน");
     }
   }
+
+    onSwitchShowPercentL(percent){
+      if(percent != undefined){
+        this.showPercentageL.flag= !this.showPercentageL.flag;
+        if(this.showPercentageL.flag){
+          this.showPercentageL.name = "ON";
+          this.totalStudentPercentH = [];
+          this.showPercentageA.flag = false;
+          this.showPercentageA.name = "OFF";
+          this.showPercentageQ.flag = false;
+          this.showPercentageQ.name = "OFF";
+          this.showPercentageH.flag = false;
+          this.showPercentageH.name = "OFF";
+          this.findPercentageL(percent);
+        }else{
+          this.showPercentageL.name = "OFF";
+          this.totalStudentPercentL = [];
+        }
+      }else{
+        this.toastr.warning("กรุณาตั้งค่า % แลป");
+      }
+    }
 
   onSwitchShowMissClass(){
     this.showMissClass.flag= !this.showMissClass.flag;

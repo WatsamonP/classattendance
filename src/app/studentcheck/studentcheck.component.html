@@ -56,7 +56,7 @@
         </div>
         <div class="col-md-4 text-right">
           <button class="btn btn-warning" (click)="onClick()">
-            <i class="fa fa-search" aria-hidden="true"></i> ค้นหา            
+            <i class="fa fa-search" aria-hidden="true"></i> ค้นหา
           </button>
         </div>
       </div>
@@ -75,14 +75,14 @@
               </th>
             </tr>
           </thead>
-          <tbody> 
+          <tbody>
             <tr *ngFor="let course of courseList; let i = index">
               <td>{{course[1].course.id}}</td>
               <td>{{course[1].course.name}}</td>
               <td>{{course[0].profile.firstName}} {{course[0].profile.lastName}}</td>
               <td>
                 <button class="btn btn-primary btn-sm" (click)="something(course[1].course)">
-                  เลือก            
+                  เลือก
                 </button>
               </td>
             </tr>
@@ -102,14 +102,14 @@
               </th>
             </tr>
           </thead>
-          <tbody> 
+          <tbody>
             <tr *ngFor="let s of student; let i = index">
               <td>{{s[1].course.id}}</td>
               <td>{{s[1].course.name}}</td>
               <td>{{s[2].profile.firstName}} {{s[2].profile.lastName}}</td>
               <td>
-                <button class="btn btn-primary btn-sm" (click)="something(s[1].course)">
-                  เลือก            
+                <button class="btn btn-primary btn-sm" (click)="something(s[1].course.id,s[3].id)">
+                  เลือก
                 </button>
               </td>
             </tr>
@@ -122,7 +122,7 @@
   <br>
   <div class="row">
     <div *ngIf="showTableData">
-      <div class="card" style="padding: 5px;width: 100%">
+      <div class="card" style="padding: 5px;width: 80%">
         <div class="text-left" style="padding-top: 5px;padding-left: 5px">
           <h3 class="page-header text-primary">
             <i class="fa fa-book"></i> วิชา {{item.id}} : {{item.name}}&nbsp;&nbsp;
@@ -182,13 +182,13 @@
                         <th *ngIf="showMissClass.flag" style="width:50px; text-align: center">
                           <div class="text-danger" style="font-size: 12px">ขาดเรียน</div>
                         </th>
-                        <th *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:40px ;text-align: center">
+                        <th *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:70px ;text-align: center">
                           <button type="button" class="btn btn-light" placement="top"
                             ngbPopover="{{schedule[0].data.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
                             {{schedule[1].index}}
                           </button>
                         </th>
-                        <th *ngIf="showPercentageA.flag" style="width:50px; text-align: center">
+                        <th *ngIf="showPercentageA.flag" style="width:70px; text-align: center">
                           <div class="text-primary" style="font-size: 14px">{{item.percentAtt}}%</div>
                         </th>
                         <th class="no-border"></th>
@@ -337,7 +337,7 @@
                             {{schedule[1].index}}
                           </button>
                         </th>
-                        <th *ngIf="showPercentageQ.flag" style="width:50px; text-align: center">
+                        <th *ngIf="showPercentageQ.flag" style="width:70px; text-align: center">
                           <div class="text-primary" style="font-size: 14px">{{item.percentQuiz}}%</div>
                         </th>
                         <th class="no-border"></th>
@@ -380,7 +380,7 @@
                         </ng-container>
                         <td style="display:none;"></td>
                       </tr>
-    
+
                     </tbody>
                   </table>
                 </div>
@@ -436,7 +436,7 @@
                             {{schedule[1].index}}
                           </button>
                         </th>
-                        <th *ngIf="showPercentageH.flag" style="width:50px; text-align: center">
+                        <th *ngIf="showPercentageH.flag" style="width:70px; text-align: center">
                           <div class="text-primary" style="font-size: 14px">{{item.percentHw}}%</div>
                         </th>
                         <th class="no-border"></th>
@@ -479,7 +479,108 @@
                         </ng-container>
                         <td style="display:none;"></td>
                       </tr>
-    
+
+                    </tbody>
+                  </table>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <!--///////////////////////////////////////-->
+            <!--LabTab-->
+            <ngb-tab title="Lab">
+              <ng-template ngbTabContent>
+                <!--ON/OFF Switch-->
+                <div class="row justify-content-between" style="padding-top: 15px">
+                  <div class="col">
+                    <div class="input-group-prepend" style="padding-top: 10px">
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label *ngFor="let slot of btn_lab"
+                            class="btn btn-light active" (click)="radioCheckL(slot.id)">
+                          <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
+                            {{slot.name}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="row justify-content-end" style="text-align: center">
+                      <div class="text-warning">
+                        แสดงกลุ่มเรียน<br>
+                        <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
+                          {{showGroup.name}}
+                        </button>
+                      </div>&nbsp;&nbsp;&nbsp;
+                      <div class="text-primary">
+                          % คะแนน<br>
+                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentL(item.percentLab)">
+                          {{showPercentageL.name}}
+                        </button>
+                      </div>&nbsp;&nbsp;&nbsp;
+                    </div>
+                  </div>
+                </div>
+              <!---->
+                <!--Table Content-->
+                <div class="card-body table-responsive">
+                  <table class="table table-hover table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="width:70px; text-align: center">#</th>
+                        <th style="width:100px; text-align: center">ID</th>
+                        <th style="width:250px; text-align: center">ชื่อ-นามสกุล</th>
+                        <th *ngIf="showGroup.flag" style="width:50px; text-align: center">กลุ่ม</th>
+                        <th *ngFor="let schedule of scheduleLabSortList ; let k = index" style="width:70px ;text-align: center">
+                          <button type="button" class="btn btn-light" placement="top"
+                            ngbPopover="{{schedule[0].data.date | date:'medium'}}" popoverTitle="วันที่-เวลา">
+                            {{schedule[1].index}}
+                          </button>
+                        </th>
+                        <th *ngIf="showPercentageL.flag" style="width:70px; text-align: center">
+                          <div class="text-primary" style="font-size: 14px">{{item.percentHw}}%</div>
+                        </th>
+                        <th class="no-border"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let student of studentListArr ; let j = index;">
+                        <th scope="row" style="text-align: center">
+                          <i class="fa fa-trash-o" (click)="onDeleteStudent(student.key)" ></i>&nbsp;{{j+1}}
+                        </th>
+                        <td>{{student.key}}</td>
+                        <td>{{student.name}}</td>
+                        <td *ngIf="showGroup.flag" style="text-align: center">{{student.group}}</td>
+                        <!--/-->
+                        <ng-container *ngFor="let schedule of scheduleLabSortList ; let k = index" style="text-align: center">
+                          <td *ngIf="student.lab != undefined
+                              && student.lab[schedule[0].data.id] != undefined;
+                              then studentScore; else errorData">
+                          </td>
+                          <!--/-->
+                          <ng-template #errorData>
+                            <td class="red"></td>
+                          </ng-template>
+                          <ng-template #studentScore>
+                            <td *ngIf="student.lab[schedule[0].data.id].score == '0';
+                                      else notzero" style="text-align: center">
+                              <a class="text-danger">
+                              {{student.hw[schedule[0].data.id].score}}</a>
+                            </td>
+                          </ng-template>
+                          <ng-template #notzero>
+                            <td class="att_onTime">
+                                {{student.hw[schedule[0].data.id].score}}
+                            </td>
+                          </ng-template>
+                        </ng-container>
+                        <!--/-->
+                        <ng-container *ngIf="showPercentageL.flag" style="text-align: center">
+                          <td class="att_Percent">
+                            {{student.percent  | number:'1.2'}}
+                          </td>
+                        </ng-container>
+                        <td style="display:none;"></td>
+                      </tr>
+
                     </tbody>
                   </table>
                 </div>
