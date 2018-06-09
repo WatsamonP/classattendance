@@ -528,12 +528,12 @@
                         <td *ngIf="student.lab[schedule[0].data.id].score == '0';
                                   else notzero" style="text-align: center">
                           <a class="text-danger">
-                          {{student.hw[schedule[0].data.id].score}}</a>
+                          {{student.lab[schedule[0].data.id].score}}</a>
                         </td>
                       </ng-template>
                       <ng-template #notzero>
                         <td class="att_onTime">
-                            {{student.hw[schedule[0].data.id].score}}
+                            {{student.lab[schedule[0].data.id].score}}
                         </td>
                       </ng-template>
                     </ng-container>

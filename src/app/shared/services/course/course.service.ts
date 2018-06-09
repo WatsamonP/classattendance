@@ -83,7 +83,8 @@ export class CourseService {
       trimester : course.trimester,
       percentAtt : course.percentAtt,
       percentQuiz : course.percentQuiz,
-      percentHw : course.percentHw
+      percentHw : course.percentHw,
+      percentLab : course.percentLab
     });
   }
 

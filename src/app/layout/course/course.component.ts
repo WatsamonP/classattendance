@@ -115,6 +115,7 @@ export class CourseComponent implements OnInit {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.courseList = items;
+          console.log(items)
           for(var i=0; i<this.courseList.length; i++){
             if(this.courseList[i].id == this.courseId ){
               this.groupList = Object.keys(this.courseList[i].group)
@@ -334,7 +335,7 @@ export class CourseComponent implements OnInit {
             return items.map(item => item.key);
         });
         // 3. Query Lab
-        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/hw==lab`).snapshotChanges().map(actions => {
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/lab`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.scheduleLabList = items;
@@ -506,15 +507,16 @@ export class CourseComponent implements OnInit {
         fullScore = 0;
         for(var j=0; j<this.scheduleLabList.length ; j++){
           schedule = this.scheduleLabList[j].key;
-          score = this.studentListArr[i].hw[schedule].score;
+          score = this.studentListArr[i].lab[schedule].score;
           fullScore = fullScore + Number(this.scheduleLabList[j].totalScore);
           temp = temp + score;
         }
-        this.totalStudentPercentH.push(Number(temp)*Number(percent)/Number(fullScore));
+        this.totalStudentPercentL.push(Number(temp)*Number(percent)/Number(fullScore));
         this.studentListArr = Object.keys(this.studentListArr)
         .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentL[key]}));
 
       }
+      console.log(this.totalStudentPercentL)
     }
   }
 
@@ -590,6 +592,7 @@ export class CourseComponent implements OnInit {
       percentAtt: new FormControl(0, []),
       percentQuiz: new FormControl(0, []),
       percentHw: new FormControl(0, []),
+      percentLab: new FormControl(0, []),
     });
   }
 

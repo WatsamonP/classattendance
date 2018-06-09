@@ -125,7 +125,7 @@
       <div class="card" style="padding: 5px;width: 80%">
         <div class="text-left" style="padding-top: 5px;padding-left: 5px">
           <h3 class="page-header text-primary">
-            <i class="fa fa-book"></i> วิชา {{item.id}} : {{item.name}}&nbsp;&nbsp;
+            <i class="fa fa-book"></i> วิชา {{detail.id}} : {{detail.name}}&nbsp;&nbsp;
           </h3>
         </div>
         <div class="card-body text-dark">
@@ -162,7 +162,7 @@
                       </div>&nbsp;&nbsp;&nbsp;
                       <div class="text-primary">
                           % คะแนน<br>
-                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentA(item.percentAtt)">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentA()">
                           {{showPercentageA.name}}
                         </button>
                       </div>&nbsp;&nbsp;&nbsp;
@@ -189,7 +189,7 @@
                           </button>
                         </th>
                         <th *ngIf="showPercentageA.flag" style="width:70px; text-align: center">
-                          <div class="text-primary" style="font-size: 14px">{{item.percentAtt}}%</div>
+                          <div class="text-primary" style="font-size: 14px">{{percentAtt}}%</div>
                         </th>
                         <th class="no-border"></th>
                       </tr>
@@ -314,7 +314,7 @@
                       </div>&nbsp;&nbsp;&nbsp;
                       <div class="text-primary">
                           % คะแนน<br>
-                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentQ(item.percentQuiz)">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentQ()">
                           {{showPercentageQ.name}}
                         </button>
                       </div>&nbsp;&nbsp;&nbsp;
@@ -338,7 +338,7 @@
                           </button>
                         </th>
                         <th *ngIf="showPercentageQ.flag" style="width:70px; text-align: center">
-                          <div class="text-primary" style="font-size: 14px">{{item.percentQuiz}}%</div>
+                          <div class="text-primary" style="font-size: 14px">{{percentQuiz}}%</div>
                         </th>
                         <th class="no-border"></th>
                       </tr>
@@ -413,7 +413,7 @@
                       </div>&nbsp;&nbsp;&nbsp;
                       <div class="text-primary">
                           % คะแนน<br>
-                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentH(item.percentHw)">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentH()">
                           {{showPercentageH.name}}
                         </button>
                       </div>&nbsp;&nbsp;&nbsp;
@@ -437,7 +437,7 @@
                           </button>
                         </th>
                         <th *ngIf="showPercentageH.flag" style="width:70px; text-align: center">
-                          <div class="text-primary" style="font-size: 14px">{{item.percentHw}}%</div>
+                          <div class="text-primary" style="font-size: 14px">{{percentHw}}%</div>
                         </th>
                         <th class="no-border"></th>
                       </tr>
@@ -512,7 +512,7 @@
                       </div>&nbsp;&nbsp;&nbsp;
                       <div class="text-primary">
                           % คะแนน<br>
-                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentL(item.percentLab)">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentL()">
                           {{showPercentageL.name}}
                         </button>
                       </div>&nbsp;&nbsp;&nbsp;
@@ -536,7 +536,7 @@
                           </button>
                         </th>
                         <th *ngIf="showPercentageL.flag" style="width:70px; text-align: center">
-                          <div class="text-primary" style="font-size: 14px">{{item.percentHw}}%</div>
+                          <div class="text-primary" style="font-size: 14px">{{percentHw}}%</div>
                         </th>
                         <th class="no-border"></th>
                       </tr>
@@ -563,12 +563,12 @@
                             <td *ngIf="student.lab[schedule[0].data.id].score == '0';
                                       else notzero" style="text-align: center">
                               <a class="text-danger">
-                              {{student.hw[schedule[0].data.id].score}}</a>
+                              {{student.lab[schedule[0].data.id].score}}</a>
                             </td>
                           </ng-template>
                           <ng-template #notzero>
                             <td class="att_onTime">
-                                {{student.hw[schedule[0].data.id].score}}
+                                {{student.lab[schedule[0].data.id].score}}
                             </td>
                           </ng-template>
                         </ng-container>
