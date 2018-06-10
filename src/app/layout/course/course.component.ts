@@ -767,7 +767,7 @@ export class CourseComponent implements OnInit {
     var csvArray2d = new Array();
     var regex = new RegExp("^[ก-๙a-zA-Z]+\\s[ก-๙a-zA-Z]+$");
     var overgroup = false;
-    for (var i = 1; i < csvArray.length-2; i++){
+    for (var i = 1; i < csvArray.length-1; i++){
       csvArray2d[i] = csvArray[i].split(",");
       if(csvArray2d[i][4] > this.groupList.length-1)
         overgroup = true;
@@ -776,13 +776,13 @@ export class CourseComponent implements OnInit {
     if(overgroup)
       this.toastr.warning("จำนวนกลุ่มในไฟล์ csv มากกว่า จำนวนกลุ่มที่สร้างไว้");
     else{
-      for (var i = 1; i < csvArray.length-2; i++){
+      for (var i = 1; i < csvArray2d.length; i++){
         if(regex.test(csvArray2d[i][2])){
           this.studentForm.value.id = csvArray2d[i][1];
           this.studentForm.value.name = csvArray2d[i][2];
           this.studentForm.value.group = csvArray2d[i][4];
           this.studentService.insertStudentCid(this.studentForm.value,cid);
-          if(i == csvArray.length-2)
+          if(i == csvArray2d.length-1)
             this.toastr.success("Upload Successfully");
         }else{
             this.toastr.error("Upload Failed : Please upload UTF-8 Format");
