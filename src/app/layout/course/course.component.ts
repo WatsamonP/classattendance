@@ -342,7 +342,7 @@ export class CourseComponent implements OnInit {
           this.btn_lab =[];
           for(var i=0 ; i<this.scheduleLabList.length ;i++){
               if(i%5==0)
-                this.btn_hw.push({id:i+5,name: (i+1)+'-'+(i+5)});
+                this.btn_lab.push({id:i+5,name: (i+1)+'-'+(i+5)});
           }
 
           let sdtLen =  this.scheduleLabList.length;
@@ -776,6 +776,7 @@ export class CourseComponent implements OnInit {
     if(overgroup)
       this.toastr.warning("จำนวนกลุ่มในไฟล์ csv มากกว่า จำนวนกลุ่มที่สร้างไว้");
     else{
+      console.log(this.studentListArr)
       for (var i = 1; i < csvArray2d.length; i++){
         if(regex.test(csvArray2d[i][2])){
           this.studentForm.value.id = csvArray2d[i][1];
@@ -803,7 +804,7 @@ export class CourseComponent implements OnInit {
       for(var i=0; i<this.studentListArr.length; i++){
         var temp: {
           id: string,
-          name: string,
+          name: string, group: string,
           percentAtt: number,
           att1: string, att2: string, att3: string, att4: string, att5: string,
           att6: string, att7: string, att8: string, att9: string, att10: string,
@@ -811,12 +812,13 @@ export class CourseComponent implements OnInit {
           att16: string, att17: string, att18: string, att19: string, att20: string,
           att21: string, att22: string, att23: string, att24: string, att25: string,
           att26: string, att27: string, att28: string, att29: string, att30: string
-        } = {} as {id: string, name: string, percentAtt: number, att1: string,att2: string,att3: string, att4: string, att5: string,att6: string, att7: string,
+        } = {} as {id: string, name: string, group: string,percentAtt: number, att1: string,att2: string,att3: string, att4: string, att5: string,att6: string, att7: string,
           att8: string, att9: string, att10: string,att11: string, att12: string, att13: string, att14: string, att15: string,att16: string,
           att17: string, att18: string, att19: string, att20: string,att21: string, att22: string, att23: string, att24: string, att25: string,
           att26: string, att27: string, att28: string, att29: string, att30: string};
         temp.id = this.studentListArr[i].id;
         temp.name = this.studentListArr[i].name;
+        temp.group = this.studentListArr[i].group;
         temp.percentAtt = this.studentListArr[i].percent;
         temp.att1 = this.studentListArr[i].attendance[this.scheduleAttendanceList[0].id].score;
         if(this.scheduleAttendanceList.length <= 1){ exA.push(temp); continue; }
@@ -886,14 +888,15 @@ export class CourseComponent implements OnInit {
       for(var i=0; i<this.studentListArr.length; i++){
         var temp2: {
           id: string,
-          name: string, percentQuiz: number,
+          name: string, group: string,percentQuiz: number,
           quiz1: string, quiz2: string, quiz3: string, quiz4: string, quiz5: string,
           quiz6: string, quiz7: string, quiz8: string, quiz9: string, quiz10: string,
           quiz11: string, quiz12: string, quiz13: string, quiz14: string, quiz15: string
-          } = {} as {id: string, name: string, percentQuiz: number, quiz1: string,quiz2: string,quiz3: string, quiz4: string, quiz5: string,quiz6: string, quiz7: string,
+          } = {} as {id: string, name: string,group: string, percentQuiz: number, quiz1: string,quiz2: string,quiz3: string, quiz4: string, quiz5: string,quiz6: string, quiz7: string,
               quiz8: string, quiz9: string, quiz10: string,quiz11: string, quiz12: string, quiz13: string, quiz14: string, quiz15: string };
           temp2.id = this.studentListArr[i].id;
           temp2.name = this.studentListArr[i].name;
+          temp2.group = this.studentListArr[i].group;
           temp2.percentQuiz = this.studentListArr[i].percent;
           temp2.quiz1 = this.studentListArr[i].quiz[this.scheduleQuizList[0].id].score;
           if(this.scheduleQuizList.length <= 1){ exQ.push(temp2); continue; }
@@ -932,14 +935,15 @@ export class CourseComponent implements OnInit {
       for(var i=0; i<this.studentListArr.length; i++){
           var temp3: {
             id: string,
-            name: string, percentHw: number,
+            name: string, group: string,percentHw: number,
             hw1: string, hw2: string, hw3: string, hw4: string, hw5: string,
             hw6: string, hw7: string, hw8: string, hw9: string, hw10: string,
             hw11: string, hw12: string, hw13: string, hw14: string, hw15: string
-          } = {} as {id: string, name: string, percentHw: number, hw1: string,hw2: string,hw3: string, hw4: string, hw5: string,hw6: string, hw7: string,
+          } = {} as {id: string, name: string, group: string,percentHw: number, hw1: string,hw2: string,hw3: string, hw4: string, hw5: string,hw6: string, hw7: string,
             hw8: string, hw9: string, hw10: string,hw11: string, hw12: string, hw13: string, hw14: string, hw15: string };
           temp3.id = this.studentListArr[i].id;
           temp3.name = this.studentListArr[i].name;
+          temp3.group = this.studentListArr[i].group;
           temp3.percentHw = this.studentListArr[i].percent;
           temp3.hw1 = this.studentListArr[i].hw[this.scheduleHomeworkList[0].id].score;
           if(this.scheduleHomeworkList.length <= 1){ exH.push(temp3); continue; }
@@ -978,14 +982,15 @@ export class CourseComponent implements OnInit {
       for(var i=0; i<this.studentListArr.length; i++){
           var temp4: {
             id: string,
-            name: string, percentlab: number,
+            name: string, group: string,percentlab: number,
             lab1: string, lab2: string, lab3: string, lab4: string, lab5: string,
             lab6: string, lab7: string, lab8: string, lab9: string, lab10: string,
             lab11: string, lab12: string, lab13: string, lab14: string, lab15: string
-          } = {} as {id: string, name: string, percentlab: number, lab1: string,lab2: string,lab3: string, lab4: string, lab5: string,lab6: string, lab7: string,
+          } = {} as {id: string, name: string, group: string,percentlab: number, lab1: string,lab2: string,lab3: string, lab4: string, lab5: string,lab6: string, lab7: string,
             lab8: string, lab9: string, lab10: string,lab11: string, lab12: string, lab13: string, lab14: string, lab15: string };
           temp4.id = this.studentListArr[i].id;
           temp4.name = this.studentListArr[i].name;
+          temp4.group = this.studentListArr[i].group;
           temp4.percentlab = this.studentListArr[i].percent;
           temp4.lab1 = this.studentListArr[i].lab[this.scheduleLabList[0].id].score;
           if(this.scheduleLabList.length <= 1){ exL.push(temp4); continue; }
