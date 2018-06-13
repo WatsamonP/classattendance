@@ -19,7 +19,7 @@ export class StudentcheckComponent implements OnInit {
   courseList: any;
   student : any;
   courseData : any;
-  teachData : any;
+  csData : any;
   studentCourseData : any;
   showTableCourse;
   showTableStd;
@@ -75,8 +75,7 @@ export class StudentcheckComponent implements OnInit {
     this.showTableStd = false;
     this.showTableData = false;
     if(this.studentScoreForm.value.sid != '' && this.studentScoreForm.value.cid != ''){
-      this.studentIden();
-      this.showTableData = true;
+      this.scIden();
     }else if(this.studentScoreForm.value.sid != ''){
       this.studentIden();
       this.showTableStd = true;
@@ -87,64 +86,56 @@ export class StudentcheckComponent implements OnInit {
       this.toastr.warning("กรุณาป้อนรหัสวิชา หรือรหัสนักศึกษา");
     }
   }
-
+  scIden(){
+    let sid = this.studentScoreForm.value.sid;
+    let cid = this.studentScoreForm.value.cid;
+    var c=0;
+    this.courseData = [];
+    this.db.list(`users/`).snapshotChanges().map(actions => {
+      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+      }).subscribe(items => {
+      var k=0;
+      for(var i=0; i<items.length; i++){
+        this.courseData[i] = Object.keys(items[i].course)
+          .map(key => Object.assign({ key }, items[i].course[key]));
+      }
+      for(var i=0; i< items.length; i++){
+        for(var j=0; j< this.courseData[i].length; j++){
+          if(this.courseData[i][j].students[sid] && items[i].course[cid]){
+            c++;
+            this.findScore(items[i].key,cid);
+            this.showTableData = true;
+          }
+        }
+      }
+    });
+    if(c==0)
+      this.toastr.warning("ไม่มีวิชานี้ หรือ นักศึกษาไม่ได้ลงเรียนวิชานี้");
+  }
   studentIden(){
     this.courseData = [];
-    let temp = [];
-    this.teachData = [];
+    this.student = [];
     let sid = this.studentScoreForm.value.sid;
     this.db.list(`users/`).snapshotChanges().map(actions => {
       return actions.map(action => ({ key: action.key, ...action.payload.val() }));
       }).subscribe(items => {
+      var j=0;
+      var k=0;
       for(var i=0; i<items.length; i++){
         this.courseData[i] = Object.keys(items[i].course)
           .map(key => Object.assign({ key }, items[i].course[key]));
-        this.teachData[i] = items[i];
       }
-      for(var i=0; i<this.courseData.length; i++){
-        for(var j=0; j<this.courseData[i].length; j++){
-          if(this.courseData[i][j].students != undefined){
-            temp[j] = Object.keys(this.courseData[i][j].students)
-              .map(key => Object.assign({ key },
-                this.courseData[i][j].students[key]
-              ));
-              temp[j].push({course:this.courseData[i][j]});
-              temp[j].push({profile:this.teachData[i]});
-          }
-        }
-      }
-
-      this.student = [];
-      let k =0;
-      for(var i=0; i<temp.length; i++){
-        for(var j=0; j<temp[i].length; j++){
-          if(temp[i][j].id == sid){
-            this.student[k] =
-              [
-                {std:temp[i][j]},
-                {course:temp[i][temp[i].length-2].course},
-                {profile:temp[i][temp[i].length-1].profile.profile},
-                {id:temp[i][temp[i].length-1].profile.key}
-              ]
+      for(var i=0; i< items.length; i++){
+        for(var j=0; j< this.courseData[i].length; j++){
+          if(this.courseData[i][j].students[sid]){
+            this.student[k] = [{course:this.courseData[i][j]},{profile:items[i].profile},{id:items[i].key}]
             k++;
-          }
-
-        }
-      }
-      //console.log(this.student);
-      if(this.studentScoreForm.value.cid != ''){
-        this.studentCourseData = [];
-        for(var i=0; i<this.student.length; i++){
-          if(this.student[i][1].course.id == this.studentScoreForm.value.cid){
-            this.studentCourseData = this.student[i];
-            this.item = this.student[i][1].course;
           }
         }
       }
     });
     return this.student;
   }
-
   courseIden(){
     let temp = [];
     let cid = this.studentScoreForm.value.cid;
@@ -152,9 +143,11 @@ export class StudentcheckComponent implements OnInit {
     this.db.list(`users/`).snapshotChanges().map(actions => {
       return actions.map(action => ({ key: action.key, ...action.payload.val() }));
       }).subscribe(items => {
+      var j=0;
       for(var i=0; i< items.length; i++){
         if(items[i].course[cid]){
-          this.courseList[i] = [{profile: items[i].profile},{course : items[i].course[cid]}];
+          this.courseList[j] = [{profile: items[i].profile},{course : items[i].course[cid]},{id:items[i].key}];
+          j++;
         }
       }
     });
@@ -163,25 +156,15 @@ export class StudentcheckComponent implements OnInit {
 
   something(courseid,id){
     this.item = courseid;
-    //this.std();
     this.findScore(id,courseid);
-    console.log(this.item);
     this.showTableData = true;
   }
 
-  /*std(){
-    this.studentListArr = [];
-    var len = Object.keys(this.item.students).length;
-      for(var i=0; i<len;i++){
-        this.studentListArr = Object.keys(this.item.students)
-        .map(key => Object.assign({ key }, this.item.students[key]));
-    }
-    //console.log("Here Student");
-    //console.log(this.studentListArr);
-  }*/
-
   findScore(id,cid){
-
+    this.showPercentageA= {flag: false, name:"OFF"};
+    this.showPercentageQ= {flag: false, name:"OFF"};
+    this.showPercentageH= {flag: false, name:"OFF"};
+    this.showPercentageL= {flag: false, name:"OFF"};
     this.db.list(`users/${id}/course/`).snapshotChanges().map(actions => {
       return actions.map(action => ({ key: action.key, ...action.payload.val() }));
       }).subscribe(items => {
@@ -191,7 +174,8 @@ export class StudentcheckComponent implements OnInit {
             this.percentQuiz = items[i].percentQuiz;
             this.percentHw = items[i].percentHw;
             this.percentLab = items[i].percentLab;
-            this.detail = items[i]
+            this.detail = [{id: items[i].id},{name : items[i].name}];
+
           }
         }
     });
@@ -210,11 +194,6 @@ export class StudentcheckComponent implements OnInit {
         .map(key => Object.assign({ key }, temp[key]));
         return items.map(item => item.key);
     });
-    this.percentAtt = this.item.percentAtt;
-    this.percentQuiz = this.item.percentQuiz;
-    this.percentHw = this.item.percentHw;
-    this.percentLab = this.item.percentLab;
-    this.scheduleAttendanceList = [];
 
     this.db.list(`users/${id}/course/${cid}/schedule/attendance`).snapshotChanges().map(actions => {
       return actions.map(action => ({ key: action.key, ...action.payload.val() }));

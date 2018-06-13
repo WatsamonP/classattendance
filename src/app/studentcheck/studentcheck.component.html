@@ -81,7 +81,7 @@
               <td>{{course[1].course.name}}</td>
               <td>{{course[0].profile.firstName}} {{course[0].profile.lastName}}</td>
               <td>
-                <button class="btn btn-primary btn-sm" (click)="something(course[1].course)">
+                <button class="btn btn-primary btn-sm" (click)="something(course[1].course.id,course[2].id)">
                   เลือก
                 </button>
               </td>
@@ -104,11 +104,11 @@
           </thead>
           <tbody>
             <tr *ngFor="let s of student; let i = index">
-              <td>{{s[1].course.id}}</td>
-              <td>{{s[1].course.name}}</td>
-              <td>{{s[2].profile.firstName}} {{s[2].profile.lastName}}</td>
+              <td>{{s[0].course.id}}</td>
+              <td>{{s[0].course.name}}</td>
+              <td>{{s[1].profile.firstName}} {{s[1].profile.lastName}}</td>
               <td>
-                <button class="btn btn-primary btn-sm" (click)="something(s[1].course.id,s[3].id)">
+                <button class="btn btn-primary btn-sm" (click)="something(s[0].course.id,s[2].id)">
                   เลือก
                 </button>
               </td>
@@ -125,7 +125,7 @@
       <div class="card" style="padding: 5px;width: 80%">
         <div class="text-left" style="padding-top: 5px;padding-left: 5px">
           <h3 class="page-header text-primary">
-            <i class="fa fa-book"></i> วิชา {{detail.id}} : {{detail.name}}&nbsp;&nbsp;
+            <i class="fa fa-book"></i> วิชา {{detail[0].id}} : {{detail[1].name}}&nbsp;&nbsp;
           </h3>
         </div>
         <div class="card-body text-dark">
