@@ -565,7 +565,7 @@
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">ปีการศึกษา</label>
-          <div class="col-sm-9">
+          <div class="col-sm-3">
 
             <select formControlName="year" class="form-control" [ngModel]="item.year">
               <ng-container *ngFor="let years of yearsList">
@@ -578,39 +578,44 @@
               </ng-container>
             </select>
           </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-3 col-form-label">เทอม</label>
-          <div class="col-sm-9">
+        <!--/div>
+        <div class="form-group row"-->
+          <label class="col-sm-3 col-form-label" style="text-align: right">เทอม</label>
+          <div class="col-sm-3">
             <select formControlName="trimester" class="form-control"  [ngModel]="item.trimester" >
               <option *ngFor="let term of terms">{{term}}</option>
             </select>
           </div>
         </div>
+        <br>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">%คะแนน การเข้าเรียน</label>
-          <div class="col-sm-9">
+          <label class="col-sm-3 col-form-label" style="font-size: 14px; text-align: center">
+            <b>% คะแนนเข้าเรียน</b></label>
+          <div class="col-sm-3">
             <input type="number" formControlName="percentAtt" class="form-control"
               [(ngModel)]="item.percentAtt">
           </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-3 col-form-label">%คะแนน ควิซ</label>
-          <div class="col-sm-9">
+        <!--/div>
+        <div class="form-group row"-->
+          <label class="col-sm-3 col-form-label" style="font-size: 14px; text-align: center">
+            <b>% คะแนนQuiz</b></label>
+          <div class="col-sm-3">
             <input type="number" formControlName="percentQuiz" class="form-control"
               [(ngModel)]="item.percentQuiz">
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">%คะแนน การบ้าน</label>
-          <div class="col-sm-9">
+          <label class="col-sm-3 col-form-label" style="font-size: 14px; text-align: center">
+            <b>% คะแนนการบ้าน</b></label>
+          <div class="col-sm-3">
             <input type="number" formControlName="percentHw" class="form-control"
               [(ngModel)]="item.percentHw">
           </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-3 col-form-label">%คะแนน แลป</label>
-          <div class="col-sm-9">
+        <!--/div>
+        <div class="form-group row"-->
+          <label class="col-sm-3 col-form-label" style="font-size: 14px; text-align: center">
+            <b>% คะแนนLab</b></label>
+          <div class="col-sm-3">
             <input type="number" formControlName="percentLab" class="form-control"
               [(ngModel)]="item.percentLab">
           </div>
