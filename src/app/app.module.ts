@@ -8,6 +8,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 // Firebase
 import { environment } from '../environments/environment';
@@ -25,6 +26,7 @@ import { ExcelService } from "./shared/services/excel/excel.service";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './shared';
+import { MessageService } from './shared/services/messageService';
 
 // AoT requires an exported function for factories
 export function createTranslateLoader(http: HttpClient) {
@@ -53,10 +55,11 @@ export function createTranslateLoader(http: HttpClient) {
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     FormsModule,ReactiveFormsModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    NgxPaginationModule
   ],
   declarations: [AppComponent],
-  providers: [AuthService, AuthGuard, AngularFireDatabase, UserService, ExcelService, Http],
+  providers: [AuthService, AuthGuard, AngularFireDatabase, UserService, ExcelService, Http, MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

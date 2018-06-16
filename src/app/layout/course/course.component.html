@@ -6,33 +6,37 @@
   <!-- HEADER Start-->
   <div class="row">
     <div class="col-xl-12">
-      <h2 class="page-header">
-        <i class="fa fa-pencil"></i> {{item.id}} : {{item.name}}&nbsp;&nbsp;
-        <i class="fa fa-angle-double-right" style="font-size: 30px"></i> {{g.name}}
-      </h2>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <ul class="navbar-nav mr-auto">
-          <button type="button" class="btn btn-success" (click)="onSwitch() ">
-            <i class="fa fa-user-plus"></i>เพิ่มรายชื่อนักศึกษา
-          </button>&nbsp;&nbsp;
-          <button type="button" class="btn btn-warning text-white" (click)="onSwitchcsv() ">
-            <i class="fa fa-plus"></i>อัพโหลดรายชื่อ (.csv)
-          </button>&nbsp;&nbsp;
-          <button type="button" class="btn btn-primary" (click)="exportToExcel()">
-            <i class="fa fa-file-excel-o"></i>นำออกข้อมูล
+
+    <div class="input-group input-group-lg">
+      <div class="input-group-prepend">
+          <button class="navbar-toggler" type="button" (click)="toggleSidebar()">
+              <!-- <span class="navbar-toggler-icon"></span> -->
+              <i class="fa fa-bars text-muted"></i>
           </button>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <ul class="navbar-nav mr-auto">
-            <button type="button" class="btn btn-info" (click)="openOnEdit(editCourse)">
-              <i class="fa fa-pencil-square-o"></i>แก้ไขรายวิชา
-            </button>&nbsp;&nbsp;
-            <button type="button" class="btn btn-danger" (click)="onDelete(item.key)">
-              <i class="fa fa-trash-o"></i>ลบรายวิชา
-            </button>
-          </ul>
-        </form>
-      </nav>
+        <span class="input-group-text text-dark "><i class="fa fa-pencil"></i></span>
+        <span class="input-group-text text-dark"><b>{{item.id}} : {{item.name}}</b></span>
+      </div>
+      <!--input type="text" class="form-control" aria-label="Text input with segmented dropdown button"-->
+      <div *ngIf="groupList.length==1" class="input-group-append">
+        <span class="input-group-text text-muted">Group 1
+          <span style="font-size: 12px">Course have only One Group</span>
+        </span>
+      </div>
+      <div *ngIf="groupList.length!=1" ngbDropdown class="input-group-append">
+        <!--span class="input-group-text" id="">{{g.name}}</span-->
+        <!--div ngbDropdown class="d-inline-block dropdown"-->
+        <button type="button" class="btn btn-outline-secondary" ngbDropdownToggle>{{g.name}}</button>
+          <div ngbDropdownMenu >
+            <div *ngFor="let gx of groupList">
+              <button class="dropdown-item">
+                <a class="dropdown-item"
+                  [routerLink]="['/course', item.id, gx.id]">{{gx.name}}</a>
+              </button>
+            </div>
+          </div>
+      </div>
+    </div>
+
     </div>
   </div>
   <br />
@@ -93,41 +97,38 @@
         <ngb-tab title="เข้าเรียน">
           <ng-template ngbTabContent>
             <!--ON/OFF Switch-->
-            <div class="row justify-content-between" style="padding-top: 15px">
-              <div class="col">
-                <div class="input-group-prepend" style="padding-top: 10px">
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label *ngFor="let slot of btn_attendance"
-                        class="btn btn-light active" (click)="radioCheckA(slot.id)">
-                      <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
-                        {{slot.name}}
-                    </label>
-                  </div>
-                </div>
+            <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
+              <div class="input-group-prepend">
+                <button *ngFor="let slot of btn_attendance" class="btn btn-outline-secondary text-dark" 
+                  (click)="radioCheckA(slot.id)" type="button">
+                  {{slot.name}}
+                </button>
+                <!--span style="background-color: #ffffff"
+                  class="input-group-text border border-warning text-warning">
+                  <i class="fa fa-cog"></i> OPTION</span-->
               </div>
-              <div class="col-4">
-                <div class="row justify-content-end" style="text-align: center">
-                  <div class="text-warning">
-                    แสดงกลุ่มเรียน<br>
-                    <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
-                      {{showGroup.name}}
-                    </button>
-                  </div>&nbsp;&nbsp;&nbsp;
-                  <div class="text-danger">
-                    ขาดเรียน<br>
-                    <button type="button" class="btn btn-danger btn-sm" (click)="onSwitchShowMissClass()">
-                      {{showMissClass.name}}
-                    </button>
-                  </div>&nbsp;&nbsp;&nbsp;
-                  <div class="text-primary">
-                      % คะแนน<br>
-                    <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentA(item.percentAtt)">
-                      {{showPercentageA.name}}
-                    </button>
-                  </div>&nbsp;&nbsp;&nbsp;
-                </div>
+              
+              <div class="input-group-append">
+                <button type="button" (click)="switchExpandOption()"
+                  class="btn btn-outline-warning">
+                  OPTION &nbsp;&nbsp;
+                  <i *ngIf="!isExpandOption" class="fa fa-caret-right"></i>
+                  <i *ngIf="isExpandOption" class="fa fa-caret-left"></i>
+                </button>
+
+                <button *ngIf="isExpandOption" (click)="onSwitchShowGroup()"
+                  class="btn btn-outline-sut" type="button">
+                  กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
+                <button *ngIf="isExpandOption" (click)="onSwitchShowMissClass()"
+                  class="btn btn-outline-danger" type="button">
+                  ขาดเรียน : <b>{{showMissClass.name}}</b></button>
+                <button *ngIf="isExpandOption" (click)="onSwitchShowPercentA(item.percentAtt)"
+                  class="btn btn-outline-primary" type="button">
+                  % คะแนน : <b>{{showPercentageA.name}}</b></button>        
               </div>
             </div>
+
+
           <!---->
             <!--Table Content-->
             <div class="card-body table-responsive">
@@ -253,33 +254,28 @@
         <ngb-tab title="Quiz">
           <ng-template ngbTabContent>
             <!--ON/OFF Switch-->
-            <div class="row justify-content-between" style="padding-top: 15px">
-              <div class="col">
-                <div class="input-group-prepend" style="padding-top: 10px">
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label *ngFor="let slot of btn_quiz"
-                        class="btn btn-light active" (click)="radioCheckQ(slot.id)">
-                      <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
-                        {{slot.name}}
-                    </label>
-                  </div>
-                </div>
+            <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
+              <div class="input-group-prepend">
+                <button *ngFor="let slot of btn_quiz" class="btn btn-outline-secondary text-dark" 
+                  (click)="radioCheckA(slot.id)" type="button">
+                  {{slot.name}}
+                </button>
               </div>
-              <div class="col-4">
-                <div class="row justify-content-end" style="text-align: center">
-                  <div class="text-warning">
-                    แสดงกลุ่มเรียน<br>
-                    <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
-                      {{showGroup.name}}
-                    </button>
-                  </div>&nbsp;&nbsp;&nbsp;
-                  <div class="text-primary">
-                      % คะแนน<br>
-                    <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentQ(item.percentQuiz)">
-                      {{showPercentageQ.name}}
-                    </button>
-                  </div>&nbsp;&nbsp;&nbsp;
-                </div>
+              
+              <div class="input-group-append">
+                <button type="button" (click)="switchExpandOption()"
+                  class="btn btn-outline-warning">
+                  OPTION &nbsp;&nbsp;
+                  <i *ngIf="!isExpandOption" class="fa fa-caret-right"></i>
+                  <i *ngIf="isExpandOption" class="fa fa-caret-left"></i>
+                </button>
+
+                <button *ngIf="isExpandOption" (click)="onSwitchShowGroup()"
+                  class="btn btn-outline-sut" type="button">
+                  กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
+                <button *ngIf="isExpandOption" (click)="onSwitchShowPercentQ(item.percentQuiz)"
+                  class="btn btn-outline-primary" type="button">
+                  % คะแนน : <b>{{showPercentageQ.name}}</b></button>        
               </div>
             </div>
           <!---->
@@ -354,33 +350,28 @@
         <ngb-tab title="Homework">
           <ng-template ngbTabContent>
             <!--ON/OFF Switch-->
-            <div class="row justify-content-between" style="padding-top: 15px">
-              <div class="col">
-                <div class="input-group-prepend" style="padding-top: 10px">
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label *ngFor="let slot of btn_hw"
-                        class="btn btn-light active" (click)="radioCheckH(slot.id)">
-                      <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
-                        {{slot.name}}
-                    </label>
-                  </div>
-                </div>
+            <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
+              <div class="input-group-prepend">
+                <button *ngFor="let slot of btn_hw" class="btn btn-outline-secondary text-dark" 
+                  (click)="radioCheckA(slot.id)" type="button">
+                  {{slot.name}}
+                </button>
               </div>
-              <div class="col-4">
-                <div class="row justify-content-end" style="text-align: center">
-                  <div class="text-warning">
-                    แสดงกลุ่มเรียน<br>
-                    <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
-                      {{showGroup.name}}
-                    </button>
-                  </div>&nbsp;&nbsp;&nbsp;
-                  <div class="text-primary">
-                      % คะแนน<br>
-                    <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentH(item.percentHw)">
-                      {{showPercentageH.name}}
-                    </button>
-                  </div>&nbsp;&nbsp;&nbsp;
-                </div>
+              
+              <div class="input-group-append">
+                <button type="button" (click)="switchExpandOption()"
+                  class="btn btn-outline-warning">
+                  OPTION &nbsp;&nbsp;
+                  <i *ngIf="!isExpandOption" class="fa fa-caret-right"></i>
+                  <i *ngIf="isExpandOption" class="fa fa-caret-left"></i>
+                </button>
+
+                <button *ngIf="isExpandOption" (click)="onSwitchShowGroup()"
+                  class="btn btn-outline-sut" type="button">
+                  กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
+                <button *ngIf="isExpandOption" (click)="onSwitchShowPercentH(item.percentHw)"
+                  class="btn btn-outline-primary" type="button">
+                  % คะแนน : <b>{{showPercentageH.name}}</b></button>        
               </div>
             </div>
           <!---->
@@ -455,33 +446,28 @@
         <ngb-tab title="Lab">
           <ng-template ngbTabContent>
             <!--ON/OFF Switch-->
-            <div class="row justify-content-between" style="padding-top: 15px">
-              <div class="col">
-                <div class="input-group-prepend" style="padding-top: 10px">
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label *ngFor="let slot of btn_lab"
-                        class="btn btn-light active" (click)="radioCheckL(slot.id)">
-                      <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
-                        {{slot.name}}
-                    </label>
-                  </div>
-                </div>
+            <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
+              <div class="input-group-prepend">
+                <button *ngFor="let slot of btn_lab" class="btn btn-outline-secondary text-dark" 
+                  (click)="radioCheckA(slot.id)" type="button">
+                  {{slot.name}}
+                </button>
               </div>
-              <div class="col-4">
-                <div class="row justify-content-end" style="text-align: center">
-                  <div class="text-warning">
-                    แสดงกลุ่มเรียน<br>
-                    <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
-                      {{showGroup.name}}
-                    </button>
-                  </div>&nbsp;&nbsp;&nbsp;
-                  <div class="text-primary">
-                      % คะแนน<br>
-                    <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentL(item.percentLab)">
-                      {{showPercentageL.name}}
-                    </button>
-                  </div>&nbsp;&nbsp;&nbsp;
-                </div>
+              
+              <div class="input-group-append">
+                <button type="button" (click)="switchExpandOption()"
+                  class="btn btn-outline-warning">
+                  OPTION &nbsp;&nbsp;
+                  <i *ngIf="!isExpandOption" class="fa fa-caret-right"></i>
+                  <i *ngIf="isExpandOption" class="fa fa-caret-left"></i>
+                </button>
+
+                <button *ngIf="isExpandOption" (click)="onSwitchShowGroup()"
+                  class="btn btn-outline-sut" type="button">
+                  กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
+                <button *ngIf="isExpandOption" (click)="onSwitchShowPercentL(item.percentLab)"
+                  class="btn btn-outline-primary" type="button">
+                  % คะแนน : <b>{{showPercentageL.name}}</b></button>        
               </div>
             </div>
           <!---->
@@ -501,7 +487,7 @@
                       </button>
                     </th>
                     <th *ngIf="showPercentageL.flag" style="width:70px; text-align: center">
-                      <div class="text-primary" style="font-size: 14px">{{item.percentHw}}%</div>
+                      <div class="text-primary" style="font-size: 14px">{{item.percentLab}}%</div>
                     </th>
                     <th class="no-border"></th>
                   </tr>
@@ -559,6 +545,13 @@
 
 <!-- ///////////////////////////////////////////template/////////////////////////////////-->
 <!-- ///////////////////////////////////////////template/////////////////////////////////-->
+<!-- Button trigger modal -->
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+  <!--ng-template *ngIf="openEditiTemplate; else openOnEdit(editCourse)">
+    Hello
+  </ng-template-->
   <ng-template #editCourse let-c="close" let-d="dismiss">
     <div class="modal-header">
       <h4 class="modal-title">แก้ไขรายวิชา</h4>
