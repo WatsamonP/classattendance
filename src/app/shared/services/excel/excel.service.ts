@@ -10,7 +10,7 @@ export class ExcelService {
 
   constructor() { }
 
-  public exportAsExcelFile(json: any[], json2: any[], json3: any[], json4:any[],excelFileName: string): void {
+  public exportAsExcelFile(json: any[], json2: any[], json3: any[], json4:any[], cid: string, gid: string, cname: string): void {
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
     const worksheet2: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json2);
     const worksheet3: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json3);
@@ -21,14 +21,15 @@ export class ExcelService {
     XLSX.utils.book_append_sheet(workbook, worksheet3, 'Homework');
     XLSX.utils.book_append_sheet(workbook, worksheet4, 'Lab');
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    this.saveAsExcelFile(excelBuffer, excelFileName);
+    this.saveAsExcelFile(excelBuffer, cid, gid, cname);
   }
 
-  private saveAsExcelFile(buffer: any, fileName: string): void {
+  private saveAsExcelFile(buffer: any, cid: string, gid: string, cname: string): void {
     const data: Blob = new Blob([buffer], {
       type: EXCEL_TYPE
     });
-    FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+    //export_523211-DatabaseSystems-Group1_[19/06/2018
+    FileSaver.saveAs(data, 'export_' + cid + '-' + cname + '-Group' + gid + '_[' + new Date().getDate() + '-' + (new Date().getMonth()+1) + '-'+new Date().getFullYear()+']' + EXCEL_EXTENSION);
   }
 
 }
