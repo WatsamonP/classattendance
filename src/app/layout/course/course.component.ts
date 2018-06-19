@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject } from '@angular/core';
+import { Component, OnInit, Input, Inject, ViewChild, TemplateRef } from '@angular/core';
 import { routerTransition } from '../../router.animations';
 import { ReactiveFormsModule, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AngularFireDatabase, AngularFireObject, AngularFireList } from 'angularfire2/database';
@@ -20,6 +20,7 @@ import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { toArray } from 'rxjs/operator/toArray';
 import { DYNAMIC_TYPE } from '@angular/compiler/src/output/output_ast';
 import { Pipe, PipeTransform } from '@angular/core';
+import { MessageService } from '../../shared/services/messageService';
 
 @Component({
     selector: 'app-course',
@@ -35,6 +36,7 @@ export class CourseComponent implements OnInit {
   courseId;
   courseName;
   groupId;
+  someEvent;
   private selectedId: number;
   //Student
   studentForm: FormGroup;
@@ -89,6 +91,16 @@ export class CourseComponent implements OnInit {
   percentQuiz: number;
   percentHw: number;
   percentLab: number;
+  openEditiTemplate : boolean = false;
+  //
+  defaultPagination: number;
+  advancedPagination: number;
+  paginationSize: number;
+  disabledPagination: number;
+  isDisabled: boolean;
+  isExpandOption: boolean = false;
+
+
   constructor(
     private auth: AuthService,
     private courseService: CourseService,
@@ -98,25 +110,48 @@ export class CourseComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private modalService: NgbModal,
-    private excelService: ExcelService) {
+    private excelService: ExcelService,
+    private _messageService: MessageService) {
   }
 
+  toggleDisabled() {
+    this.isDisabled = !this.isDisabled;
+  }
+
+  switchExpandOption(){
+    this.isExpandOption = !this.isExpandOption;
+  }
+
+  @ViewChild('editCourse')
+    private myEditCourse: TemplateRef<any>;
+
   ngOnInit() {
+    this._messageService.listen().subscribe((m:any) => {
+      //console.log(m);
+      this.onFilterClick(m);
+    })
+
     // set course ID จาก route
     //let id = parseInt(this.route.snapshot.paramMap.get('id'));
     this.route.paramMap.subscribe((params: ParamMap) => {
       let id = parseInt(params.get('id'));
       let group = params.get('group').toString();
+      let someEvent = params.get('someEvent');
+      
       this.courseId = id;
       this.groupId = group;
-
+      this.someEvent = someEvent;
+      this.openEditiTemplate = false;
+    
+      
+      
 
       //Query Course
       this.db.list(`users/${this.auth.currentUserId}/course/`).snapshotChanges().map(actions => {
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
           this.courseList = items;
-          console.log(items)
+          //console.log(items)
           for(var i=0; i<this.courseList.length; i++){
             if(this.courseList[i].id == this.courseId ){
               this.groupList = Object.keys(this.courseList[i].group)
@@ -258,7 +293,7 @@ export class CourseComponent implements OnInit {
           }).subscribe(items => {
           this.studentList = items;
           this.studentListArr = Object.keys(items).map(key => Object.assign({ key }, items[key]));
-          console.log(this.studentListArr)
+          //console.log(this.studentListArr)
             return items.map(item => item.key);
         });
 
@@ -283,7 +318,7 @@ export class CourseComponent implements OnInit {
                 break;
               }
             };
-            console.log(this.scheduleAttendanceList);
+            //console.log(this.scheduleAttendanceList);
             return items.map(item => item.key);
         });
 
@@ -373,10 +408,29 @@ export class CourseComponent implements OnInit {
     };
   }
 
+  onFilterClick(event) {
+    //console.log(event);
+    if(event.todo == 'delete'){
+      this.onDelete(event.fn);
+    }else if(event.todo == 'std_keyboard'){
+      this.onSwitch();
+    }else if(event.todo == 'std_csv'){
+      this.onSwitchcsv();
+    }else if(event.todo == 'edit'){
+      this.openOnEdit(this.myEditCourse)
+      this.openEditiTemplate = true;
+      //this.openOnEdit();
+    }else if(event.todo == 'export'){
+      this.exportToExcel();
+    }
+    //
+    //this.onSwitch();
+  }
+
   radioCheckA(id){
     let sdtLen =  this.scheduleAttendanceList.length;
     this.scheduleAttendanceSortList = [];
-    console.log(id-5);
+    //console.log(id-5);
     var i= id-5;
     var j=0;
     for (id ; id > i; i++) {
@@ -385,12 +439,12 @@ export class CourseComponent implements OnInit {
         j++;
       }
     };
-    console.log(this.scheduleAttendanceSortList);
+    //console.log(this.scheduleAttendanceSortList);
   }
   radioCheckQ(id){
     let sdtLen =  this.scheduleQuizList.length;
     this.scheduleQuizSortList = [];
-    console.log(id-5);
+    //console.log(id-5);
     var i= id-5;
     var j=0;
     for (id ; id > i; i++) {
@@ -399,12 +453,12 @@ export class CourseComponent implements OnInit {
         j++;
       }
     };
-    console.log(this.scheduleQuizSortList);
+    //console.log(this.scheduleQuizSortList);
   }
   radioCheckH(id){
     let sdtLen =  this.scheduleHomeworkList.length;
     this.scheduleHomeworkSortList = [];
-    console.log(id-5);
+    //console.log(id-5);
     var i= id-5;
     var j=0;
     for (id ; id > i; i++) {
@@ -413,12 +467,12 @@ export class CourseComponent implements OnInit {
         j++;
       }
     };
-    console.log(this.scheduleHomeworkSortList);
+    //console.log(this.scheduleHomeworkSortList);
   }
   radioCheckL(id){
     let sdtLen =  this.scheduleLabList.length;
     this.scheduleLabSortList = [];
-    console.log(id-5);
+    //console.log(id-5);
     var i= id-5;
     var j=0;
     for (id ; id > i; i++) {
@@ -427,13 +481,13 @@ export class CourseComponent implements OnInit {
         j++;
       }
     };
-    console.log(this.scheduleLabSortList);
+    //console.log(this.scheduleLabSortList);
   }
 
   findPercentageA(percent : Number){
     let schedule,score,temp,temp2,fullScore;
     if(this.scheduleAttendanceList.length==0){
-      console.log('ZERO')
+      //console.log('ZERO')
     }else{
 
       for(var i=0; i<this.studentListArr.length ; i++){
@@ -456,7 +510,7 @@ export class CourseComponent implements OnInit {
   findPercentageQ(percent : Number){
     let schedule,score,temp,temp2,fullScore;
     if(this.scheduleQuizList.length==0){
-      console.log('ZERO')
+      //console.log('ZERO')
     }else{
 
       for(var i=0; i<this.studentListArr.length ; i++){
@@ -479,7 +533,7 @@ export class CourseComponent implements OnInit {
   findPercentageH(percent : Number){
     let schedule,score,temp,temp2,fullScore;
     if(this.scheduleHomeworkList.length==0){
-      console.log('ZERO')
+      //console.log('ZERO')
     }else{
 
       for(var i=0; i<this.studentListArr.length ; i++){
@@ -501,7 +555,7 @@ export class CourseComponent implements OnInit {
   findPercentageL(percent : Number){
     let schedule,score,temp,temp2,fullScore;
     if(this.scheduleLabList.length==0){
-      console.log('ZERO')
+      //console.log('ZERO')
     }else{
 
       for(var i=0; i<this.studentListArr.length ; i++){
@@ -518,14 +572,14 @@ export class CourseComponent implements OnInit {
         .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentL[key]}));
 
       }
-      console.log(this.totalStudentPercentL)
+      //console.log(this.totalStudentPercentL)
     }
   }
 
   findMissClassNumber(){
     let schedule,score,temp,temp2;
     if(this.scheduleAttendanceList.length==0){
-      console.log('ZERO')
+      //console.log('ZERO')
     }else{
       for(var i=0; i<this.studentListArr.length ; i++){
         temp = 0;
@@ -540,15 +594,15 @@ export class CourseComponent implements OnInit {
         .map(key => Object.assign({ key }, this.studentListArr[key], {totalMiss:this.totalMissClass[key]}));
       }
     }
-    console.log(this.studentListArr);
+    //console.log(this.studentListArr);
   }
 
 
 
 
   // Button
-  onEditCourse(course: Course) {
-    console.log(this.editCourseForm.value)
+  onEditCourse() {
+    //console.log(this.editCourseForm.value)
     this.courseService.updateCourse(this.editCourseForm.value,this.courseId);
     this.toastr.success("แก้ไข"+this.courseId
       +" : "+ this.editCourseForm.value.name+" สำเร็จ");
@@ -752,14 +806,14 @@ export class CourseComponent implements OnInit {
   }
   ///////////////////////////////////////////////////////////////
   onFileSelect(files: FileList){
-  console.log(files);
+  //console.log(files);
   if(files && files.length > 0) {
      let file : File = files.item(0);
        let reader: FileReader = new FileReader();
        reader.readAsText(file);
        reader.onload = (e) => {
           this.csv = reader.result;
-          console.log(this.csv);
+          //console.log(this.csv);
        }
     }
   }
@@ -774,11 +828,11 @@ export class CourseComponent implements OnInit {
       if(csvArray2d[i][4] > this.groupList.length-1)
         overgroup = true;
     }
-    console.log(overgroup)
+    //console.log(overgroup)
     if(overgroup)
       this.toastr.warning("จำนวนกลุ่มในไฟล์ csv มากกว่า จำนวนกลุ่มที่สร้างไว้");
     else{
-      console.log(this.studentListArr)
+      //console.log(this.studentListArr)
       for (var i = 1; i < csvArray2d.length; i++){
         if(regex.test(csvArray2d[i][2])){
           this.studentForm.value.id = csvArray2d[i][1];
@@ -796,7 +850,7 @@ export class CourseComponent implements OnInit {
     this.csv = "";
   }
   // to excel
-  exportToExcel(event) {
+  exportToExcel() {
     var exA = [];
     var exQ = [];
     var exH = [];
@@ -1026,10 +1080,18 @@ export class CourseComponent implements OnInit {
           if(this.scheduleLabList.length <= 15){ exL.push(temp4); continue; }
       };
     }
+<<<<<<< HEAD
     console.log(this.studentListArr);
     console.log(exA);
     console.log(exQ);
     console.log(exH);
     this.excelService.exportAsExcelFile( exA , exQ , exH , exL ,this.courseId,this.groupId,this.courseName);
+=======
+    //console.log(this.studentListArr);
+    //console.log(exA);
+    //console.log(exQ);
+    //console.log(exH);
+    this.excelService.exportAsExcelFile( exA , exQ , exH , exL ,'studentlist');
+>>>>>>> 4e7aa4ba7758252518be6b805306a7711da4c0a8
   }
 }

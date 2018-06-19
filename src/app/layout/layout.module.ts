@@ -19,7 +19,7 @@ import { StudentService } from '../shared/services/student/student.service';
         TranslateModule,
         NgbDropdownModule.forRoot(),
     ],
-    declarations: [LayoutComponent, SidebarComponent, HeaderComponent ],
+    declarations: [LayoutComponent, SidebarComponent, HeaderComponent],
     providers: [CourseService, StudentService],
 })
 export class LayoutModule {}
