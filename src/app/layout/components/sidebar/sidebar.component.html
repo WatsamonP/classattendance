@@ -17,7 +17,7 @@
             [routerLink]="['/course', item.id, 'all']" >
             <span><i class="fa fa-check-square-o"></i>&nbsp;{{ item.id }}</span>
           </a >
-          <li class="nested" [class.expand]="showMenu === item.id"> 
+          <li class="nested" [class.expand]="showMenu === item.id">
             <ul class="submenu">
               <li>
                 <div class="nested-menu">
@@ -41,13 +41,13 @@
                 </div>
               </li>
               <!--If Many Group-->
-              <li *ngIf="item.groupNo != '1'">
+              <!--<li *ngIf="item.groupNo != '1'">
                 <div class="nested-menu">
                   <a class="list-group-item text-danger" (click)="addExpandClassGroup(item.id)">
                     <span><i class="fa fa-file-excel-o" style="width: 15px"></i>นำออกข้อมูล</span>
                   </a>
                   <li *ngFor="let g of groupList; let j = index">
-                      <a 
+                      <a
                         (click)="click_Export(item.key, g.id)"
                         [routerLink]="['/course', item.id, g.id]"
                         class="list-group-item text-muted">
@@ -56,9 +56,9 @@
                       </a>
                     </li>
                 </div>
-              </li>
+              </li>-->
               <!--If ONE Group-->
-              <li *ngIf="item.groupNo == '1'">
+              <li>
                 <div class="nested-menu">
                   <a class="list-group-item text-danger" (click)="click_Export(item.id)">
                     <span><i class="fa fa-file-excel-o" style="width: 15px"></i>นำออกข้อมูล</span>
@@ -93,7 +93,7 @@
       <!--END-->
     </div>
     <!--End Course-->
-    
+
 
         <!--a routerLink="/dashboard" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-fw fa-dashboard"></i>&nbsp;{{ 'Dashboard' | translate }}
