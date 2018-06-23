@@ -1,63 +1,41 @@
 <div [@routerTransition]>
-    <h2 class="text-muted">Dashboard <small>Statistics Overview</small></h2>
-    <div class="row">
-        <div class="col-md-12">
-            <ngb-carousel>
-                <ng-template ngbSlide *ngFor="let slider of sliders">
-                    <img class="img-fluid mx-auto d-block" [src]="slider.imagePath" alt="Random first slide" width="100%">
-                    <div class="carousel-caption">
-                        <h3>{{slider.label}}</h3>
-                        <p>{{slider.text}}</p>
-                    </div>
-                </ng-template>
-            </ngb-carousel>
+  <div *ngFor="let item of data ; let i = index" style="padding-bottom: 20px">
+    <div class="card">
+      <div class="card-header">
+        <b><i class="fa fa-pie-chart"></i> {{item[0].course.id}} : {{item[0].course.name}} 
+          &nbsp;&nbsp; {{item[0].course.trimester}}/{{item[0].course.year}}</b>
+      </div>
+      <!--div class="input-group input-group-lg">
+        <div class="input-group-prepend">
+          
         </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-xl-3 col-lg-6">
-            <app-stat [bgClass]="'primary'" [icon]="'fa-comments'" [count]="26" [label]="'New Comments!'" ></app-stat>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-            <app-stat [bgClass]="'warning'" [icon]="'fa-tasks'" [count]="12" [label]="'New task!'" ></app-stat>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-            <app-stat [bgClass]="'success'" [icon]="'fa-shopping-cart'" [count]="124" [label]="'New Orders!'" ></app-stat>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-            <app-stat [bgClass]="'danger'" [icon]="'fa-support'" [count]="13" [label]="'New Tickets!'"></app-stat>
-        </div>
-    </div>
-    <hr />
-    <ngb-alert [type]="alert.type" (close)="closeAlert(alert)" *ngFor="let alert of alerts">{{ alert.message }}</ngb-alert>
-    <hr />
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card card-default">
-                <div class="card-header">
-                    <i class="fa fa-clock-o fa-fw"></i> Responsive Timeline
-                </div>
-                <!-- /.card-header -->
-                <app-timeline></app-timeline>
-                <!-- /.card-body -->
+      </div-->
+      <div class="card-body table-responsive">
+        <div class="row">
+          <div class="col col-sm-4">
+            <div class="card mb-3">
+              <div class="card-header">
+                <li>การเข้าเรียนทั้งหมด {{item[2].attendance.length}} ครั้ง</li>
+                <li>จำนวนนักศึกษา {{item[1].students.length}}</li>
+              </div>
+              <!--div class="card-body">
+                
+                <li>ปีการศึกษา {{item[0].course.year}}</li>
+                <li>ภาคการศึกษา {{item[0].course.trimester}}</li>
+              </div-->
             </div>
-            <!-- /.card -->
-        </div>
-        <!-- /.col-lg-8 -->
-        <div class="col-lg-4">
-            <div class="card card-default mb-3">
-                <div class="card-header">
-                    <i class="fa fa-bell fa-fw"></i> Notifications card
-                </div>
-                <!-- /.card-header -->
-                <app-notification></app-notification>
-                <!-- /.card-body -->
+          </div>
+          <div class="col col-sm-8">
+            <div class="card mb-3">
+              <canvas baseChart height="250px" 
+                  [data]="item[3].pie" [labels]="pieAttendanceLabels" 
+                  [chartType]="pieAttendanceType" 
+                  (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)">
+              </canvas>
             </div>
-            <!-- /.card -->
-
-            <app-chat></app-chat>
-            <!-- /.card .chat-card -->
+          </div>
         </div>
-        <!-- /.col-lg-4 -->
+      </div>
     </div>
+  </div>  
 </div>
