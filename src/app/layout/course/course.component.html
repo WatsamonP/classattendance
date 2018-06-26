@@ -10,7 +10,7 @@
     <div class="input-group input-group-lg">
       <div class="input-group-prepend">
         <span class="input-group-text text-dark "><i class="fa fa-pencil"></i></span>
-        <span class="input-group-text text-dark"><b>{{item.id}} : {{item.name}}</b></span>
+        <span class="input-group-text text-dark"><b>{{item.id}} : {{item.name}}  &nbsp;&nbsp; {{item.trimester}}/{{item.year}}</b></span>
       </div>
       <!--input type="text" class="form-control" aria-label="Text input with segmented dropdown button"-->
       <div *ngIf="groupList.length==1" class="input-group-append">
@@ -57,6 +57,11 @@
         <div class="col-md-5">
           <input type="text" formControlName="name" class="form-control" placeholder="ชื่อ-นามสกุล"
               [(ngModel)]="studentService.selectedStudent.name">
+              <div *ngIf="name.errors && isSubmit != null" [ngClass] = "'error'">
+                <div *ngIf="name.errors.required">
+                  <font size="2" color="red">กรุณาป้อนชื่อ-สกุล</font>
+                </div>
+              </div>
         </div>
         <div class="col-md-2">
           <input type="text" formControlName="group" class="form-control" placeholder="กลุ่มเรียน"
@@ -93,9 +98,18 @@
         <div class="col-md-3">
           <input type="text" formControlName="student_id" class="form-control" placeholder="รหัสประจำตัว"
               [(ngModel)]="item.student_id">
+              <div *ngIf="student_id.errors && isSubmit2 != null" [ngClass] = "'error'">
+                <div *ngIf="student_id.errors.required">
+                  <font size="2" color="red">กรุณาป้อนรหัสนักศึกษา</font>
+                </div>
+                <div *ngIf="student_id.errors.pattern">
+                  <font size="2" color="red">รหัสนักศึกษาไม่ถูกต้อง</font>
+                </div>
+              </div>
         </div>
         <div class="col-md-2">
-          <select formControlName="type" class="form-control"  [ngModel]="item.type">
+          <select formControlName="type" class="form-control"  [ngModel]="item.type" >
+            <option value=undefined>เลือกประเภท</option>
             <option value="attendance">Attendance</option>
             <option value="quiz">Quiz</option>
             <option value="hw">Homework</option>
@@ -106,6 +120,14 @@
         <div class="col-md-2">
           <input type="text" formControlName="time" class="form-control" placeholder="ครั้งที่"
               [(ngModel)]="item.time">
+              <div *ngIf="time.errors && isSubmit2 != null" [ngClass] = "'error'">
+                <div *ngIf="time.errors.required">
+                  <font size="2" color="red">กรุณาป้อนครั้งที่</font>
+                </div>
+                <div *ngIf="time.errors.pattern">
+                  <font size="2" color="red">กรุณาป้อนตัวเลข</font>
+                </div>
+              </div>
         </div>
 
         <div class="col-md-2">
@@ -683,14 +705,8 @@
           <div class="col-sm-3">
 
             <select formControlName="year" class="form-control" [ngModel]="item.year">
-              <ng-container *ngFor="let years of yearsList">
-                <div *ngIf="item.year === years ; else year">
-                      <option selected="selected">{{years}}</option>
-                </div>
-                <ng-template #year>
-                      <option>{{years}}</option>
-                </ng-template>
-              </ng-container>
+              <option>เลือกปีการศึกษา</option>
+              <option *ngFor="let years of yearsList">{{years}}</option>
             </select>
           </div>
         <!--/div>
@@ -698,6 +714,7 @@
           <label class="col-sm-3 col-form-label" style="text-align: right">เทอม</label>
           <div class="col-sm-3">
             <select formControlName="trimester" class="form-control"  [ngModel]="item.trimester" >
+              <option>เลือกเทอม</option>
               <option *ngFor="let term of terms">{{term}}</option>
             </select>
           </div>

@@ -32,6 +32,7 @@ import * as moment from 'moment';
 
 export class CourseComponent implements OnInit {
   isSubmit = null;
+  isSubmit2 = null;
   //Course
   courseList: Course[];
   courseId;
@@ -548,16 +549,18 @@ export class CourseComponent implements OnInit {
           }
           let ontime,late,miss,leave;
           this.count_attendance = [];
+
+        //  console.log(this.scheduleAttendanceList)
           for(var j=0; j<this.scheduleAttendanceList.length; j++){
             ontime=0,late=0,miss=0,leave=0;
-            for(var k=0; k<temp.length; k++){
-              if(temp[k].attendance[this.scheduleAttendanceList[j].id].status == "onTime")
+            for(var k=0; k<items.length; k++){
+              if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "onTime")
                 ontime++;
-              else if(temp[k].attendance[this.scheduleAttendanceList[j].id].status == "Late")
+              else if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "Late")
                 late++;
-              else if(temp[k].attendance[this.scheduleAttendanceList[j].id].status == "Leave")
+              else if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "Leave")
                 leave++;
-              else if(temp[k].attendance[this.scheduleAttendanceList[j].id].status == "Missed Class")
+              else if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "Missed Class")
                 miss++;
             }
             this.count_attendance.push({all: ontime+late+leave,ontime: ontime,late:late,leave:leave,miss:miss});
@@ -632,17 +635,15 @@ export class CourseComponent implements OnInit {
     });
     // buildForm for Student /////////////////////////////////////////////////////////////
     this.buildForm();
+
     //setyearlist
     this.years = new Date().getFullYear() + 543;
     for (var i = 0; i < 5; i++) {
         this.yearsList.push(this.years-i)
     };
-    //this.editCourseForm.year
-    //this.editCourseForm.trimester
-    this.attendanceForm.patchValue({
-      type: 'attendance'
-    });
+
   }
+
 
   onFilterClick(event) {
     //console.log(event);
@@ -848,7 +849,15 @@ export class CourseComponent implements OnInit {
   // Button
 
   onEditCourse() {
-    //console.log(this.editCourseForm.value)
+    if(this.editCourseForm.value.percentAtt == undefined)
+      this.editCourseForm.patchValue({percentAtt : 0});
+    if(this.editCourseForm.value.percentQuiz == undefined)
+      this.editCourseForm.patchValue({percentQuiz : 0});
+    if(this.editCourseForm.value.percentHw == undefined)
+      this.editCourseForm.patchValue({percentHw : 0});
+    if(this.editCourseForm.value.percentLab == undefined)
+      this.editCourseForm.patchValue({percentLab : 0});
+    console.log(this.editCourseForm.value)
     this.courseService.updateCourse(this.editCourseForm.value,this.courseId);
     this.toastr.success("แก้ไข"+this.courseId
       +" : "+ this.editCourseForm.value.name+" สำเร็จ");
@@ -864,8 +873,17 @@ export class CourseComponent implements OnInit {
   get id() {
      return this.studentForm.get('id');
   }
+  get name() {
+    return this.studentForm.get('name');
+  }
   get group() {
     return this.studentForm.get('group');
+  }
+  get student_id() {
+     return this.attendanceForm.get('student_id');
+  }
+  get time() {
+     return this.attendanceForm.get('time');
   }
   // buildForm for Student /////////////////////////////////////////////////////////////
 
@@ -876,7 +894,7 @@ export class CourseComponent implements OnInit {
         Validators.pattern("^[B|M|D]\\d{7}$")
       ]),
       name: new FormControl('', [
-        //Validators.required
+        Validators.required
       ]),
       group: new FormControl('', [
         Validators.required
@@ -893,9 +911,7 @@ export class CourseComponent implements OnInit {
         Validators.required,
         Validators.pattern("^[0-9]+$")
       ]),
-      score: new FormControl(0,  [
-        Validators.required
-      ])
+      score: new FormControl(0,  [])
     });
     this.editCourseForm = new FormGroup({
       name: new FormControl('', []),
@@ -929,7 +945,11 @@ export class CourseComponent implements OnInit {
   }
 
   onUpdatestdscore(){
-    console.log(this.scheduleHomeworkList)
+    this.isSubmit2 = true;
+    if (this.attendanceForm.invalid) {
+        return;
+    }
+    this.isSubmit2 = null;
     var check = [],acheck = false;
     var iden,uncheck = true, stdid = this.attendanceForm.value.student_id ,update = false;
     var count,status,score,countmiss,countlate;
