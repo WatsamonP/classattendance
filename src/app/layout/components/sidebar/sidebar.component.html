@@ -60,6 +60,13 @@
               <!--If ONE Group-->
               <li>
                 <div class="nested-menu">
+                  <a class="list-group-item text-primary" (click)="click_Std_score(item.key)">
+                    <span><i class="fa fa-edit" style="width: 15px"></i>กรอกคะแนนรายบุคคล</span>
+                  </a>
+                </div>
+              </li>
+              <li>
+                <div class="nested-menu">
                   <a class="list-group-item text-danger" (click)="click_Export(item.id)">
                     <span><i class="fa fa-file-excel-o" style="width: 15px"></i>นำออกข้อมูล</span>
                   </a>

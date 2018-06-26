@@ -63,7 +63,7 @@ export class SidebarComponent {
       }).subscribe(items => {
         this.courseList = items;
         this.groupList = [];
- 
+
         return items.map(item => item.key);
       });
 
@@ -193,6 +193,9 @@ export class SidebarComponent {
   }
   click_Std_csv(id: string) {
     this._messageService.filter({todo:'std_csv'});
+  }
+  click_Std_score(id: string) {
+    this._messageService.filter({todo:'std_score'});
   }
   click_Edit(id: string) {
     this._messageService.filter({todo:'edit',fn: id});

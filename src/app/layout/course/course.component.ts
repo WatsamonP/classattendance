@@ -21,6 +21,7 @@ import { toArray } from 'rxjs/operator/toArray';
 import { DYNAMIC_TYPE } from '@angular/compiler/src/output/output_ast';
 import { Pipe, PipeTransform } from '@angular/core';
 import { MessageService } from '../../shared/services/messageService';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-course',
@@ -44,6 +45,7 @@ export class CourseComponent implements OnInit {
   studentListArr: any;
   IsHidden= true;
   csvhidden= true;
+  scorehidden = true;
   //
   //defaultTime = {hour: 23, minute: 0};
   count : 0;
@@ -110,7 +112,6 @@ export class CourseComponent implements OnInit {
   disabledPagination: number;
   isDisabled: boolean;
   isExpandOption: boolean = false;
-
 
   constructor(
     private auth: AuthService,
@@ -636,6 +637,11 @@ export class CourseComponent implements OnInit {
     for (var i = 0; i < 5; i++) {
         this.yearsList.push(this.years-i)
     };
+    //this.editCourseForm.year
+    //this.editCourseForm.trimester
+    this.attendanceForm.patchValue({
+      type: 'attendance'
+    });
   }
 
   onFilterClick(event) {
@@ -646,6 +652,8 @@ export class CourseComponent implements OnInit {
       this.onSwitch();
     }else if(event.todo == 'std_csv'){
       this.onSwitchcsv();
+    }else if(event.todo == 'std_score'){
+      this.onSwitchscore();
     }else if(event.todo == 'edit'){
       this.openOnEdit(this.myEditCourse)
       this.openEditiTemplate = true;
@@ -838,6 +846,7 @@ export class CourseComponent implements OnInit {
 
 
   // Button
+
   onEditCourse() {
     //console.log(this.editCourseForm.value)
     this.courseService.updateCourse(this.editCourseForm.value,this.courseId);
@@ -859,6 +868,7 @@ export class CourseComponent implements OnInit {
     return this.studentForm.get('group');
   }
   // buildForm for Student /////////////////////////////////////////////////////////////
+
   buildForm(): void {
     this.studentForm = new FormGroup({
       id: new FormControl('', [
@@ -874,9 +884,18 @@ export class CourseComponent implements OnInit {
     });
     //
     this.attendanceForm = new FormGroup({
-      student_id: new FormControl('', []),
+      student_id: new FormControl('', [
+        Validators.required,
+        Validators.pattern("^[B|M|D]\\d{7}$")
+      ]),
       type: new FormControl('', []),
-      score: new FormControl(0, []),
+      time: new FormControl('',  [
+        Validators.required,
+        Validators.pattern("^[0-9]+$")
+      ]),
+      score: new FormControl(0,  [
+        Validators.required
+      ])
     });
     this.editCourseForm = new FormGroup({
       name: new FormControl('', []),
@@ -909,12 +928,128 @@ export class CourseComponent implements OnInit {
     }
   }
 
+  onUpdatestdscore(){
+    console.log(this.scheduleHomeworkList)
+    var check = [],acheck = false;
+    var iden,uncheck = true, stdid = this.attendanceForm.value.student_id ,update = false;
+    var count,status,score,countmiss,countlate;
+    let currentDay = moment().format();
+    if(this.attendanceForm.value.type == "attendance"){
+      if(this.attendanceForm.value.time > this.scheduleAttendanceList.length){
+        this.toastr.warning("ไม่มี Attendance ครั้งที่ "+ this.attendanceForm.value.time);
+      }else{
+        iden = this.scheduleAttendanceList[this.attendanceForm.value.time-1].id;
+        if(this.scheduleAttendanceList[this.attendanceForm.value.time-1].checked){
+          check = Object.keys(this.scheduleAttendanceList[this.attendanceForm.value.time-1].checked)
+          .map(key => Object.assign({ key }, this.scheduleAttendanceList[this.attendanceForm.value.time-1].checked[key]));
+          for(var i=0; i<check.length; i++){
+            if(check[i].id == stdid){
+              acheck = true;
+              break;
+            }
+          }
+        }
+        if(acheck){
+          this.toastr.warning("เช็คชื่อนักศึกษาคนนี้แล้ว");
+        }else if(currentDay.toString() < this.scheduleAttendanceList[this.attendanceForm.value.time-1].lateTime.toString()){
+          status = "onTime";
+          score = this.scheduleAttendanceList[this.attendanceForm.value.time-1].onTimeScore;
+          count = this.scheduleAttendanceList[this.attendanceForm.value.time-1].countOnTime+1;
+          countlate = this.scheduleAttendanceList[this.attendanceForm.value.time-1].countLate;
+          countmiss = this.scheduleAttendanceList[this.attendanceForm.value.time-1].countMiss-1;
+          update = true;
+        }else{
+          status = "Late";
+          score = this.scheduleAttendanceList[this.attendanceForm.value.time-1].lateScore;
+          count = this.scheduleAttendanceList[this.attendanceForm.value.time-1].countOnTime;
+          countlate = this.scheduleAttendanceList[this.attendanceForm.value.time-1].countLate+1;
+          countmiss = this.scheduleAttendanceList[this.attendanceForm.value.time-1].countMiss-1;
+          update = true;
+        }
+      }
+
+
+    }else if(this.attendanceForm.value.type == "quiz"){
+      if(this.attendanceForm.value.time > this.scheduleQuizList.length){
+        this.toastr.warning("ไม่มี Quiz ครั้งที่ "+ this.attendanceForm.value.time);
+      }else if(this.scheduleQuizList[this.attendanceForm.value.time-1].totalScore >= this.attendanceForm.value.score &&
+      this.scheduleQuizList[this.attendanceForm.value.time-1].totalScore >= 0){
+          iden = this.scheduleQuizList[this.attendanceForm.value.time-1].id;
+          count = this.scheduleQuizList[this.attendanceForm.value.time-1].count+1;
+          if(this.scheduleQuizList[this.attendanceForm.value.time-1].checked){
+            check = Object.keys(this.scheduleQuizList[this.attendanceForm.value.time-1].checked)
+            .map(key => Object.assign({ key }, this.scheduleQuizList[this.attendanceForm.value.time-1].checked[key]));
+            for(var i=0; i<check.length; i++){
+              if(check[i].id == stdid){
+                count = this.scheduleQuizList[this.attendanceForm.value.time-1].count;
+                uncheck = false;
+                break;
+              }
+            }
+          }
+          update = true;
+      }else{
+        this.toastr.warning("กรุณาป้อนคะแนนให้ไม่เกินคะแนนเต็ม");
+      }
+    }else if(this.attendanceForm.value.type == "hw"){
+      if(this.attendanceForm.value.time > this.scheduleHomeworkList.length){
+        this.toastr.warning("ไม่มี Homework ครั้งที่ "+ this.attendanceForm.value.time);
+      }else if(this.scheduleHomeworkList[this.attendanceForm.value.time-1].totalScore >= this.attendanceForm.value.score &&
+      this.scheduleHomeworkList[this.attendanceForm.value.time-1].totalScore >= 0){
+        iden = this.scheduleHomeworkList[this.attendanceForm.value.time-1].id;
+        count = this.scheduleHomeworkList[this.attendanceForm.value.time-1].count+1;
+        if(this.scheduleHomeworkList[this.attendanceForm.value.time-1].checked){
+          check = Object.keys(this.scheduleHomeworkList[this.attendanceForm.value.time-1].checked)
+          .map(key => Object.assign({ key }, this.scheduleHomeworkList[this.attendanceForm.value.time-1].checked[key]));
+          for(var i=0; i<check.length; i++){
+            if(check[i].id == stdid){
+              count = this.scheduleHomeworkList[this.attendanceForm.value.time-1].count;
+              uncheck = false;
+              break;
+            }
+          }
+        }
+        update = true;
+      }else{
+        this.toastr.warning("กรุณาป้อนคะแนนให้ไม่เกินคะแนนเต็ม");
+      }
+    }else if(this.attendanceForm.value.type == "lab"){
+      if(this.attendanceForm.value.time > this.scheduleLabList.length){
+        this.toastr.warning("ไม่มี Lab ครั้งที่ "+ this.attendanceForm.value.time);
+      }else if(this.scheduleLabList[this.attendanceForm.value.time-1].totalScore >= this.attendanceForm.value.score &&
+      this.scheduleLabList[this.attendanceForm.value.time-1].totalScore >= 0){
+        iden = this.scheduleLabList[this.attendanceForm.value.time-1].id;
+        count = this.scheduleLabList[this.attendanceForm.value.time-1].count+1;
+        if(this.scheduleLabList[this.attendanceForm.value.time-1].checked){
+          check = Object.keys(this.scheduleLabList[this.attendanceForm.value.time-1].checked)
+          .map(key => Object.assign({ key }, this.scheduleLabList[this.attendanceForm.value.time-1].checked[key]));
+          for(var i=0; i<check.length; i++){
+            if(check[i].id == stdid){
+              count = this.scheduleLabList[this.attendanceForm.value.time-1].count;
+              uncheck = false;
+              break;
+            }
+          }
+        }
+        update = true;
+      }else{
+        this.toastr.warning("กรุณาป้อนคะแนนให้ไม่เกินคะแนนเต็ม");
+      }
+    }
+    if(update){
+      this.studentService.UpdateStudentscore(this.attendanceForm.value,this.courseId,iden,count,uncheck,countlate,countmiss,score,currentDay,status);
+      this.toastr.success("บันทึกคะแนนเรียบร้อย");
+    }
+  }
   ///////////////////////////////////////////////////
   onSwitch(){
     this.IsHidden= !this.IsHidden;
   }
   onSwitchcsv(){
     this.csvhidden= !this.csvhidden;
+  }
+  onSwitchscore(){
+    this.scorehidden= !this.scorehidden;
   }
   onSwitchShowPercentA(percent){
     if(percent != undefined){

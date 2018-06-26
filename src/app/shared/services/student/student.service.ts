@@ -65,13 +65,41 @@ export class StudentService {
   }
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-  insertAttendance(attendanceForm : Attendance, cid : number, count : number){
+  UpdateStudentscore(attendanceForm : Attendance, cid : number, iden : string,count:number,uncheck:boolean,countlate:number,countmiss:number,score:number,now:any,status:string){
     var today = new Date();
-    this.db.object(`users/${this.auth.currentUserId}/course/${cid}/students/${attendanceForm.student_id}/${attendanceForm.type}/${count}`)
-      .set({
-        score : attendanceForm.score,
-        date : today
-      });
+    if(attendanceForm.type == "attendance"){
+      this.db.object(`users/${this.auth.currentUserId}/course/${cid}/students/${attendanceForm.student_id}/${attendanceForm.type}/${iden}`)
+        .update({
+          score : score,
+          status : status,
+          date : now
+        });
+      this.db.object(`users/${this.auth.currentUserId}/course/${cid}/schedule/${attendanceForm.type}/${iden}`)
+        .update({
+          countonTime : count,
+          countLate : countlate,
+          countMiss : countmiss
+        });
+      this.db.object(`users/${this.auth.currentUserId}/course/${cid}/schedule/${attendanceForm.type}/${iden}/checked/${attendanceForm.student_id}`)
+        .set({
+          id : attendanceForm.student_id
+        });
+    }else{
+      this.db.object(`users/${this.auth.currentUserId}/course/${cid}/students/${attendanceForm.student_id}/${attendanceForm.type}/${iden}`)
+        .update({
+          score : attendanceForm.score
+        });
+      if(uncheck){
+        this.db.object(`users/${this.auth.currentUserId}/course/${cid}/schedule/${attendanceForm.type}/${iden}`)
+          .update({
+            count : count
+          });
+        this.db.object(`users/${this.auth.currentUserId}/course/${cid}/schedule/${attendanceForm.type}/${iden}/checked/${attendanceForm.student_id}`)
+          .set({
+            id : attendanceForm.student_id
+          });
+      }
+    }
   }
 
 }

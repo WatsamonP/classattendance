@@ -85,6 +85,45 @@
     <br>
     <font size="2" color="red">*รองรับเฉพาะไฟล์ UTF-8</font>
   </div>
+
+  <!-- Student Score Form -->
+  <div class="alert alert-primary mb-0" [hidden]="scorehidden">
+    <form [formGroup]="attendanceForm" (ngSubmit)="onUpdatestdscore()">
+      <div class="row">
+        <div class="col-md-3">
+          <input type="text" formControlName="student_id" class="form-control" placeholder="รหัสประจำตัว"
+              [(ngModel)]="item.student_id">
+        </div>
+        <div class="col-md-2">
+          <select formControlName="type" class="form-control"  [ngModel]="item.type">
+            <option value="attendance">Attendance</option>
+            <option value="quiz">Quiz</option>
+            <option value="hw">Homework</option>
+            <option value="lab">Lab</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <input type="text" formControlName="time" class="form-control" placeholder="ครั้งที่"
+              [(ngModel)]="item.time">
+        </div>
+
+        <div class="col-md-2">
+          <input type="number" formControlName="score" class="form-control" placeholder="คะแนน"
+              [(ngModel)]="item.score">
+        </div>
+
+        <div class="col-md-3 text-right">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa fa-save" aria-hidden="true"></i> บันทึก
+           </button>
+        </div>
+      </div>
+    </form>
+    <br>
+    <font size="3" color="red">**Attendance ไม่ต้องป้อนคะแนน</font>
+  </div>
+
 <!--TABLE-->
   <div class="card">
     <div class="card-body table-responsive">
@@ -290,10 +329,10 @@
                         {{schedule[1].index}}
                       </button>
                     </th>
-                    <th style="width:70px; text-align: center">คะแนนรวม</th>
                     <th *ngIf="showPercentageQ.flag" style="width:70px; text-align: center">
                       <div class="text-primary" style="font-size: 14px">{{item.percentQuiz}}%</div>
                     </th>
+                    <th style="width:70px; text-align: center">คะแนนรวม</th>
                     <th class="no-border"></th>
                   </tr>
                 </thead>
@@ -305,8 +344,8 @@
                     <td *ngFor="let schedule of scheduleQuizSortList" style="width:70px ;text-align: center">
                       <a>{{schedule[0].data.totalScore}}</a>
                       </td>
-                    <th style="text-align: center">{{totalScoreQ}}</th>
                     <td *ngIf="showPercentageQ.flag"></td>
+                    <th style="text-align: center">{{totalScoreQ}}</th>
                     <td style="display:none;"></td>
                   </tr>
 
@@ -342,13 +381,13 @@
                       </ng-template>
                     </ng-container>
                     <!--/-->
-                      <td style="text-align: center">{{stdtotalScoreQ[j]}}</td>
-                    <!--/-->
                     <ng-container *ngIf="showPercentageQ.flag" style="text-align: center">
                       <td class="att_Percent">
                         {{student.percent  | number:'1.2'}}
                       </td>
                     </ng-container>
+                    <!--/-->
+                    <td style="text-align: center">{{stdtotalScoreQ[j]}}</td>
                     <td style="display:none;"></td>
                   </tr>
                   <!--Total Row-->
@@ -412,10 +451,10 @@
                         {{schedule[1].index}}
                       </button>
                     </th>
-                    <th style="width:70px; text-align: center">คะแนนรวม</th>
                     <th *ngIf="showPercentageH.flag" style="width:70px; text-align: center">
                       <div class="text-primary" style="font-size: 14px">{{item.percentHw}}%</div>
                     </th>
+                    <th style="width:70px; text-align: center">คะแนนรวม</th>
                     <th class="no-border"></th>
                   </tr>
                 </thead>
@@ -427,8 +466,8 @@
                     <td *ngFor="let schedule of scheduleHomeworkSortList" style="width:70px ;text-align: center">
                       <a>{{schedule[0].data.totalScore}}</a>
                       </td>
-                    <th style="text-align: center">{{totalScoreH}}</th>
                     <td *ngIf="showPercentageH.flag"></td>
+                    <th style="text-align: center">{{totalScoreH}}</th>
                     <td style="display:none;"></td>
                   </tr>
 
@@ -463,13 +502,13 @@
                       </ng-template>
                     </ng-container>
                     <!--/-->
-                      <td style="text-align: center">{{stdtotalScoreH[j]}}</td>
-                    <!--/-->
                     <ng-container *ngIf="showPercentageH.flag" style="text-align: center">
                       <td class="att_Percent">
                         {{student.percent  | number:'1.2'}}
                       </td>
                     </ng-container>
+                    <!--/-->
+                    <td style="text-align: center">{{stdtotalScoreH[j]}}</td>
                     <td style="display:none;"></td>
                   </tr>
                   <!--Total Row-->
@@ -533,10 +572,10 @@
                         {{schedule[1].index}}
                       </button>
                     </th>
-                    <th style="width:70px; text-align: center">คะแนนรวม</th>
                     <th *ngIf="showPercentageL.flag" style="width:70px; text-align: center">
                       <div class="text-primary" style="font-size: 14px">{{item.percentLab}}%</div>
                     </th>
+                    <th style="width:70px; text-align: center">คะแนนรวม</th>
                     <th class="no-border"></th>
                   </tr>
                 </thead>
@@ -548,8 +587,8 @@
                     <td *ngFor="let schedule of scheduleLabSortList" style="width:70px ;text-align: center">
                       <a>{{schedule[0].data.totalScore}}</a>
                       </td>
-                    <th style="text-align: center">{{totalScoreL}}</th>
                     <td *ngIf="showPercentageL.flag"></td>
+                    <th style="text-align: center">{{totalScoreL}}</th>
                     <td style="display:none;"></td>
                   </tr>
 
@@ -584,13 +623,13 @@
                       </ng-template>
                     </ng-container>
                     <!--/-->
-                      <td style="text-align: center">{{stdtotalScoreL[j]}}</td>
-                    <!--/-->
                     <ng-container *ngIf="showPercentageL.flag" style="text-align: center">
                       <td class="att_Percent">
                         {{student.percent  | number:'1.2'}}
                       </td>
                     </ng-container>
+                    <!--/-->
+                    <td style="text-align: center">{{stdtotalScoreL[j]}}</td>
                     <td style="display:none;"></td>
                   </tr>
                   <!--Total Row-->
