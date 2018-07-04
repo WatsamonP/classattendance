@@ -56,12 +56,17 @@ export class StudentcheckComponent implements OnInit {
   percentHw: number;
   percentLab: number;
   detail: any;
+  isExpandOption: boolean = false;
 
   constructor(
     private db: AngularFireDatabase,
     private auth: AuthService,
     private toastr: ToastrService
   ) { }
+
+  switchExpandOption(){
+    this.isExpandOption = !this.isExpandOption;
+  }
 
   ngOnInit() {
     this.buildForm();

@@ -197,7 +197,7 @@ export class DashboardComponent implements OnInit {
       return actions.map(action => ({ key: action.key, ...action.payload.val() }));
     }).subscribe(itemsC => {
       this.courseList = itemsC;
-      
+
       for(let i=0; i<this.courseList.length; i++){
         let temp = this.courseList[i].id;
         let x = this.courseList[i];
@@ -224,9 +224,9 @@ export class DashboardComponent implements OnInit {
             for(var a=0; a<this.scheduleAttendanceList.length; a++){
               countLeave = 0,countLate = 0,countOnTime = 0,countMissed = 0,all = 0;
               attId = this.scheduleAttendanceList[a].id;
-              
+
               for(var b=0; b<this.studentList.length ;b++){
-                //if(this.studentList[b].group == temp){  
+                //if(this.studentList[b].group == temp){
                   let tempStd = this.studentList[b].attendance[attId].status;
                   all++;
                   if(tempStd == 'Leave'){
@@ -247,18 +247,18 @@ export class DashboardComponent implements OnInit {
             }
             //console.log(this.data[i][0].course.id);
 
-            
+
 
             if(String(temp) == String(this.data[i][0].course.id)){
               this.data[i].push({attendance:attendance});
               attendance = [];
             }
-          
+
           let xBar = 0;
           let sumOntime = 0, sumLate = 0, sumLeave = 0, sumMissed = 0;
           let total = this.data[i][2].attendance.length*this.data[i][1].students.length;
           //console.log(this.data[i][2]);
-          
+
           for(var c=0; c<this.data[i][2].attendance.length; c++){
             sumOntime = sumOntime + this.data[i][2].attendance[c].countOnTime;
             sumLate = sumLate + this.data[i][2].attendance[c].countLate;
@@ -274,21 +274,21 @@ export class DashboardComponent implements OnInit {
           console.log('sumLeave',sumLeave);
           console.log('sumMissed',sumMissed);
           */
-          
 
-          
+
+
           console.log(this.data[i]);
-          
+
           return items.map(item => item.key);
         });
       }
-      
+
       return itemsC.map(item => item.key);
     });
 
-    
 
-    
+
+
 
     /*
     this.sliders.push(

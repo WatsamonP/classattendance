@@ -529,31 +529,36 @@ export class CourseComponent implements OnInit {
           for(var i=0; i<temp.length ;i++){
             var temp2 = 0;
             for(var k=0; k<this.scheduleQuizList.length; k++){
-              temp2 = temp2 + temp[i].quiz[this.scheduleQuizList[k].id].score;
+              if(temp[i].quiz[this.scheduleQuizList[k].id])
+                temp2 = temp2 + temp[i].quiz[this.scheduleQuizList[k].id].score;
             }
             this.stdtotalScoreQ[i] = temp2;
           }
           for(var i=0; i<temp.length ;i++){
             var temp2 = 0;
             for(var k=0; k<this.scheduleHomeworkList.length; k++){
-              temp2 = temp2 + temp[i].hw[this.scheduleHomeworkList[k].id].score;
+              if(temp[i].hw[this.scheduleHomeworkList[k].id])
+                temp2 = temp2 + temp[i].hw[this.scheduleHomeworkList[k].id].score;
             }
             this.stdtotalScoreH[i] = temp2;
           }
           for(var i=0; i<temp.length ;i++){
             var temp2 = 0;
             for(var k=0; k<this.scheduleLabList.length; k++){
+              if(temp[i].lab[this.scheduleLabList[k].id])
               temp2 = temp2 + temp[i].lab[this.scheduleLabList[k].id].score;
             }
             this.stdtotalScoreL[i] = temp2;
           }
           let ontime,late,miss,leave;
           this.count_attendance = [];
+          console.log(items)
 
-        //  console.log(this.scheduleAttendanceList)
+
           for(var j=0; j<this.scheduleAttendanceList.length; j++){
             ontime=0,late=0,miss=0,leave=0;
             for(var k=0; k<items.length; k++){
+              if(items[k].attendance[this.scheduleAttendanceList[j].id]){
               if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "onTime")
                 ontime++;
               else if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "Late")
@@ -562,28 +567,33 @@ export class CourseComponent implements OnInit {
                 leave++;
               else if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "Missed Class")
                 miss++;
+              }
             }
             this.count_attendance.push({all: ontime+late+leave,ontime: ontime,late:late,leave:leave,miss:miss});
           }
+
           for(var j=0; j<this.scheduleQuizList.length; j++){
             this.count_quiz[j] = 0;
             for(var k=0; k<temp.length; k++){
-              if(temp[k].quiz[this.scheduleQuizList[j].id].score != 0)
-                this.count_quiz[j]++;
+              if(temp[k].quiz[this.scheduleQuizList[j].id])
+                if(temp[k].quiz[this.scheduleQuizList[j].id].score != 0)
+                  this.count_quiz[j]++;
             }
           }
           for(var j=0; j<this.scheduleHomeworkList.length; j++){
             this.count_hw[j] = 0;
             for(var k=0; k<temp.length; k++){
-              if(temp[k].hw[this.scheduleHomeworkList[j].id].score != 0)
-                this.count_hw[j]++;
+              if(temp[k].hw[this.scheduleHomeworkList[j].id])
+                if(temp[k].hw[this.scheduleHomeworkList[j].id].score != 0)
+                  this.count_hw[j]++;
             }
           }
           for(var j=0; j<this.scheduleLabList.length; j++){
             this.count_lab[j] = 0;
             for(var k=0; k<temp.length; k++){
-              if(temp[k].lab[this.scheduleLabList[j].id].score != 0)
-                this.count_lab[j]++;
+              if(temp[k].lab[this.scheduleLabList[j].id])
+                if(temp[k].lab[this.scheduleLabList[j].id].score != 0)
+                  this.count_lab[j]++;
             }
           }
           this.count_attendancesort = [];
@@ -630,12 +640,10 @@ export class CourseComponent implements OnInit {
           //console.log(this.studentListArr)
             return items.map(item => item.key);
         });
-
       } //End All Group
     });
     // buildForm for Student /////////////////////////////////////////////////////////////
     this.buildForm();
-
     //setyearlist
     this.years = new Date().getFullYear() + 543;
     for (var i = 0; i < 5; i++) {
