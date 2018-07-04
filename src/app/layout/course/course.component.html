@@ -166,20 +166,20 @@
               </div>
 
               <div class="input-group-append">
-                <button type="button" (click)="switchExpandOption()"
+                <button type="button" (click)="switchExpandOptionA()"
                   class="btn btn-outline-warning">
                   OPTION &nbsp;&nbsp;
-                  <i *ngIf="!isExpandOption" class="fa fa-caret-right"></i>
-                  <i *ngIf="isExpandOption" class="fa fa-caret-left"></i>
+                  <i *ngIf="!isExpandOptionA" class="fa fa-caret-right"></i>
+                  <i *ngIf="isExpandOptionA" class="fa fa-caret-left"></i>
                 </button>
 
-                <button *ngIf="isExpandOption" (click)="onSwitchShowGroup()"
+                <button *ngIf="isExpandOptionA" (click)="onSwitchShowGroup()"
                   class="btn btn-outline-sut" type="button">
                   กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
-                <button *ngIf="isExpandOption" (click)="onSwitchShowMissClass()"
+                <button *ngIf="isExpandOptionA" (click)="onSwitchShowMissClass()"
                   class="btn btn-outline-danger" type="button">
                   ขาดเรียน : <b>{{showMissClass.name}}</b></button>
-                <button *ngIf="isExpandOption" (click)="onSwitchShowPercentA(item.percentAtt)"
+                <button *ngIf="isExpandOptionA" (click)="onSwitchShowPercentA(item.percentAtt)"
                   class="btn btn-outline-primary" type="button">
                   % คะแนน : <b>{{showPercentageA.name}}</b></button>
               </div>
@@ -320,17 +320,17 @@
               </div>
 
               <div class="input-group-append">
-                <button type="button" (click)="switchExpandOption()"
+                <button type="button" (click)="switchExpandOptionQ()"
                   class="btn btn-outline-warning">
                   OPTION &nbsp;&nbsp;
-                  <i *ngIf="!isExpandOption" class="fa fa-caret-right"></i>
-                  <i *ngIf="isExpandOption" class="fa fa-caret-left"></i>
+                  <i *ngIf="!isExpandOptionQ" class="fa fa-caret-right"></i>
+                  <i *ngIf="isExpandOptionQ" class="fa fa-caret-left"></i>
                 </button>
 
-                <button *ngIf="isExpandOption" (click)="onSwitchShowGroup()"
+                <button *ngIf="isExpandOptionQ" (click)="onSwitchShowGroup()"
                   class="btn btn-outline-sut" type="button">
                   กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
-                <button *ngIf="isExpandOption" (click)="onSwitchShowPercentQ(item.percentQuiz)"
+                <button *ngIf="isExpandOptionQ" (click)="onSwitchShowPercentQ(item.percentQuiz)"
                   class="btn btn-outline-primary" type="button">
                   % คะแนน : <b>{{showPercentageQ.name}}</b></button>
               </div>
@@ -442,17 +442,17 @@
               </div>
 
               <div class="input-group-append">
-                <button type="button" (click)="switchExpandOption()"
+                <button type="button" (click)="switchExpandOptionH()"
                   class="btn btn-outline-warning">
                   OPTION &nbsp;&nbsp;
-                  <i *ngIf="!isExpandOption" class="fa fa-caret-right"></i>
-                  <i *ngIf="isExpandOption" class="fa fa-caret-left"></i>
+                  <i *ngIf="!isExpandOptionH" class="fa fa-caret-right"></i>
+                  <i *ngIf="isExpandOptionH" class="fa fa-caret-left"></i>
                 </button>
 
-                <button *ngIf="isExpandOption" (click)="onSwitchShowGroup()"
+                <button *ngIf="isExpandOptionH" (click)="onSwitchShowGroup()"
                   class="btn btn-outline-sut" type="button">
                   กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
-                <button *ngIf="isExpandOption" (click)="onSwitchShowPercentH(item.percentHw)"
+                <button *ngIf="isExpandOptionH" (click)="onSwitchShowPercentH(item.percentHw)"
                   class="btn btn-outline-primary" type="button">
                   % คะแนน : <b>{{showPercentageH.name}}</b></button>
               </div>
@@ -563,17 +563,17 @@
               </div>
 
               <div class="input-group-append">
-                <button type="button" (click)="switchExpandOption()"
+                <button type="button" (click)="switchExpandOptionL()"
                   class="btn btn-outline-warning">
                   OPTION &nbsp;&nbsp;
-                  <i *ngIf="!isExpandOption" class="fa fa-caret-right"></i>
-                  <i *ngIf="isExpandOption" class="fa fa-caret-left"></i>
+                  <i *ngIf="!isExpandOptionL" class="fa fa-caret-right"></i>
+                  <i *ngIf="isExpandOptionL" class="fa fa-caret-left"></i>
                 </button>
 
-                <button *ngIf="isExpandOption" (click)="onSwitchShowGroup()"
+                <button *ngIf="isExpandOptionL" (click)="onSwitchShowGroup()"
                   class="btn btn-outline-sut" type="button">
                   กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
-                <button *ngIf="isExpandOption" (click)="onSwitchShowPercentL(item.percentLab)"
+                <button *ngIf="isExpandOptionL" (click)="onSwitchShowPercentL(item.percentLab)"
                   class="btn btn-outline-primary" type="button">
                   % คะแนน : <b>{{showPercentageL.name}}</b></button>
               </div>

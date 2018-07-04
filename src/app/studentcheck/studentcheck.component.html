@@ -132,42 +132,37 @@
         <div class="card-body text-dark">
           <ngb-tabset>
             <!--AttendanceTab-->
-            <ngb-tab title="เข้าเรียน">
+            <ngb-tab title="Attendance">
               <ng-template ngbTabContent>
                 <!--ON/OFF Switch-->
-                <div class="row justify-content-between" style="padding-top: 15px">
-                  <div class="col">
-                    <div class="input-group-prepend" style="padding-top: 10px">
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label *ngFor="let slot of btn_attendance"
-                            class="btn btn-light active" (click)="radioCheckA(slot.id)">
-                          <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
-                            {{slot.name}}
-                        </label>
-                      </div>
-                    </div>
+                <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
+                  <div class="input-group-prepend">
+                    <button *ngFor="let slot of btn_attendance" class="btn btn-outline-secondary text-dark"
+                      (click)="radioCheckA(slot.id)" type="button">
+                      {{slot.name}}
+                    </button>
+                    <!--span style="background-color: #ffffff"
+                      class="input-group-text border border-warning text-warning">
+                      <i class="fa fa-cog"></i> OPTION</span-->
                   </div>
-                  <div class="col-4">
-                    <div class="row justify-content-end" style="text-align: center">
-                      <div class="text-warning">
-                        แสดงกลุ่มเรียน<br>
-                        <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
-                          {{showGroup.name}}
-                        </button>
-                      </div>&nbsp;&nbsp;&nbsp;
-                      <div class="text-danger">
-                        ขาดเรียน<br>
-                        <button type="button" class="btn btn-danger btn-sm" (click)="onSwitchShowMissClass()">
-                          {{showMissClass.name}}
-                        </button>
-                      </div>&nbsp;&nbsp;&nbsp;
-                      <div class="text-primary">
-                          % คะแนน<br>
-                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentA()">
-                          {{showPercentageA.name}}
-                        </button>
-                      </div>&nbsp;&nbsp;&nbsp;
-                    </div>
+
+                  <div class="input-group-append">
+                    <button type="button" (click)="switchExpandOptionA()"
+                      class="btn btn-outline-warning">
+                      OPTION &nbsp;&nbsp;
+                      <i *ngIf="!isExpandOptionA" class="fa fa-caret-right"></i>
+                      <i *ngIf="isExpandOptionA" class="fa fa-caret-left"></i>
+                    </button>
+
+                    <button *ngIf="isExpandOptionA" (click)="onSwitchShowGroup()"
+                      class="btn btn-outline-sut" type="button">
+                      กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
+                    <button *ngIf="isExpandOptionA" (click)="onSwitchShowMissClass()"
+                      class="btn btn-outline-danger" type="button">
+                      ขาดเรียน : <b>{{showMissClass.name}}</b></button>
+                    <button *ngIf="isExpandOptionA" (click)="onSwitchShowPercentA()"
+                      class="btn btn-outline-primary" type="button">
+                      % คะแนน : <b>{{showPercentageA.name}}</b></button>
                   </div>
                 </div>
               <!---->
@@ -263,7 +258,7 @@
                         <!--/-->
                         <ng-container *ngIf="showPercentageA.flag" style="text-align: center">
                           <td class="att_Percent">
-                            {{student.percent | number:'1.2'}}
+                            {{student.percentA | number:'1.2'}}
                           </td>
                         </ng-container>
                         <td style="display:none;"></td>
@@ -275,8 +270,8 @@
                         <td *ngIf="showMissClass.flag"></td>
                         <td *ngFor="let schedule of scheduleAttendanceSortList ; let k = index" style="width:70px ;text-align: center">
                           <a placement="top"
-                            ngbPopover="มาเรียน: {{schedule[0].data.countOnTime+schedule[0].data.countLate}} | ขาดเรียน: {{schedule[0].data.countMiss}}
-                                        | ลา: {{schedule[0].data.countLeave}}"
+                            ngbPopover="ตรงเวลา: {{schedule[0].data.countOnTime}} | สาย: {{schedule[0].data.countLate}}
+                                        | ขาดเรียน: {{schedule[0].data.countMiss}} | ลา: {{schedule[0].data.countLeave}}"
                             popoverTitle="รายละเอียด">
                               <b>{{schedule[0].data.countOnTime + schedule[0].data.countLate}}/{{studentListArr.length}}</b></a>
                           </td>
@@ -293,33 +288,28 @@
             <ngb-tab title="Quiz">
               <ng-template ngbTabContent>
                 <!--ON/OFF Switch-->
-                <div class="row justify-content-between" style="padding-top: 15px">
-                  <div class="col">
-                    <div class="input-group-prepend" style="padding-top: 10px">
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label *ngFor="let slot of btn_quiz"
-                            class="btn btn-light active" (click)="radioCheckQ(slot.id)">
-                          <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
-                            {{slot.name}}
-                        </label>
-                      </div>
-                    </div>
+                <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
+                  <div class="input-group-prepend">
+                    <button *ngFor="let slot of btn_quiz" class="btn btn-outline-secondary text-dark"
+                      (click)="radioCheckQ(slot.id)" type="button">
+                      {{slot.name}}
+                    </button>
                   </div>
-                  <div class="col-4">
-                    <div class="row justify-content-end" style="text-align: center">
-                      <div class="text-warning">
-                        แสดงกลุ่มเรียน<br>
-                        <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
-                          {{showGroup.name}}
-                        </button>
-                      </div>&nbsp;&nbsp;&nbsp;
-                      <div class="text-primary">
-                          % คะแนน<br>
-                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentQ()">
-                          {{showPercentageQ.name}}
-                        </button>
-                      </div>&nbsp;&nbsp;&nbsp;
-                    </div>
+
+                  <div class="input-group-append">
+                    <button type="button" (click)="switchExpandOptionQ()"
+                      class="btn btn-outline-warning">
+                      OPTION &nbsp;&nbsp;
+                      <i *ngIf="!isExpandOptionQ" class="fa fa-caret-right"></i>
+                      <i *ngIf="isExpandOptionQ" class="fa fa-caret-left"></i>
+                    </button>
+
+                    <button *ngIf="isExpandOptionQ" (click)="onSwitchShowGroup()"
+                      class="btn btn-outline-sut" type="button">
+                      กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
+                    <button *ngIf="isExpandOptionQ" (click)="onSwitchShowPercentQ()"
+                      class="btn btn-outline-primary" type="button">
+                      % คะแนน : <b>{{showPercentageQ.name}}</b></button>
                   </div>
                 </div>
               <!---->
@@ -341,10 +331,23 @@
                         <th *ngIf="showPercentageQ.flag" style="width:70px; text-align: center">
                           <div class="text-primary" style="font-size: 14px">{{percentQuiz}}%</div>
                         </th>
+                        <th style="width:70px; text-align: center">คะแนนรวม</th>
                         <th class="no-border"></th>
                       </tr>
                     </thead>
                     <tbody>
+                      <!--Maxscore Row-->
+                      <tr>
+                        <td colspan="3" style="width:70px; text-align: center">คะแนนเต็ม</td>
+                        <td *ngIf="showGroup.flag"></td>
+                        <td *ngFor="let schedule of scheduleQuizSortList" style="width:70px ;text-align: center">
+                          <a>{{schedule[0].data.totalScore}}</a>
+                          </td>
+                        <td *ngIf="showPercentageQ.flag"></td>
+                        <th style="text-align: center">{{totalScoreQ}}</th>
+                        <td style="display:none;"></td>
+                      </tr>
+
                       <tr *ngFor="let student of studentListArr ; let j = index;">
                         <th scope="row" style="text-align: center">{{j+1}}</th>
                         <td>{{student.key}}</td>
@@ -376,12 +379,24 @@
                         <!--/-->
                         <ng-container *ngIf="showPercentageQ.flag" style="text-align: center">
                           <td class="att_Percent">
-                            {{student.percent  | number:'1.2'}}
+                            {{student.percentQ  | number:'1.2'}}
                           </td>
                         </ng-container>
+                        <!--/-->
+                        <td style="text-align: center">{{stdtotalScoreQ[j]}}</td>
                         <td style="display:none;"></td>
                       </tr>
-
+                      <!--Total Row-->
+                      <tr>
+                        <td colspan="3" style="width:70px; text-align: center">Total</td>
+                        <td *ngIf="showGroup.flag"></td>
+                        <td *ngFor="let schedule of scheduleQuizSortList" style="width:70px ;text-align: center">
+                          <a>{{schedule[0].data.count}}/{{studentListArr.length}}</a>
+                          </td>
+                        <td></td>
+                        <td *ngIf="showPercentageQ.flag"></td>
+                        <td style="display:none;"></td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -392,33 +407,28 @@
             <ngb-tab title="Homework">
               <ng-template ngbTabContent>
                 <!--ON/OFF Switch-->
-                <div class="row justify-content-between" style="padding-top: 15px">
-                  <div class="col">
-                    <div class="input-group-prepend" style="padding-top: 10px">
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label *ngFor="let slot of btn_hw"
-                            class="btn btn-light active" (click)="radioCheckH(slot.id)">
-                          <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
-                            {{slot.name}}
-                        </label>
-                      </div>
-                    </div>
+                <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
+                  <div class="input-group-prepend">
+                    <button *ngFor="let slot of btn_hw" class="btn btn-outline-secondary text-dark"
+                      (click)="radioCheckH(slot.id)" type="button">
+                      {{slot.name}}
+                    </button>
                   </div>
-                  <div class="col-4">
-                    <div class="row justify-content-end" style="text-align: center">
-                      <div class="text-warning">
-                        แสดงกลุ่มเรียน<br>
-                        <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
-                          {{showGroup.name}}
-                        </button>
-                      </div>&nbsp;&nbsp;&nbsp;
-                      <div class="text-primary">
-                          % คะแนน<br>
-                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentH()">
-                          {{showPercentageH.name}}
-                        </button>
-                      </div>&nbsp;&nbsp;&nbsp;
-                    </div>
+
+                  <div class="input-group-append">
+                    <button type="button" (click)="switchExpandOptionH()"
+                      class="btn btn-outline-warning">
+                      OPTION &nbsp;&nbsp;
+                      <i *ngIf="!isExpandOptionH" class="fa fa-caret-right"></i>
+                      <i *ngIf="isExpandOptionH" class="fa fa-caret-left"></i>
+                    </button>
+
+                    <button *ngIf="isExpandOptionH" (click)="onSwitchShowGroup()"
+                      class="btn btn-outline-sut" type="button">
+                      กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
+                    <button *ngIf="isExpandOptionH" (click)="onSwitchShowPercentH(item.percentHw)"
+                      class="btn btn-outline-primary" type="button">
+                      % คะแนน : <b>{{showPercentageH.name}}</b></button>
                   </div>
                 </div>
               <!---->
@@ -440,10 +450,23 @@
                         <th *ngIf="showPercentageH.flag" style="width:70px; text-align: center">
                           <div class="text-primary" style="font-size: 14px">{{percentHw}}%</div>
                         </th>
+                        <th style="width:70px; text-align: center">คะแนนรวม</th>
                         <th class="no-border"></th>
                       </tr>
                     </thead>
                     <tbody>
+                      <!--Maxscore Row-->
+                      <tr>
+                        <td colspan="3" style="width:70px; text-align: center">คะแนนเต็ม</td>
+                        <td *ngIf="showGroup.flag"></td>
+                        <td *ngFor="let schedule of scheduleHomeworkSortList" style="width:70px ;text-align: center">
+                          <a>{{schedule[0].data.totalScore}}</a>
+                          </td>
+                        <td *ngIf="showPercentageH.flag"></td>
+                        <th style="text-align: center">{{totalScoreH}}</th>
+                        <td style="display:none;"></td>
+                      </tr>
+
                       <tr *ngFor="let student of studentListArr ; let j = index;">
                         <th scope="row" style="text-align: center">{{j+1}}</th>
                         <td>{{student.key}}</td>
@@ -475,12 +498,24 @@
                         <!--/-->
                         <ng-container *ngIf="showPercentageH.flag" style="text-align: center">
                           <td class="att_Percent">
-                            {{student.percent  | number:'1.2'}}
+                            {{student.percentH  | number:'1.2'}}
                           </td>
                         </ng-container>
+                        <!--/-->
+                        <td style="text-align: center">{{stdtotalScoreH[j]}}</td>
                         <td style="display:none;"></td>
                       </tr>
-
+                      <!--Total Row-->
+                      <tr>
+                        <td colspan="3" style="width:70px; text-align: center">Total</td>
+                        <td *ngIf="showGroup.flag"></td>
+                        <td *ngFor="let schedule of scheduleHomeworkSortList" style="width:70px ;text-align: center">
+                          <a>{{schedule[0].data.count}}/{{studentListArr.length}}</a>
+                          </td>
+                        <td></td>
+                        <td *ngIf="showPercentageH.flag"></td>
+                        <td style="display:none;"></td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -491,33 +526,28 @@
             <ngb-tab title="Lab">
               <ng-template ngbTabContent>
                 <!--ON/OFF Switch-->
-                <div class="row justify-content-between" style="padding-top: 15px">
-                  <div class="col">
-                    <div class="input-group-prepend" style="padding-top: 10px">
-                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label *ngFor="let slot of btn_lab"
-                            class="btn btn-light active" (click)="radioCheckL(slot.id)">
-                          <input type="radio" name="slot.id" id="slot.id" autocomplete="off">
-                            {{slot.name}}
-                        </label>
-                      </div>
-                    </div>
+                <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
+                  <div class="input-group-prepend">
+                    <button *ngFor="let slot of btn_lab" class="btn btn-outline-secondary text-dark"
+                      (click)="radioCheckL(slot.id)" type="button">
+                      {{slot.name}}
+                    </button>
                   </div>
-                  <div class="col-4">
-                    <div class="row justify-content-end" style="text-align: center">
-                      <div class="text-warning">
-                        แสดงกลุ่มเรียน<br>
-                        <button type="button" class="btn btn-warning btn-sm" (click)="onSwitchShowGroup()">
-                          {{showGroup.name}}
-                        </button>
-                      </div>&nbsp;&nbsp;&nbsp;
-                      <div class="text-primary">
-                          % คะแนน<br>
-                        <button type="button" class="btn btn-primary btn-sm" (click)="onSwitchShowPercentL()">
-                          {{showPercentageL.name}}
-                        </button>
-                      </div>&nbsp;&nbsp;&nbsp;
-                    </div>
+
+                  <div class="input-group-append">
+                    <button type="button" (click)="switchExpandOptionL()"
+                      class="btn btn-outline-warning">
+                      OPTION &nbsp;&nbsp;
+                      <i *ngIf="!isExpandOptionL" class="fa fa-caret-right"></i>
+                      <i *ngIf="isExpandOptionL" class="fa fa-caret-left"></i>
+                    </button>
+
+                    <button *ngIf="isExpandOptionL" (click)="onSwitchShowGroup()"
+                      class="btn btn-outline-sut" type="button">
+                      กลุ่มเรียน : <b>{{showGroup.name}}</b></button>
+                    <button *ngIf="isExpandOptionL" (click)="onSwitchShowPercentL(item.percentLab)"
+                      class="btn btn-outline-primary" type="button">
+                      % คะแนน : <b>{{showPercentageL.name}}</b></button>
                   </div>
                 </div>
               <!---->
@@ -539,10 +569,23 @@
                         <th *ngIf="showPercentageL.flag" style="width:70px; text-align: center">
                           <div class="text-primary" style="font-size: 14px">{{percentHw}}%</div>
                         </th>
+                        <th style="width:70px; text-align: center">คะแนนรวม</th>
                         <th class="no-border"></th>
                       </tr>
                     </thead>
                     <tbody>
+                      <!--Maxscore Row-->
+                      <tr>
+                        <td colspan="3" style="width:70px; text-align: center">คะแนนเต็ม</td>
+                        <td *ngIf="showGroup.flag"></td>
+                        <td *ngFor="let schedule of scheduleLabSortList" style="width:70px ;text-align: center">
+                          <a>{{schedule[0].data.totalScore}}</a>
+                          </td>
+                        <td *ngIf="showPercentageL.flag"></td>
+                        <th style="text-align: center">{{totalScoreL}}</th>
+                        <td style="display:none;"></td>
+                      </tr>
+
                       <tr *ngFor="let student of studentListArr ; let j = index;">
                         <th scope="row" style="text-align: center">
                           {{j+1}}
@@ -576,12 +619,24 @@
                         <!--/-->
                         <ng-container *ngIf="showPercentageL.flag" style="text-align: center">
                           <td class="att_Percent">
-                            {{student.percent  | number:'1.2'}}
+                            {{student.percentL  | number:'1.2'}}
                           </td>
                         </ng-container>
+                        <!--/-->
+                        <td style="text-align: center">{{stdtotalScoreL[j]}}</td>
                         <td style="display:none;"></td>
                       </tr>
-
+                      <!--Total Row-->
+                      <tr>
+                        <td colspan="3" style="width:70px; text-align: center">Total</td>
+                        <td *ngIf="showGroup.flag"></td>
+                        <td *ngFor="let schedule of scheduleLabSortList" style="width:70px ;text-align: center">
+                          <a>{{schedule[0].data.count}}/{{studentListArr.length}}</a>
+                          </td>
+                        <td></td>
+                        <td *ngIf="showPercentageL.flag"></td>
+                        <td style="display:none;"></td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>

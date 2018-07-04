@@ -1,1 +1,51 @@
 @import "../login/login.component.scss";
+.text-white {
+  text-decoration-color: #fff;
+}
+.padding-left-10{
+  padding-left: 10px
+}
+.no-border {
+  border: none;
+  background-color: none;
+}
+.red{
+  background-color: red;
+}
+.green{
+  background-color: green;
+}
+.c_nullScore{
+  background-color: rgb(118, 179, 197);
+}
+.att_missClass{
+  text-align: center;
+  background-color: rgb(255, 184, 184);
+}
+.att_onTime{
+  text-align: center;
+  //background-color: rgb(204, 81, 72);
+}
+.att_late{
+  text-align: center;
+  background-color: rgb(255, 227, 66);
+}
+.att_Percent{
+  text-align: center;
+  background-color: rgb(155, 196, 206);
+}
+/////////////////////////////////////
+.missHigh{
+  text-align: center;
+  background-color: rgb(255, 88, 88);
+}
+.missMed{
+  text-align: center;
+  background-color: rgb(255, 168, 96);
+}.missLow{
+  text-align: center;
+  background-color: rgb(253, 255, 139);
+}
+.missNormal{
+  text-align: center;
+}

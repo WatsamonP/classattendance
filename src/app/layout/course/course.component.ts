@@ -112,7 +112,10 @@ export class CourseComponent implements OnInit {
   paginationSize: number;
   disabledPagination: number;
   isDisabled: boolean;
-  isExpandOption: boolean = false;
+  isExpandOptionA: boolean = false;
+  isExpandOptionQ: boolean = false;
+  isExpandOptionH: boolean = false;
+  isExpandOptionL: boolean = false;
 
   constructor(
     private auth: AuthService,
@@ -131,9 +134,31 @@ export class CourseComponent implements OnInit {
     this.isDisabled = !this.isDisabled;
   }
 
-  switchExpandOption(){
-    this.isExpandOption = !this.isExpandOption;
+  switchExpandOptionA(){
+    this.isExpandOptionA = !this.isExpandOptionA;
+    this.isExpandOptionQ = false;
+    this.isExpandOptionH = false;
+    this.isExpandOptionL = false;
   }
+  switchExpandOptionQ(){
+    this.isExpandOptionQ = !this.isExpandOptionQ;
+    this.isExpandOptionA = false;
+    this.isExpandOptionH = false;
+    this.isExpandOptionL = false;
+  }
+  switchExpandOptionH(){
+    this.isExpandOptionH = !this.isExpandOptionH;
+    this.isExpandOptionA = false;
+    this.isExpandOptionQ = false;
+    this.isExpandOptionL = false;
+  }
+  switchExpandOptionL(){
+    this.isExpandOptionL = !this.isExpandOptionL;
+    this.isExpandOptionA = false;
+    this.isExpandOptionQ = false;
+    this.isExpandOptionH = false;
+  }
+
 
   @ViewChild('editCourse')
     private myEditCourse: TemplateRef<any>;

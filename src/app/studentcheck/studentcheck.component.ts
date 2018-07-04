@@ -56,7 +56,16 @@ export class StudentcheckComponent implements OnInit {
   percentHw: number;
   percentLab: number;
   detail: any;
-  isExpandOption: boolean = false;
+  stdtotalScoreQ = [];
+  stdtotalScoreH = [];
+  stdtotalScoreL = [];
+  totalScoreQ: number;
+  totalScoreH: number;
+  totalScoreL: number;
+  isExpandOptionA: boolean = false;
+  isExpandOptionQ: boolean = false;
+  isExpandOptionH: boolean = false;
+  isExpandOptionL: boolean = false;
 
   constructor(
     private db: AngularFireDatabase,
@@ -64,10 +73,30 @@ export class StudentcheckComponent implements OnInit {
     private toastr: ToastrService
   ) { }
 
-  switchExpandOption(){
-    this.isExpandOption = !this.isExpandOption;
+  switchExpandOptionA(){
+    this.isExpandOptionA = !this.isExpandOptionA;
+    this.isExpandOptionQ = false;
+    this.isExpandOptionH = false;
+    this.isExpandOptionL = false;
   }
-
+  switchExpandOptionQ(){
+    this.isExpandOptionQ = !this.isExpandOptionQ;
+    this.isExpandOptionA = false;
+    this.isExpandOptionH = false;
+    this.isExpandOptionL = false;
+  }
+  switchExpandOptionH(){
+    this.isExpandOptionH = !this.isExpandOptionH;
+    this.isExpandOptionA = false;
+    this.isExpandOptionQ = false;
+    this.isExpandOptionL = false;
+  }
+  switchExpandOptionL(){
+    this.isExpandOptionL = !this.isExpandOptionL;
+    this.isExpandOptionA = false;
+    this.isExpandOptionQ = false;
+    this.isExpandOptionH = false;
+  }
   ngOnInit() {
     this.buildForm();
     this.showTableCourse = false;
@@ -80,7 +109,7 @@ export class StudentcheckComponent implements OnInit {
     this.showTableStd = false;
     this.showTableData = false;
     if(this.studentScoreForm.value.sid != '' && this.studentScoreForm.value.cid != ''){
-      this.scIden();
+      this.toastr.warning("กรุณาป้อนรหัสวิชา หรือรหัสนักศึกษา อย่างใดอย่างหนึ่ง");
     }else if(this.studentScoreForm.value.sid != ''){
       this.studentIden();
       this.showTableStd = true;
@@ -91,32 +120,7 @@ export class StudentcheckComponent implements OnInit {
       this.toastr.warning("กรุณาป้อนรหัสวิชา หรือรหัสนักศึกษา");
     }
   }
-  scIden(){
-    let sid = this.studentScoreForm.value.sid;
-    let cid = this.studentScoreForm.value.cid;
-    var c=0;
-    this.courseData = [];
-    this.db.list(`users/`).snapshotChanges().map(actions => {
-      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-      }).subscribe(items => {
-      var k=0;
-      for(var i=0; i<items.length; i++){
-        this.courseData[i] = Object.keys(items[i].course)
-          .map(key => Object.assign({ key }, items[i].course[key]));
-      }
-      for(var i=0; i< items.length; i++){
-        for(var j=0; j< this.courseData[i].length; j++){
-          if(this.courseData[i][j].students[sid] && items[i].course[cid]){
-            c++;
-            this.findScore(items[i].key,cid);
-            this.showTableData = true;
-          }
-        }
-      }
-    });
-    if(c==0)
-      this.toastr.warning("ไม่มีวิชานี้ หรือ นักศึกษาไม่ได้ลงเรียนวิชานี้");
-  }
+
   studentIden(){
     this.courseData = [];
     this.student = [];
@@ -184,21 +188,6 @@ export class StudentcheckComponent implements OnInit {
           }
         }
     });
-    this.db.list(`users/${id}/course/${cid}/students`).snapshotChanges().map(actions => {
-      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-      }).subscribe(items => {
-      this.studentList = items;
-
-      let temp = [];
-      for(var i=0; i<this.studentList.length ;i++){
-        //console.log(this.studentList[i].group + ' HH' + this.groupId);
-          temp.push(this.studentList[i]);
-          continue;
-      }
-      this.studentListArr = Object.keys(temp)
-        .map(key => Object.assign({ key }, temp[key]));
-        return items.map(item => item.key);
-    });
 
     this.db.list(`users/${id}/course/${cid}/schedule/attendance`).snapshotChanges().map(actions => {
       return actions.map(action => ({ key: action.key, ...action.payload.val() }));
@@ -230,9 +219,11 @@ export class StudentcheckComponent implements OnInit {
     }).subscribe(items => {
       this.scheduleQuizList = items;
       this.btn_quiz =[];
+      this.totalScoreQ = 0;
       for(var i=0 ; i<this.scheduleQuizList.length ;i++){
-          if(i%5==0)
-            this.btn_quiz.push({id:i+5,name: (i+1)+'-'+(i+5)});
+        this.totalScoreQ = this.totalScoreQ + Number(this.scheduleQuizList[i].totalScore);
+        if(i%5==0)
+          this.btn_quiz.push({id:i+5,name: (i+1)+'-'+(i+5)});
       }
 
       let sdtLen =  this.scheduleQuizList.length;
@@ -255,7 +246,9 @@ export class StudentcheckComponent implements OnInit {
     }).subscribe(items => {
       this.scheduleHomeworkList = items;
       this.btn_hw =[];
+      this.totalScoreH = 0;
       for(var i=0 ; i<this.scheduleHomeworkList.length ;i++){
+          this.totalScoreH = this.totalScoreH + Number(this.scheduleHomeworkList[i].totalScore);
           if(i%5==0)
             this.btn_hw.push({id:i+5,name: (i+1)+'-'+(i+5)});
       }
@@ -279,7 +272,9 @@ export class StudentcheckComponent implements OnInit {
     }).subscribe(items => {
       this.scheduleLabList = items;
       this.btn_lab =[];
+      this.totalScoreL = 0;
       for(var i=0 ; i<this.scheduleLabList.length ;i++){
+          this.totalScoreL = this.totalScoreL + Number(this.scheduleLabList[i].totalScore);
           if(i%5==0)
             this.btn_lab.push({id:i+5,name: (i+1)+'-'+(i+5)});
       }
@@ -297,7 +292,47 @@ export class StudentcheckComponent implements OnInit {
       };
         return items.map(item => item.key);
     });
-
+    this.db.list(`users/${id}/course/${cid}/students`).snapshotChanges().map(actions => {
+      return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+      }).subscribe(items => {
+      this.studentList = items;
+      this.stdtotalScoreQ = [];
+      this.stdtotalScoreH = [];
+      this.stdtotalScoreL = [];
+      let temp = [];
+      for(var i=0; i<this.studentList.length ;i++){
+        //console.log(this.studentList[i].group + ' HH' + this.groupId);
+          temp.push(this.studentList[i]);
+          continue;
+      }
+      for(var i=0; i<temp.length ;i++){
+        var temp2 = 0;
+        for(var k=0; k<this.scheduleQuizList.length; k++){
+          if(temp[i].quiz[this.scheduleQuizList[k].id])
+            temp2 = temp2 + temp[i].quiz[this.scheduleQuizList[k].id].score;
+        }
+        this.stdtotalScoreQ[i] = temp2;
+      }
+      for(var i=0; i<temp.length ;i++){
+        var temp2 = 0;
+        for(var k=0; k<this.scheduleHomeworkList.length; k++){
+          if(temp[i].hw[this.scheduleHomeworkList[k].id])
+            temp2 = temp2 + temp[i].hw[this.scheduleHomeworkList[k].id].score;
+        }
+        this.stdtotalScoreH[i] = temp2;
+      }
+      for(var i=0; i<temp.length ;i++){
+        var temp2 = 0;
+        for(var k=0; k<this.scheduleLabList.length; k++){
+          if(temp[i].lab[this.scheduleLabList[k].id])
+          temp2 = temp2 + temp[i].lab[this.scheduleLabList[k].id].score;
+        }
+        this.stdtotalScoreL[i] = temp2;
+      }
+      this.studentListArr = Object.keys(temp)
+        .map(key => Object.assign({ key }, temp[key]));
+        return items.map(item => item.key);
+    });
   }
 
   onClickCourseCourse(something){
@@ -405,7 +440,7 @@ export class StudentcheckComponent implements OnInit {
         }
         this.totalStudentPercentA.push(Number(temp)*Number(this.percentAtt)/Number(fullScore));
         this.studentListArr = Object.keys(this.studentListArr)
-        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentA[key]}));
+        .map(key => Object.assign({ key }, this.studentListArr[key], {percentA:this.totalStudentPercentA[key]}));
 
       }
     }
@@ -428,7 +463,7 @@ export class StudentcheckComponent implements OnInit {
         }
         this.totalStudentPercentQ.push(Number(temp)*Number(this.percentQuiz)/Number(fullScore));
         this.studentListArr = Object.keys(this.studentListArr)
-        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentQ[key]}));
+        .map(key => Object.assign({ key }, this.studentListArr[key], {percentQ:this.totalStudentPercentQ[key]}));
 
       }
     }
@@ -451,7 +486,7 @@ export class StudentcheckComponent implements OnInit {
         }
         this.totalStudentPercentH.push(Number(temp)*Number(this.percentHw)/Number(fullScore));
         this.studentListArr = Object.keys(this.studentListArr)
-        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentH[key]}));
+        .map(key => Object.assign({ key }, this.studentListArr[key], {percentH:this.totalStudentPercentH[key]}));
 
       }
     }
@@ -473,7 +508,7 @@ export class StudentcheckComponent implements OnInit {
         }
         this.totalStudentPercentL.push(Number(temp)*Number(this.percentLab)/Number(fullScore));
         this.studentListArr = Object.keys(this.studentListArr)
-        .map(key => Object.assign({ key }, this.studentListArr[key], {percent:this.totalStudentPercentL[key]}));
+        .map(key => Object.assign({ key }, this.studentListArr[key], {percentL:this.totalStudentPercentL[key]}));
 
       }
     }
