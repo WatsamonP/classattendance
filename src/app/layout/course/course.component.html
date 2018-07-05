@@ -1,3 +1,4 @@
+
 <div [@routerTransition]>
 <div *ngFor="let item of courseList ; let i = index" >
 <div *ngFor="let g of groupList">
@@ -146,13 +147,17 @@
     <font size="3" color="red">**Attendance ไม่ต้องป้อนคะแนน</font>
   </div>
 
+
+
 <!--TABLE-->
   <div class="card">
     <div class="card-body table-responsive">
-      <ngb-tabset>
+      <ngb-tabset [activeId]="tabid">
         <!--AttendanceTab-->
-        <ngb-tab title="Attendance">
+
+        <ngb-tab title="Attendance" id ="attendance">
           <ng-template ngbTabContent>
+            {{test()}}
             <!--ON/OFF Switch-->
             <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
               <div class="input-group-prepend">
@@ -306,10 +311,12 @@
             </div>
           </ng-template>
         </ngb-tab>
+
         <!--///////////////////////////////////////-->
         <!--QuizTab-->
-        <ngb-tab title="Quiz">
+        <ngb-tab title="Quiz" id ="quiz">
           <ng-template ngbTabContent>
+            {{test2()}}
             <!--ON/OFF Switch-->
             <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
               <div class="input-group-prepend">
@@ -430,8 +437,9 @@
         </ngb-tab>
         <!--///////////////////////////////////////-->
         <!--HomeworkTab-->
-        <ngb-tab title="Homework">
+        <ngb-tab title="Homework" id ="homework">
           <ng-template ngbTabContent>
+            {{test3()}}
             <!--ON/OFF Switch-->
             <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
               <div class="input-group-prepend">
@@ -551,8 +559,9 @@
         </ngb-tab>
         <!--///////////////////////////////////////-->
         <!--LabTab-->
-        <ngb-tab title="Lab">
+        <ngb-tab title="Lab" id ="lab">
           <ng-template ngbTabContent>
+            {{test4()}}
             <!--ON/OFF Switch-->
             <div class="input-group mb-3" style="padding-top: 15px;padding-left: 15px">
               <div class="input-group-prepend">

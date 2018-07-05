@@ -116,6 +116,8 @@ export class CourseComponent implements OnInit {
   isExpandOptionQ: boolean = false;
   isExpandOptionH: boolean = false;
   isExpandOptionL: boolean = false;
+  tabid = "attendance";
+
 
   constructor(
     private auth: AuthService,
@@ -159,6 +161,18 @@ export class CourseComponent implements OnInit {
     this.isExpandOptionH = false;
   }
 
+  test(){
+    this.tabid = "attendance";
+  }
+  test2(){
+    this.tabid = "quiz";
+  }
+  test3(){
+    this.tabid = "homework";
+  }
+  test4(){
+    this.tabid = "lab";
+  }
 
   @ViewChild('editCourse')
     private myEditCourse: TemplateRef<any>;
@@ -875,9 +889,6 @@ export class CourseComponent implements OnInit {
     }
     //console.log(this.studentListArr);
   }
-
-
-
 
   // Button
 
