@@ -348,60 +348,70 @@ export class CourseComponent implements OnInit {
           for(var i=0; i<temp.length ;i++){
             var temp2 = 0;
             for(var k=0; k<this.scheduleQuizList.length; k++){
-              temp2 = temp2 + temp[i].quiz[this.scheduleQuizList[k].id].score;
+              if(temp[i].quiz[this.scheduleQuizList[k].id])
+                temp2 = temp2 + temp[i].quiz[this.scheduleQuizList[k].id].score;
             }
             this.stdtotalScoreQ[i] = temp2;
           }
           for(var i=0; i<temp.length ;i++){
             var temp2 = 0;
             for(var k=0; k<this.scheduleHomeworkList.length; k++){
-              temp2 = temp2 + temp[i].hw[this.scheduleHomeworkList[k].id].score;
+              if(temp[i].hw[this.scheduleHomeworkList[k].id])
+                temp2 = temp2 + temp[i].hw[this.scheduleHomeworkList[k].id].score;
             }
             this.stdtotalScoreH[i] = temp2;
           }
           for(var i=0; i<temp.length ;i++){
             var temp2 = 0;
             for(var k=0; k<this.scheduleLabList.length; k++){
+              if(temp[i].lab[this.scheduleLabList[k].id])
               temp2 = temp2 + temp[i].lab[this.scheduleLabList[k].id].score;
             }
             this.stdtotalScoreL[i] = temp2;
           }
-
           let ontime,late,miss,leave;
           this.count_attendance = [];
+
+
           for(var j=0; j<this.scheduleAttendanceList.length; j++){
             ontime=0,late=0,miss=0,leave=0;
-            for(var k=0; k<temp.length; k++){
-              if(temp[k].attendance[this.scheduleAttendanceList[j].id].status == "onTime")
+            for(var k=0; k<items.length; k++){
+              if(items[k].attendance[this.scheduleAttendanceList[j].id]){
+              if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "onTime")
                 ontime++;
-              else if(temp[k].attendance[this.scheduleAttendanceList[j].id].status == "Late")
+              else if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "Late")
                 late++;
-              else if(temp[k].attendance[this.scheduleAttendanceList[j].id].status == "Leave")
+              else if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "Leave")
                 leave++;
-              else if(temp[k].attendance[this.scheduleAttendanceList[j].id].status == "Missed Class")
+              else if(items[k].attendance[this.scheduleAttendanceList[j].id].status == "Missed Class")
                 miss++;
+              }
             }
             this.count_attendance.push({all: ontime+late+leave,ontime: ontime,late:late,leave:leave,miss:miss});
           }
+
           for(var j=0; j<this.scheduleQuizList.length; j++){
             this.count_quiz[j] = 0;
             for(var k=0; k<temp.length; k++){
-              if(temp[k].quiz[this.scheduleQuizList[j].id].score != 0)
-                this.count_quiz[j]++;
+              if(temp[k].quiz[this.scheduleQuizList[j].id])
+                if(temp[k].quiz[this.scheduleQuizList[j].id].score != 0)
+                  this.count_quiz[j]++;
             }
           }
           for(var j=0; j<this.scheduleHomeworkList.length; j++){
             this.count_hw[j] = 0;
             for(var k=0; k<temp.length; k++){
-              if(temp[k].hw[this.scheduleHomeworkList[j].id].score != 0)
-                this.count_hw[j]++;
+              if(temp[k].hw[this.scheduleHomeworkList[j].id])
+                if(temp[k].hw[this.scheduleHomeworkList[j].id].score != 0)
+                  this.count_hw[j]++;
             }
           }
           for(var j=0; j<this.scheduleLabList.length; j++){
             this.count_lab[j] = 0;
             for(var k=0; k<temp.length; k++){
-              if(temp[k].lab[this.scheduleLabList[j].id].score != 0)
-                this.count_lab[j]++;
+              if(temp[k].lab[this.scheduleLabList[j].id])
+                if(temp[k].lab[this.scheduleLabList[j].id].score != 0)
+                  this.count_lab[j]++;
             }
           }
           this.count_attendancesort = [];
@@ -440,62 +450,6 @@ export class CourseComponent implements OnInit {
           for (this.scheduleLabList.length; this.scheduleLabList.length > i; i++) {
             count++;
             this.count_labsort[i] = this.count_lab[i];
-            if(count==5){
-              break;
-            }
-          };
-          this.studentListArr = Object.keys(temp)
-            .map(key => Object.assign({ key }, temp[key]));
-            return items.map(item => item.key);
-        });
-
-      }else{
-        // For All Group  /////////////////////////////////////////////
-        // 1. Query scheduleAttendanceList
-        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/attendance`).snapshotChanges().map(actions => {
-          return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-          }).subscribe(items => {
-            this.scheduleAttendanceList = items;
-            this.btn_attendance =[];
-            for(var i=0 ; i<this.scheduleAttendanceList.length ;i++){
-                if(i%5==0)
-                  this.btn_attendance.push({id:i+5,name: (i+1)+'-'+(i+5)});
-            }
-            let sdtLen =  this.scheduleAttendanceList.length;
-            this.scheduleAttendanceSortList = [];
-            var i=0;
-            var count=0;
-            for (sdtLen; sdtLen > i; i++) {
-              count++;
-              this.scheduleAttendanceSortList[i] = [{data: this.scheduleAttendanceList[i]},{index : i+1}];
-              if(count==5){
-                break;
-              }
-            };
-            //console.log(this.scheduleAttendanceList);
-            return items.map(item => item.key);
-        });
-
-        // 2. Query Quiz
-        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/quiz`).snapshotChanges().map(actions => {
-        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-        }).subscribe(items => {
-          this.scheduleQuizList = items;
-          this.btn_quiz =[];
-          this.totalScoreQ = 0;
-          for(var i=0 ; i<this.scheduleQuizList.length ;i++){
-              this.totalScoreQ = this.totalScoreQ + Number(this.scheduleQuizList[i].totalScore);
-              if(i%5==0)
-                this.btn_quiz.push({id:i+5,name: (i+1)+'-'+(i+5)});
-          }
-
-          let sdtLen =  this.scheduleQuizList.length;
-          this.scheduleQuizSortList = [];
-          var i=0;
-          var count=0;
-          for (sdtLen; sdtLen > i; i++) {
-            count++;
-            this.scheduleQuizSortList[i] = [{data: this.scheduleQuizList[i]},{index : i+1}];
             if(count==5){
               break;
             }
@@ -591,7 +545,6 @@ export class CourseComponent implements OnInit {
           }
           let ontime,late,miss,leave;
           this.count_attendance = [];
-          console.log(items)
 
 
           for(var j=0; j<this.scheduleAttendanceList.length; j++){
