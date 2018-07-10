@@ -454,6 +454,62 @@ export class CourseComponent implements OnInit {
               break;
             }
           };
+          this.studentListArr = Object.keys(temp)
+            .map(key => Object.assign({ key }, temp[key]));
+            return items.map(item => item.key);
+        });
+
+      }else{
+        // For All Group  /////////////////////////////////////////////
+        // 1. Query scheduleAttendanceList
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/attendance`).snapshotChanges().map(actions => {
+          return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+          }).subscribe(items => {
+            this.scheduleAttendanceList = items;
+            this.btn_attendance =[];
+            for(var i=0 ; i<this.scheduleAttendanceList.length ;i++){
+                if(i%5==0)
+                  this.btn_attendance.push({id:i+5,name: (i+1)+'-'+(i+5)});
+            }
+            let sdtLen =  this.scheduleAttendanceList.length;
+            this.scheduleAttendanceSortList = [];
+            var i=0;
+            var count=0;
+            for (sdtLen; sdtLen > i; i++) {
+              count++;
+              this.scheduleAttendanceSortList[i] = [{data: this.scheduleAttendanceList[i]},{index : i+1}];
+              if(count==5){
+                break;
+              }
+            };
+            //console.log(this.scheduleAttendanceList);
+            return items.map(item => item.key);
+        });
+
+        // 2. Query Quiz
+        this.db.list(`users/${this.auth.currentUserId}/course/${this.courseId}/schedule/quiz`).snapshotChanges().map(actions => {
+        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+        }).subscribe(items => {
+          this.scheduleQuizList = items;
+          this.btn_quiz =[];
+          this.totalScoreQ = 0;
+          for(var i=0 ; i<this.scheduleQuizList.length ;i++){
+              this.totalScoreQ = this.totalScoreQ + Number(this.scheduleQuizList[i].totalScore);
+              if(i%5==0)
+                this.btn_quiz.push({id:i+5,name: (i+1)+'-'+(i+5)});
+          }
+
+          let sdtLen =  this.scheduleQuizList.length;
+          this.scheduleQuizSortList = [];
+          var i=0;
+          var count=0;
+          for (sdtLen; sdtLen > i; i++) {
+            count++;
+            this.scheduleQuizSortList[i] = [{data: this.scheduleQuizList[i]},{index : i+1}];
+            if(count==5){
+              break;
+            }
+          };
             return items.map(item => item.key);
         });
 
