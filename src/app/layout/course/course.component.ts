@@ -1270,7 +1270,9 @@ export class CourseComponent implements OnInit {
     var overgroup = false;
     for (var i = 1; i < csvArray.length-1; i++){
       csvArray2d[i] = csvArray[i].split(",");
-      if(csvArray2d[i][4] > this.groupList.length-1)
+      if(csvArray2d[i][4] == 1 && this.groupList.length == 1){
+        continue;
+      }else if(csvArray2d[i][4] > this.groupList.length-1)
         overgroup = true;
     }
     //console.log(overgroup)
